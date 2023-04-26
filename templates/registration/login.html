@@ -1,0 +1,23 @@
+<div id="login-modal" class="modal content-section">
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="modal-content">
+            <h5 class="light-blue-text text-darken-1"><b>Login</b></h5>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">person</i>
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" class="grey-text text-lighten-1">
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" autocapitalize="none" autocomplete="current-password" maxlength="150" required id="id_password" class="grey-text text-lighten-1">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">login</i>Login</button>
+        </div>
+    </form>
+</div>

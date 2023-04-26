@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}ShiftManager{% endblock %}</title>
+
+  {% load static %}
+
+      <!-- Materialize CSS dependencies -->
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--JQuery-->
+      <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}"  media="screen,projection"/>
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/theming.css' %}">
+    {% endblock %}
+    {% block scripts %}
+        <script type="text/javascript" src="{% static 'js/loadingMaterialize.js' %}"></script>
+    {% endblock %}
+</head>
+    <main>
+        {% include 'registration/login.html' %}
+
+        <ul id="userwidget" class="dropdown-content">
+            {% if not user.is_admin %}<li><a href="#!">My shifts</a></li>
+            <li class="divider"></li>{% endif %}
+            <li><a href="{% url 'edit_basedata' %}">My base data</a></li>
+            <li><a href="{% url 'change_password' %}">Change password</a></li>
+            {% if not user.is_admin %}<li><a href="#!">My general availabilities</a></li>
+            <li><a href="#!">My shift wishes</a></li>{% endif %}
+            <li class="divider"></li>
+            <li><a href="{% url 'logout' %}" class="amber-text text-darken-1">Logout</a></li>
+        </ul>
+
+        <nav>
+            <div class="nav-wrapper light-blue darken-1">
+                {% block sidenav %}
+                    <a data-target="sidenav" class="sidenav-trigger show-on-large btn waves-effect waves-light amber darken-1"><i class="material-icons">menu</i></a>
+                    <ul id="sidenav" class="sidenav">
+                        <li>
+                            <div class="user-view">
+                                <div class="background">
+                                    <img src="{% static '/images/Nightsky.png' %}">
+                                </div>
+                                {% if user.is_authenticated %}
+                                    {% if user.profile_picture %}
+                                        <!--<img class="circle" src="{{ user.profile_picture.url }}">-->
+                                    {% else %}
+                                        <div class="black">
+                                            <img class="circle" src="{% static '/images/avatar.png' %}">
+                                        </div>
+                                    {% endif %}
+                                    <a><span class="amber-text text-darken-1 name">{{ user }}</span></a>
+                                    <a><span class="white-text email">{{ user.email }}</span></a>
+                                    <a class="btn-floating halfway-fab waves-effect waves-light amber darken-1" href="{% url 'logout' %}"><i class="material-icons">logout</i></a>
+                                {% else %}
+                                    <a><img class="circle" src="{% static '/images/avatar.png' %}"></a>
+                                    <a><span class="amber-text text-darken-1 name">Guest</span></a>
+                                    <a><span class="white-text email"></span></a>
+                                    <a data-target="login-modal" class="btn-floating halfway-fab modal-trigger waves-effect waves-light amber darken-1"><i class="material-icons">login</i></a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li>
+                            <ul class="collapsible grey-text text-darken-4">
+                                {% if user.is_authenticated %}
+                                    {% if user.is_authorized %}<li>
+                                        <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">settings</i>General Management</div>
+                                        <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
+                                            <ul>
+                                                {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'useraccounts' %}"><i class="material-icons light-blue-text text-darken-1">group</i>Useraccounts</a></li>{% endif %}
+                                                <li><a class="waves-effect waves-light" href="{% url 'qualifications' %}"><i class="material-icons light-blue-text text-darken-1">label</i>Qualifications</a></li>
+                                                {% if user.is_admin %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">cloud</i>Data management</a></li>{% endif %}
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Departments</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">date_range</i>Personnel demand</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>{% endif %}
+                                    {% if user.is_authorized %}<li>
+                                        <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">group</i>Employee Management</div>
+                                        <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
+                                            <ul>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Employees</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_busy</i>Absences</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>{% endif %}
+                                    <li>
+                                        <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">event</i>Shift Management</div>
+                                        <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
+                                            <ul>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Shifts</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_available</i>Availabilities</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
+                                                {% if user.is_authorized %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event</i>Day templates</a></li>{% endif %}
+                                            </ul>
+                                        </div>
+                                    </li>
+                                {% else %}
+                                    <li><a data-target="login-modal" class="modal-trigger waves-effect waves-light"><i class="material-icons blue-text text-darken-1">info</i>Not logged in</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                {% endblock %}
+                <a href="#" class="brand-logo">ShiftManager</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    {% block contextmenu %}
+                    {% endblock %}
+                    {% if user.is_authenticated %}
+                        <li><a class="dropdown-trigger" href="#!" data-target="userwidget">{{ user }}<i class="material-icons right">arrow_drop_down</i></a></li>
+                    {% else %}
+                        <li><a data-target="login-modal" class="modal-trigger">Login<i class="material-icons left">login</i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="card card-content red darken-1 white-text">
+                            <div class="container">{{ message }}</div>
+                        </div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="card card-content light-green darken-4 white-text">
+                            <div class="container">{{ message }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}
+                <h1 class="light-blue-text text-darken-1">Welcome</h1>
+                <div class="row">
+                    <div class="col s12 m6">
+                        <div class="card light-blue darken-1">
+                            <div class="card-content white-text">
+                                <p>This page is a prototype of a shift planning tool.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </main>
+
+    {% block footer %}
+    {% endblock %}
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+</body>
+</html>

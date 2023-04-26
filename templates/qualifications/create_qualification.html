@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Create qualification{% endblock %}
+
+{% block content %}
+    {% if user.is_admin %}
+        <h3 class="light-blue-text text-darken-1">Create qualification</h3>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'qualifications' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <div class="card">
+            <form method="POST" action="{% url 'create_qualification' %}">
+                {% csrf_token %}
+                <div class="card-content">
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <i class="material-icons prefix">label</i>
+                            <label for="id_name">Name</label>
+                            <input type="text" name="name" autofocus autocapitalize="none" maxlength="25" required id="id_name" class="grey-text text-darken-4">
+                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                        </div>
+                        <div class="input-field col s2">
+                            <label>
+                                <input type="checkbox" checked="checked" name="is_important" />
+                                <span>Important</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">local_offer</i>
+                            <label for="id_description">Description</label>
+                            <textarea name="description" autocapitalize="none" id="id_description" class="materialize-textarea grey-text text-darken-4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create qualification</button>
+                </div>
+            </form>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

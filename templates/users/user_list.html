@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Useraccounts{% endblock %}
+
+{% block content %}
+    {% if user.is_admin %}
+        <h3 class="light-blue-text text-darken-1">Useraccounts</h3>
+        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_user' %}"><i class="material-icons left">person_add</i>Create user</a><br><br>
+        <div class="card">
+            <div class="card-content">
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Username<br>E-Mail</th>
+                            <th>Staff ID<br>External</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Address<br>Zip City</th>
+                            <th>Telephone home<br>Telephone mobile</th>
+                            <th>Start contract<br>End contract</th>
+                            <th>Role<br>verified</th>
+                            <th>Active<br>Last login (UTC)</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in all_entries %}
+                        <tr>
+                            <td>{{ entry.username }}<br>{{ entry.email }}</td>
+                            <td>{{ entry.staff_id }}<br>{{ entry.is_external }}</td>
+                            <td>{{ entry.last_name }}</td>
+                            <td>{{ entry.first_name }}</td>
+                            <td>{{ entry.address }}<br>{{ entry.zip_city }}</td>
+                            <td>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
+                            <td>{{ entry.start_contract|date:"Y-m-d" }}<br>{{ entry.end_contract|date:"Y-m-d" }}</td>
+                            <td>{% if entry.role == 'A' %}Admin{% elif entry.role == 'P' %}Planner{% else %}Employee{% endif %}<br>{{ entry.is_verified }}</td>
+                            <td>{{ entry.is_active }}<br>{{ entry.last_login|date:"Y-m-d H:i" }}</td>
+                            <td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

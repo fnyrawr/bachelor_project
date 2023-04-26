@@ -1,0 +1,132 @@
+body {
+  background-color: white
+}
+
+.fab-top-left {
+  position: fixed;
+  left: 23px;
+  top: 23px;
+  right: auto;
+  bottom: auto;
+}
+
+input {
+  border-bottom: #BDBDBD !important;
+  box-shadow: 0 1px 0 0 #BDBDBD !important;
+}
+
+input:focus {
+  border-bottom: 1px solid #039BE5 !important;
+  box-shadow: 0 1px 0 0 #039BE5 !important;
+}
+
+.input-field .prefix {
+  color: #BDBDBD !important;
+}
+
+.input-field .prefix.active {
+  color: #039BE5 !important;
+}
+
+textarea:focus {
+  border-bottom: 1px solid #039BE5 !important;
+  box-shadow: 0 1px 0 0 #039BE5 !important;
+}
+
+label.active {
+  color: #039BE5 !important;
+}
+
+.select-dropdown li.disabled, .select-dropdown li.disabled > span {
+  color: #BDBDBD !important;
+}
+
+.dropdown-content li>a {
+  color: #212121 !important;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+  color: #039BE5 !important;
+}
+
+.select-content li>span {
+  color: #FFB300 !important;
+}
+
+.select-content li>a {
+  color: #FFB300 !important;
+}
+
+.select-wrapper input.select-dropdown {
+  color: #BDBDBD !important;
+}
+
+.select-dropdown li.optgroup>span {
+  color: #BDBDBD !important;
+}
+
+.navbar-material .nav-wrapper .brand-logo img {
+  height: 64px;
+}
+
+.datepicker-date-display {
+  background-color: #039BE5 !important;
+}
+
+.datepicker-cancel, .datepicker-clear, .datepicker-today, .datepicker-done {
+  color: #039BE5 !important;
+}
+
+.datepicker-table td.is-today {
+  color: #039BE5 !important;
+}
+
+.datepicker-table td.is-selected {
+  background-color: #039BE5 !important;
+  color: white !important;
+}
+
+.collapsible-header, .collapsible-body, .collapsible, ul.collapsible>li
+{
+  border: 0px !important;
+  border-bottom: 0px !important;
+  box-shadow: none !important;
+}
+
+.collection.with-header .collection-header, .collection .collection-item, .collection
+{
+  border: 0px !important;
+  border-bottom: 0px !important;
+  box-shadow: none !important;
+}
+
+.oneline {
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.responsive-img{
+    width: 100%;
+    height: auto;
+}
+
+.parallax-container {
+  height: 350px;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+[type="checkbox"]:checked + span:not(.lever)::before {
+  border-right: 2px solid #039BE5;
+  border-bottom: 2px solid #039BE5;
+}

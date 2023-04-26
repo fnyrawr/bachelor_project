@@ -72,9 +72,9 @@
                                             <ul>
                                                 {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'useraccounts' %}"><i class="material-icons light-blue-text text-darken-1">group</i>Useraccounts</a></li>{% endif %}
                                                 <li><a class="waves-effect waves-light" href="{% url 'qualifications' %}"><i class="material-icons light-blue-text text-darken-1">label</i>Qualifications</a></li>
-                                                {% if user.is_admin %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">cloud</i>Data management</a></li>{% endif %}
                                                 <li><a class="waves-effect waves-light" href="{% url 'departments' %}"><i class="material-icons light-blue-text text-darken-1">view_list</i>Departments</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">date_range</i>Personnel demand</a></li>
+                                                {% if user.is_admin %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">cloud</i>Data management</a></li>{% endif %}
                                             </ul>
                                         </div>
                                     </li>{% endif %}
@@ -82,7 +82,7 @@
                                         <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">group</i>Employee Management</div>
                                         <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                             <ul>
-                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Employees</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'employees' %}"><i class="material-icons light-blue-text text-darken-1">view_list</i>Employees</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_busy</i>Absences</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
                                             </ul>

@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Sum
 from django.utils import timezone
+
+from Departments.models import Department
+from Qualifications.models import Qualification
 
 
 class User(AbstractUser):
@@ -24,6 +28,9 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     start_contract = models.DateField(default=timezone.now)
     end_contract = models.DateField(blank=True, null=True)
+    department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, blank=True, null=True)
+    work_hours = models.IntegerField(blank=True, null=True)
+    holiday_count = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ['last_name', 'first_name', 'start_contract']
@@ -46,3 +53,20 @@ class User(AbstractUser):
             return True
         else:
             return False
+
+
+class EmployeesQualifications(models.Model):
+    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    qualification = models.ForeignKey(Qualification, on_delete=models.CASCADE)
+    note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['employee', 'qualification']
+        verbose_name = 'EmployeeQualification'
+        verbose_name_plural = 'EmployeeQualifications'
+
+    def __str__(self):
+        return self.employee.first_name + ' ' + self.employee.last_name + ' in ' + self.qualification.name
+
+    def __repr__(self):
+        return self.employee.username + ' / ' + self.qualification.name

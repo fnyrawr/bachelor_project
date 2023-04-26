@@ -3,7 +3,7 @@
 
 {% block content %}
     {% if user.is_admin %}
-        <h3 class="light-blue-text text-darken-1">Create qualification</h3>
+        <h3 class="light-blue-text text-darken-1">Create department</h3>
         <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'departments' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
             <form method="POST" action="{% url 'create_department' %}">

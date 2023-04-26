@@ -51,7 +51,11 @@ Follow all steps by order:
 - last_login
 - start_contract
 - end_contract
-- (department, workhours, holiday_daycount in extra linked tables for history if changes happen)
+- department
+- work_hours
+- holiday_count
+
+> `Important` `Testing` `2023-04-25`
 
 ### Qualifications
 - name
@@ -64,7 +68,32 @@ Follow all steps by order:
 - name
 - description
 
-> `Important` `WIP` `2023-04-26`
+> `Important` `Testing` `2023-04-26`
+
+### EmployeesQualifications
+- employee_id
+- qualification_id
+- note
+
+> `Important` `ToDo` `date`
+
+### DepartmentsQualifications
+- department_id
+- qualification_id
+- note
+
+> `Important` `ToDo` `date`
+
+### Demand
+- department_id
+- weekday
+- date (optional)
+- start_time
+- end_time
+- staff_count
+- note
+
+> `Important` `ToDo` `date`
 
 ## Functions
 ### Needed
@@ -74,7 +103,7 @@ Follow all steps by order:
   - [ ] Planner dashboard [planner] (extending Employee dashboard)
   - [ ] Employee dashboard [employee]
 - [ ] Departments
-  - [ ] Create department [admin]
+  - [x] Create department [admin]
   - [ ] Manage department qualifications [admin]
   - [ ] Additional information [admin]
 - [ ] Employees
@@ -84,7 +113,7 @@ Follow all steps by order:
   - [ ] Manage employee general availabilities [admin]
   - [ ] Manage employee shift wishes [admin]
 - [ ] My account
-  - [ ] Overview base data [all users]
+  - [x] Overview base data [all users]
   - [ ] Overview work hours [all users]
   - [ ] Overview availabilities [all users]
   - [x] Manage base data [all users]

@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
+from Departments.models import Department
 from .models import User
 from .forms import CustomUserForm, SetPasswordFormImpl
 
@@ -95,6 +96,18 @@ def edit_user(request, **kwargs):
             end_contract = data['end_contract']
         else:
             end_contract = None
+        if data['department'] != '':
+            department = data['department']
+        else:
+            department = None
+        if data['work_hours'] != '':
+            work_hours = data['work_hours']
+        else:
+            work_hours = None
+        if data['holiday_count'] != '':
+            holiday_count = data['holiday_count']
+        else:
+            holiday_count = None
         User.objects.filter(id=user_id).update(
             username=data['username'],
             staff_id=data['staff_id'],
@@ -109,6 +122,9 @@ def edit_user(request, **kwargs):
             address=data['address'],
             zip_city=data['zip_city'],
             role=data['role'],
+            department=department,
+            work_hours=work_hours,
+            holiday_count=holiday_count,
             is_active=is_active,
             is_verified=is_verified
         )
@@ -116,8 +132,9 @@ def edit_user(request, **kwargs):
         return redirect('useraccounts')
     # GET request
     else:
+        departments = Department.objects.all()
         form = CustomUserForm()
-        context = {'form': form, 'selected_user': selected_user}
+        context = {'form': form, 'selected_user': selected_user, 'departments': departments}
         return render(request, 'users/edit_user.html', context)
 
 
@@ -158,3 +175,18 @@ def user_list(request):
 
     context = {'all_entries': all_entries}
     return render(request, 'users/user_list.html', context)
+
+
+def employee_list(request):
+    all_entries = None
+    entries_found = None
+    search = False
+
+    if request.method == "POST":
+        search = True
+    else:
+        all_entries = User.objects.filter(role='P') | User.objects.filter(role='E')
+        all_entries.order_by('first_name').order_by('last_name')
+
+    context = {'all_entries': all_entries}
+    return render(request, 'users/employee_list.html', context)

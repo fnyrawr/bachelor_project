@@ -73,7 +73,7 @@
                                                 {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'useraccounts' %}"><i class="material-icons light-blue-text text-darken-1">group</i>Useraccounts</a></li>{% endif %}
                                                 <li><a class="waves-effect waves-light" href="{% url 'qualifications' %}"><i class="material-icons light-blue-text text-darken-1">label</i>Qualifications</a></li>
                                                 {% if user.is_admin %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">cloud</i>Data management</a></li>{% endif %}
-                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Departments</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'departments' %}"><i class="material-icons light-blue-text text-darken-1">view_list</i>Departments</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">date_range</i>Personnel demand</a></li>
                                             </ul>
                                         </div>

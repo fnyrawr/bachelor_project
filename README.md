@@ -58,6 +58,12 @@ Follow all steps by order:
 - description
 - is_important
 
+> `Important` `Testing` `2023-04-26`
+
+### Departments
+- name
+- description
+
 > `Important` `WIP` `2023-04-26`
 
 ## Functions

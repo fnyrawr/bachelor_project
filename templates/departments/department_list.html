@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Departments{% endblock %}
+
+{% block content %}
+    {% if user.is_authorized %}
+        <h3 class="light-blue-text text-darken-1">Departments</h3>
+        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_department' %}"><i class="material-icons left">add</i>Create qualification</a><br><br>{% endif %}
+        <div class="card">
+            <div class="card-content">
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Associated Qualifications</th>
+                            <th>Associated Employees</th>
+                            {% if user.is_admin %}<th>Edit</th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in all_entries %}
+                        <tr>
+                            <td>{{ entry.name }}</td>
+                            <td>{{ entry.description }}</td>
+                            <td>not implemented yet</td>
+                            <td>not implemented yet</td>
+                            {% if user.is_admin %}<td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_department' entry.id %}"><i class="material-icons">edit</i></a></td>{% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

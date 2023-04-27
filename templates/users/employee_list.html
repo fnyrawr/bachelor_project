@@ -21,10 +21,16 @@
                     <tbody>
                         {% for entry in all_entries %}
                         <tr>
-                            <td class="light-blue-text text-darken-1">{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
+                            <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
                             <td>{{ entry.is_active }}<br>{{ entry.is_external }}</td>
                             <td>{{ entry.email }}<br>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
-                            <td>{{ entry.department.name }}<br></td>
+                            <td>{{ entry.department.name }}<br>
+                                {% for qualification in entry.qualifications %}
+                                <span class="new badge amber darken-1 black-text" data-badge-caption="">
+                                    <b>{{ qualification.qualification.name }}</b>
+                                </span>
+                                {% endfor %}
+                            </td>
                             <td>{% if entry.work_hours != None %}{{ entry.work_hours }} hours / week{% endif %}<br>{% if entry.holiday_count != None %}{{ entry.holiday_count }} days / year{% endif %}</td>
                             <td>{{ entry.start_contract|date:"Y-m-d" }}<br>{{ entry.end_contract|date:"Y-m-d" }}</td>
                             {% if user.is_admin %}<th><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a></th>{% endif %}

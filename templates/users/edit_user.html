@@ -14,6 +14,15 @@
             </div>
         </div>
 
+        <div id="add-qualification-modal" class="modal content-section">
+            <div class="modal-content">
+                <h5 class="light-blue-text text-darken-1"><b>Add qualification to {{ selected_user }}</b></h5>
+                {% for qualification in non_associated_qualifications %}
+                    <a class="chip light-blue darken-1 white-text" href="{% url 'add_employee_qualification' selected_user.id qualification.id %}">{{ qualification }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
         <h3 class="light-blue-text text-darken-1">Edit {{ selected_user }}</h3>
         <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'useraccounts' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
@@ -152,25 +161,12 @@
                     <li>
                         <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">tag</i><b>Qualifications</b></div>
                         <div class="collapsible-body">
-                            <table class="striped highlight responsive-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Note</th>
-                                        <th class="right red-text text-darken-1">Delete</th>
-                                        <th class="right amber-text text-darken-1">Edit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><div class="chip light-blue darken-1 white-text">Qualification</div></td>
-                                        <td>Note</td>
-                                        <td class="right"><a class="waves-effect waves-light btn red darken-1"><i class="material-icons">delete_forever</i></a></td>
-                                        <td class="right"><a class="waves-effect waves-light btn amber darken-1"><i class="material-icons">edit</i></a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <br><a class="waves-effect waves-light btn light-blue darken-1 right"><i class="material-icons left">add</i>Add</a>
+                            {% for entry in associated_qualifications %}
+                                <a class="chip light-blue darken-1 white-text" href="{% url 'remove_employee_qualification' selected_user.id entry.qualification.id %}">
+                                    {{ entry.qualification.name }} <i class="material-icons tiny">close</i>
+                                </a>
+                            {% endfor %}
+                            <br><a data-target="add-qualification-modal" class="modal-trigger waves-effect waves-light btn light-blue darken-1 right"><i class="material-icons left">add</i>Add</a>
                         </div>
                     </li>
                 </ul>

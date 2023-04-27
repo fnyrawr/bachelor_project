@@ -73,14 +73,12 @@ Follow all steps by order:
 ### EmployeesQualifications
 - employee_id
 - qualification_id
-- note
 
 > `Important` `ToDo` `date`
 
 ### DepartmentsQualifications
 - department_id
 - qualification_id
-- note
 
 > `Important` `ToDo` `date`
 

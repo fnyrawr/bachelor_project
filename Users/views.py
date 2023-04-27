@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import (
@@ -10,7 +8,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Departments.models import Department
-from .models import User
+from Qualifications.models import Qualification
+from .models import User, EmployeesQualifications
 from .forms import CustomUserForm, SetPasswordFormImpl
 
 
@@ -133,9 +132,42 @@ def edit_user(request, **kwargs):
     # GET request
     else:
         departments = Department.objects.all()
+        associated_qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
+        non_associated_qualifications = Qualification.objects.all().exclude(id__in=associated_qualifications.values('qualification'))
         form = CustomUserForm()
-        context = {'form': form, 'selected_user': selected_user, 'departments': departments}
+        context = {
+            'form': form,
+            'selected_user': selected_user,
+            'departments': departments,
+            'non_associated_qualifications': non_associated_qualifications,
+            'associated_qualifications': associated_qualifications
+        }
         return render(request, 'users/edit_user.html', context)
+
+
+def add_qualification(request, **kwargs):
+    user_id = kwargs['pk1']
+    qualification_id = kwargs['pk2']
+
+    selected_user = User.objects.get(id=user_id)
+    selected_qualification = Qualification.objects.get(id=qualification_id)
+    if not EmployeesQualifications.objects.filter(employee=selected_user, qualification=selected_qualification).exists():
+        EmployeesQualifications.objects.create(employee=selected_user, qualification=selected_qualification)
+
+    return redirect('edit_user', pk=user_id)
+
+
+def remove_qualification(request, **kwargs):
+    user_id = kwargs['pk1']
+    qualification_id = kwargs['pk2']
+
+    selected_user = User.objects.get(id=user_id)
+    selected_qualification = Qualification.objects.get(id=qualification_id)
+    entry = EmployeesQualifications.objects.filter(employee=selected_user, qualification=selected_qualification)
+    if entry is not None:
+        entry.delete()
+
+    return redirect('edit_user', pk=user_id)
 
 
 def change_password(request):
@@ -185,8 +217,13 @@ def employee_list(request):
     if request.method == "POST":
         search = True
     else:
-        all_entries = User.objects.filter(role='P') | User.objects.filter(role='E')
+        all_entries = User.objects.filter(role='P') | User.objects.filter(role='E')\
+                      | User.objects.filter(role='A')
         all_entries.order_by('first_name').order_by('last_name')
+        # add qualifications as list to each entry
+        for entry in all_entries:
+            qualifications = EmployeesQualifications.objects.filter(employee_id=entry.id).order_by('qualification__name')
+            entry.qualifications = qualifications
 
     context = {'all_entries': all_entries}
     return render(request, 'users/employee_list.html', context)

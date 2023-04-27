@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Sum
 from django.utils import timezone
 
 from Departments.models import Department
@@ -58,7 +57,6 @@ class User(AbstractUser):
 class EmployeesQualifications(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
     qualification = models.ForeignKey(Qualification, on_delete=models.CASCADE)
-    note = models.TextField(blank=True)
 
     class Meta:
         ordering = ['employee', 'qualification']

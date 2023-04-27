@@ -11,9 +11,8 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('delete/<int:pk>', views.delete_user, name='delete_user'),
     path('employees/', views.employee_list, name='employees'),
-    # EmployeesDepartments
-    # path('show/<int:pk>/departments', ..., name='employee_departments'),
-    # path('show/<int:pk1>/departments/<int:pk2>/create', ..., name='create_employee_department'),
-    # path('show/<int:pk1>/departments/<int:pk2>/edit', ..., name='edit_employee_department'),
-    # path('show/<int:pk1>/departments/<int:pk2>/delete', ..., name='delete_employee_department'),
+    # EmployeesQualifications
+    path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification, name='add_employee_qualification'),
+    path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,
+         name='remove_employee_qualification'),
 ]

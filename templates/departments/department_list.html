@@ -12,8 +12,10 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Associated Qualifications</th>
-                            <th>Associated Employees</th>
+                            <th>Qualifications</th>
+                            <th>Employees</th>
+                            <th>Work hours</th>
+                            <th>View</th>
                             {% if user.is_admin %}<th>Edit</th>{% endif %}
                         </tr>
                     </thead>
@@ -22,11 +24,48 @@
                         <tr>
                             <td>{{ entry.name }}</td>
                             <td>{{ entry.description }}</td>
-                            <td>not implemented yet</td>
-                            <td>not implemented yet</td>
-                            {% if user.is_admin %}<td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_department' entry.id %}"><i class="material-icons">edit</i></a></td>{% endif %}
+                            <td>
+                                {% for qualification in entry.qualifications %}
+                                    <span class="new badge amber darken-1 black-text" data-badge-caption="">
+                                        <b>{{ qualification.qualification.name }}</b>
+                                    </span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if entry.get_employees.count == 0 %}
+                                    <span></span>
+                                {% else %}
+                                    {{ entry.get_employees.count }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.get_employees.count == 0 %}
+                                    <span></span>
+                                {% else %}
+                                    {% if entry.get_work_hours > 0 %}
+                                        {{ entry.get_work_hours }} hours / week
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'view_department' entry.id %}"><i class="material-icons">search</i></a>
+                            </td>
+                            {% if user.is_admin %}
+                                <td>
+                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_department' entry.id %}"><i class="material-icons">edit</i></a>
+                                </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
+                        <tr class="grey lighten-3">
+                            <td><b>Total</b><br>{{ all_entries.count }} departments</td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ employee_count }}</td>
+                            <td>{{ work_hours }} hours / week</td>
+                            <td></td>
+                            {% if user.is_admin %}<td></td>{% endif %}
+                        </tr>
                     </tbody>
                 </table>
             </div>

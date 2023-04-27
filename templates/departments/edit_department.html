@@ -14,6 +14,15 @@
             </div>
         </div>
 
+        <div id="add-qualification-modal" class="modal content-section">
+            <div class="modal-content">
+                <h5 class="light-blue-text text-darken-1"><b>Add qualification to {{ selected_department }}</b></h5>
+                {% for qualification in non_associated_qualifications %}
+                    <a class="chip light-blue darken-1 white-text" href="{% url 'add_department_qualification' selected_department.id qualification.id %}">{{ qualification }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
         <h3 class="light-blue-text text-darken-1">Edit {{ selected_department.name }}</h3>
         <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'departments' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
@@ -21,7 +30,7 @@
                 {% csrf_token %}
                 <div class="card-content">
                     <div class="row">
-                        <div class="input-field col s4">
+                        <div class="input-field col s12 l4">
                             <i class="material-icons prefix">label</i>
                             <label for="id_name">Name</label>
                             <input type="text" name="name" autofocus autocapitalize="none" maxlength="25" required id="id_name" value="{{ selected_department.name }}" class="grey-text text-darken-4">
@@ -35,8 +44,20 @@
                             <textarea name="description" autocapitalize="none" id="id_description" class="materialize-textarea grey-text text-darken-4">{{ selected_department.description }}</textarea>
                         </div>
                     </div>
-                </div>
-                <div class="card-action">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">tag</i>
+                            <div class="chips chips-initial">
+                                {% for entry in associated_qualifications %}
+                                    <a class="chip light-blue darken-1 white-text" href="{% url 'remove_department_qualification' selected_department.id entry.qualification.id %}">
+                                        {{ entry.qualification.name }} <i class="material-icons tiny">close</i>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            <span class="helper-text grey-text text-lighten-1">Qualifications</span>
+                        </div>
+                        <a data-target="add-qualification-modal" class="modal-trigger waves-effect waves-light btn light-blue darken-1 right"><i class="material-icons left">add</i>Add qualification</a>
+                    </div>
                     <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">edit</i>Edit department</button>
                     <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
                 </div>

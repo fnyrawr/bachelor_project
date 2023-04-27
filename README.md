@@ -15,7 +15,6 @@ Follow all steps by order:
 - python manage.py runserver
 
 ## Author
-
 | Name             | Student ID | E-Mail                                              |
 |------------------|------------|-----------------------------------------------------|
 | **Florian Kate** | 923081     | s51541@bht-berlin.de<br/>Florian.Kate.Bln@gmail.com |
@@ -31,6 +30,10 @@ Follow all steps by order:
 
 - Django WebApp for a Staff management system
 > Deadline for bachelor thesis: 2022-07-11
+
+### ToDo today
+- finalize adding / editing employees
+- finalize departments
 
 ## Database
 ### Employee

@@ -18,7 +18,7 @@
             <div class="modal-content">
                 <h5 class="light-blue-text text-darken-1"><b>Add qualification to {{ selected_department }}</b></h5>
                 {% for qualification in non_associated_qualifications %}
-                    <a class="chip light-blue darken-1 white-text" href="{% url 'add_department_qualification' selected_department.id qualification.id %}">{{ qualification }}</a>
+                    <a class="chip light-blue darken-1 white-text z-depth-1" href="{% url 'add_department_qualification' selected_department.id qualification.id %}">{{ qualification }}</a>
                 {% endfor %}
             </div>
         </div>
@@ -49,7 +49,7 @@
                             <i class="material-icons prefix">tag</i>
                             <div class="chips chips-initial">
                                 {% for entry in associated_qualifications %}
-                                    <a class="chip light-blue darken-1 white-text" href="{% url 'remove_department_qualification' selected_department.id entry.qualification.id %}">
+                                    <a class="chip light-blue darken-1 white-text z-depth-1" href="{% url 'remove_department_qualification' selected_department.id entry.qualification.id %}">
                                         {{ entry.qualification.name }} <i class="material-icons tiny">close</i>
                                     </a>
                                 {% endfor %}

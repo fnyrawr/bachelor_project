@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Users.apps.UsersConfig',
     'Qualifications.apps.QualificationsConfig',
     'Departments.apps.DepartmentsConfig',
+    'Demand.apps.DemandConfig',
 ]
 
 MIDDLEWARE = [

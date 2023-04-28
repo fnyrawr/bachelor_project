@@ -16,5 +16,10 @@ $(document).ready(function(){
         format: 'yyyy-mm-dd',
         showClearBtn: true
     });
+    $('.timepicker').timepicker({
+        twelveHour: false,
+        defaultTime: '12:00',
+        showClearBtn: true
+    });
     var elems = document.querySelectorAll('.fixed-action-btn');
 });

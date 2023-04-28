@@ -40,7 +40,7 @@
                             <i class="material-icons prefix">tag</i>
                             <div class="chips chips-initial">
                                 {% for entry in associated_qualifications %}
-                                    <a class="chip light-blue darken-1 white-text">
+                                    <a class="chip light-blue darken-1 white-text z-depth-1">
                                         {{ entry.qualification.name }}
                                     </a>
                                 {% endfor %}
@@ -74,7 +74,7 @@
                                 <td>{% if entry.work_hours != None %}{{ entry.work_hours }} hours / week{% endif %}</td>
                                 <td>
                                     {% for employee in entry.qualifications %}
-                                        <span class="new badge amber darken-1 black-text" data-badge-caption="">
+                                        <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
                                             <b>{{ employee.qualification.name }}</b>
                                         </span>
                                     {% endfor %}

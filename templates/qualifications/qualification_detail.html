@@ -24,6 +24,12 @@
                         <label for="id_name">Name</label>
                         <input type="text" name="name" autofocus autocapitalize="none" maxlength="25" disabled id="id_name" value="{{ selected_qualification.name }}" class="grey-text text-darken-4">
                     </div>
+                    <div class="input-field col s2">
+                        <label>
+                            <input type="checkbox" {% if selected_qualification.is_important %}checked="checked"{% endif %} disabled name="is_important" />
+                            <span>Important</span>
+                        </label>
+                    </div>
                 </div>
                 {% if selected_qualification.description != '' %}
                 <div class="row">

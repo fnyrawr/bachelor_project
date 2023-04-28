@@ -31,8 +31,7 @@ Follow all steps by order:
 - Django WebApp for a Staff management system
 > Deadline for bachelor thesis: 2022-07-11
 
-### ToDo today
-- finalize adding employees
+### upcoming next ToDos
 - demand
 
 ## Database
@@ -58,32 +57,32 @@ Follow all steps by order:
 - work_hours
 - holiday_count
 
-> `Important` `Testing` `2023-04-25`
+> `Important` `Done` `2023-04-25`
 
 ### Qualifications
 - name
 - description
 - is_important
 
-> `Important` `Testing` `2023-04-26`
+> `Important` `Done` `2023-04-26`
 
 ### Departments
 - name
 - description
 
-> `Important` `Testing` `2023-04-26`
+> `Important` `Done` `2023-04-26`
 
 ### EmployeesQualifications
 - employee_id
 - qualification_id
 
-> `Important` `ToDo` `date`
+> `Important` `Done` `2023-04-27`
 
 ### DepartmentsQualifications
 - department_id
 - qualification_id
 
-> `Important` `ToDo` `date`
+> `Important` `Done` `2023-04-27`
 
 ### Demand
 - department_id
@@ -94,7 +93,7 @@ Follow all steps by order:
 - staff_count
 - note
 
-> `Important` `ToDo` `date`
+> `Important` `WIP` `2023-04-28`
 
 ## Functions
 ### Needed

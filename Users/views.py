@@ -56,8 +56,6 @@ def edit_basedata(request):
         form = CustomUserForm(request.POST)
         data = form.data
         User.objects.filter(id=user_id).update(
-            last_name=data['last_name'],
-            first_name=data['first_name'],
             email=data['email'],
             telephone_home=data['telephone_home'],
             telephone_mobile=data['telephone_mobile'],
@@ -69,8 +67,13 @@ def edit_basedata(request):
 
     # GET request
     else:
+        associated_qualifications = EmployeesQualifications.objects.filter(employee=user)
         form = CustomUserForm()
-        context = {'form': form, 'user': user}
+        context = {
+            'form': form,
+            'user': user,
+            'associated_qualifications': associated_qualifications
+        }
         return render(request, 'users/edit_basedata.html', context)
 
 

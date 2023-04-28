@@ -86,6 +86,27 @@ label.active {
   color: white !important;
 }
 
+.timepicker-digital-display {
+  background-color: #039BE5 !important;
+}
+
+.timepicker-cancel, .timepicker-clear, .timepicker-close, .timepicker-done {
+  color: #039BE5 !important;
+}
+
+.timepicker-tick:hover {
+    background-color: #FFE082;
+}
+
+.timepicker-canvas line {
+    stroke: #FFB300 !important;
+}
+
+.timepicker-canvas-bg,
+.timepicker-canvas-bearing {
+    fill: #FFB300 !important;
+}
+
 .collapsible-header, .collapsible-body, .collapsible, ul.collapsible>li
 {
   border: 0px !important;

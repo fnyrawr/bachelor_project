@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from django import forms
 
+from Departments.models import Department
 from .models import User
 
 
@@ -15,6 +16,10 @@ class CustomUserForm(UserCreationForm):
     role = forms.CharField(max_length=1)
     start_contract = forms.DateField(required=False, initial=date.today())
     end_contract = forms.DateField(required=False)
+    work_hours = forms.IntegerField(required=False)
+    holiday_count = forms.IntegerField(required=False)
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), to_field_name='name',
+                                        empty_label='Select department', required=False)
 
     class Meta:
         model = User
@@ -32,7 +37,10 @@ class CustomUserForm(UserCreationForm):
                   'is_active',
                   'is_verified',
                   'start_contract',
-                  'end_contract'
+                  'end_contract',
+                  'work_hours',
+                  'holiday_count',
+                  'department'
                   ]
 
 

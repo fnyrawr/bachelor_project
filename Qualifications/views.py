@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
+from Departments.models import DepartmentQualifications
+from Users.models import EmployeesQualifications
 from .models import Qualification
 from .forms import QualificationForm
 
@@ -21,6 +23,21 @@ class QualificationCreationView(CreateView):
             for error in list(form.errors.values()):
                 messages.add_message(request, messages.ERROR, error)
         return render(request, self.template_name, {'form': form})
+
+
+def view_qualification(request, **kwargs):
+    qualification_id = kwargs['pk']
+    selected_qualification = Qualification.objects.get(id=qualification_id)
+
+    associated_departments = DepartmentQualifications.objects.filter(qualification=qualification_id)
+    associated_employees = EmployeesQualifications.objects.filter(qualification=qualification_id)
+
+    context = {
+        'selected_qualification': selected_qualification,
+        'associated_departments': associated_departments,
+        'associated_employees': associated_employees,
+    }
+    return render(request, 'qualifications/qualification_detail.html', context)
 
 
 def edit_qualification(request, **kwargs):
@@ -65,6 +82,13 @@ def qualification_list(request):
         search = True
     else:
         all_entries = Qualification.objects.order_by('name')
+        for entry in all_entries:
+            departments = DepartmentQualifications.objects.filter(qualification_id=entry.id).order_by(
+                'department__name')
+            entry.departments = departments
+            employees = EmployeesQualifications.objects.filter(qualification_id=entry.id).order_by(
+                'employee__last_name', 'employee__first_name')
+            entry.employees = employees
 
     context = {'all_entries': all_entries}
     return render(request, 'qualifications/qualification_list.html', context)

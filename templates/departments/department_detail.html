@@ -5,7 +5,7 @@
     {% if user.is_authorized %}
         <div id="delete-modal" class="modal content-section red darken-1 white-text">
             <div class="modal-content">
-                <h5><b>Delete {{ selected_qualification }}</b></h5>
+                <h5><b>Delete {{ selected_department }}</b></h5>
                 <p>Are you sure you really want to delete {{ selected_department }}? All assigned data will be gone forever and may cause corrupted past data. It is not advised to remove a department if data is associated to it.</p>
             </div>
             <div class="modal-footer">
@@ -73,9 +73,9 @@
                                 <td>{% if entry.is_external == True %}Yes{% endif %}</td>
                                 <td>{% if entry.work_hours != None %}{{ entry.work_hours }} hours / week{% endif %}</td>
                                 <td>
-                                    {% for qualification in entry.qualifications %}
+                                    {% for employee in entry.qualifications %}
                                         <span class="new badge amber darken-1 black-text" data-badge-caption="">
-                                            <b>{{ qualification.qualification.name }}</b>
+                                            <b>{{ employee.qualification.name }}</b>
                                         </span>
                                     {% endfor %}
                                 </td>

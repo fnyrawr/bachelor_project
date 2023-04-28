@@ -40,9 +40,7 @@ def view_department(request, **kwargs):
         if entry.work_hours is not None:
             work_hours += entry.work_hours
 
-    form = DepartmentForm()
     context = {
-        'form': form,
         'selected_department': selected_department,
         'associated_qualifications': associated_qualifications,
         'associated_employees': associated_employees,

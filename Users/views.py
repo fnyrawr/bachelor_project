@@ -43,7 +43,9 @@ class UserCreationView(CreateView):
         else:
             for error in list(form.errors.values()):
                 messages.add_message(request, messages.ERROR, error)
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {
+            'form': form
+        })
 
 
 def edit_basedata(request):

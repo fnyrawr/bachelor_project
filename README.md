@@ -32,8 +32,8 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### ToDo today
-- finalize adding / editing employees
-- finalize departments
+- finalize adding employees
+- demand
 
 ## Database
 ### Employee
@@ -105,12 +105,12 @@ Follow all steps by order:
   - [ ] Employee dashboard [employee]
 - [ ] Departments
   - [x] Create department [admin]
-  - [ ] Manage department qualifications [admin]
+  - [x] Manage department qualifications [admin]
   - [ ] Additional information [admin]
 - [ ] Employees
   - [x] create employee user account [admin]
   - [x] Manage employee base data [admin]
-  - [ ] Manage employee qualifications [admin]
+  - [x] Manage employee qualifications [admin]
   - [ ] Manage employee general availabilities [admin]
   - [ ] Manage employee shift wishes [admin]
 - [ ] My account

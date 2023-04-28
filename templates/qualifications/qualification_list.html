@@ -15,7 +15,10 @@
                             <th>Important</th>
                             <th>Associated Departments</th>
                             <th>Associated Employees</th>
-                            {% if user.is_admin %}<th>Edit</th>{% endif %}
+                            <th>View</th>
+                            {% if user.is_admin %}
+                                <th>Edit</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -24,9 +27,20 @@
                             <td>{{ entry.name }}</td>
                             <td>{{ entry.description }}</td>
                             <td>{{ entry.is_important }}</td>
-                            <td>not implemented yet</td>
-                            <td>not implemented yet</td>
-                            {% if user.is_admin %}<td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_qualification' entry.id %}"><i class="material-icons">edit</i></a></td>{% endif %}
+                            <td>
+                                {% if entry.departments.count > 0 %}{{ entry.departments.count }}{% endif %}
+                            </td>
+                            <td>
+                                {% if entry.employees.count > 0 %}{{ entry.employees.count }}{% endif %}
+                            </td>
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'view_qualification' entry.id %}"><i class="material-icons">search</i></a>
+                            </td>
+                            {% if user.is_admin %}
+                                <td>
+                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_qualification' entry.id %}"><i class="material-icons">edit</i></a>
+                                </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

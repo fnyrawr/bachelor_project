@@ -128,6 +128,7 @@ Follow all steps by order:
 ### Needed
 - [ ] Landing page
   - [ ] Infopage if not logged in
+  - [ ] Restricted access note
   - [ ] Admin dashboard [admin]
   - [ ] Planner dashboard [planner] (extending Employee dashboard)
   - [ ] Employee dashboard [employee]
@@ -145,6 +146,12 @@ Follow all steps by order:
   - [x] Manage demand [admin]
   - [ ] Manage Shift templates [admin]
   - [ ] Manage Day templates [admin]
+  - [ ] Timeline view
+  - [ ] Create shifts for dates
+  - [ ] Copy day templates to dates
+  - [ ] Cloning weeks
+  - [ ] Assign employees
+    - [ ] Assign helper with AI tools / rule based
 - [ ] My account
   - [x] Overview base data [all users]
   - [ ] Overview work hours [all users]
@@ -154,3 +161,11 @@ Follow all steps by order:
   - [ ] Recover password [all users]
   - [ ] Manage general availabilities [all users]
   - [ ] Manage shift wishes [all users]
+- [ ] Data management
+  - [ ] Importer for Qualifications
+  - [ ] Importer for Departments
+  - [ ] Importer for Users
+  - [ ] Importer for Shifts
+  - [ ] Importer for ShiftTemplates
+  - [ ] Importer for DayTemplates
+  - [ ] Importer for Demand

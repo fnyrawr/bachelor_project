@@ -7,4 +7,4 @@ class DayTemplateForm(forms.ModelForm):
 
     class Meta:
         model = DayTemplate
-        fields = ['name']
+        fields = ['name', 'description']

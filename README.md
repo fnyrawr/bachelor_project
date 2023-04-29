@@ -116,13 +116,13 @@ Follow all steps by order:
 - name
 - description
 
-> `Important` `WIP` `2023-04-29`
+> `Important` `Done` `2023-04-29`
 
 ### DayShiftTemplates
 - day_template_id
 - shift_template_id
 
-> `Important` `WIP` `2023-04-29`
+> `Important` `Done` `2023-04-29`
 
 ## Functions
 ### Needed
@@ -145,7 +145,7 @@ Follow all steps by order:
 - [ ] Shifts
   - [x] Manage demand [admin]
   - [x] Manage Shift templates [admin]
-  - [ ] Manage Day templates [admin]
+  - [x] Manage Day templates [admin]
   - [ ] Timeline view
   - [ ] Create shifts for dates
   - [ ] Copy day templates to dates

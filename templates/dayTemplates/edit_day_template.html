@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Edit day template {{ selected_day_template.name }}{% endblock %}
+
+{% block content %}
+    {% if user.is_admin %}
+        <div id="delete-modal" class="modal content-section red darken-1 white-text">
+            <div class="modal-content">
+                <h5><b>Delete {{ selected_day_template }}</b></h5>
+                <p>Are you sure you really want to delete {{ selected_day_template }}?</p>
+            </div>
+            <div class="modal-footer">
+                <a class="modal-close waves-effect waves-light btn-flat red darken-1 white-text"><i class="material-icons left">close</i>Abort and close</a>
+                <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'delete_day_template' selected_day_template.id %}"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+            </div>
+        </div>
+
+        <div id="add-shift-modal" class="modal content-section">
+            <div class="modal-content">
+                <h5 class="light-blue-text text-darken-1"><b>Assign Shift to {{ selected_day_template }}</b></h5>
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Work hours<br>Break</th>
+                            <th>Department<br>Qualifications</th>
+                            <th>Note</th>
+                            <th>Assign</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shift_template in non_associated_shift_templates %}
+                            <tr>
+                                <td>
+                                    {{ shift_template.name }}
+                                </td>
+                                <td>
+                                    {{ shift_template.start_time|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ shift_template.end_time|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ shift_template.get_work_hours|date:"H:i" }}<br>
+                                    {{ shift_template.break_duration|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ shift_template.department }}<br>
+                                    {% for qualification in shift_template.get_qualifications %}
+                                        <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                            <b>{{ qualification.qualification.name }}</b>
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {{ shift_template.note }}
+                                </td>
+                                <td>
+                                    <a class="waves-effect waves-light btn light-blue darken-1" href="{% url 'add_shift_template' selected_day_template.id shift_template.id %}"><i class="material-icons">add</i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3 class="light-blue-text text-darken-1">Edit day template {{ selected_day_template.name }}</h3>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'day_templates' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <div class="card">
+            <form method="POST" action="{% url 'edit_day_template' selected_day_template.id %}">
+                {% csrf_token %}
+                <div class="card-content">
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <i class="material-icons prefix">label</i>
+                            <label for="id_name">Name</label>
+                            <input type="text" name="name" autofocus autocapitalize="none" maxlength="30" value="{{ selected_day_template.name }}" required id="id_name" class="grey-text text-darken-4">
+                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">local_offer</i>
+                            <label for="id_description">Description</label>
+                            <textarea name="description" autocapitalize="none" id="id_description" class="materialize-textarea grey-text text-darken-4">{{ selected_day_template.description }}</textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">edit</i>Edit day template</button>
+                    <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
+                </div>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title light-blue-text text-darken-1"><b>Assigned shift templates</b></div>
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Work hours<br>Break</th>
+                            <th>Department<br>Qualifications</th>
+                            <th>Note</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in associated_shift_templates %}
+                            <tr>
+                                <td>
+                                    {{ entry.shift_template.name }}
+                                </td>
+                                <td>
+                                    {{ entry.shift_template.start_time|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ entry.shift_template.end_time|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ entry.shift_template.get_work_hours|date:"H:i" }}<br>
+                                    {{ entry.shift_template.break_duration|date:"H:i" }}
+                                </td>
+                                <td>
+                                    {{ entry.shift_template.department }}<br>
+                                    {% for qualification in entry.shift_template.get_qualifications %}
+                                        <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                            <b>{{ qualification.qualification.name }}</b>
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {{ entry.shift_template.note }}
+                                </td>
+                                <td>
+                                    <a class="waves-effect waves-light btn red darken-1" href="{% url 'remove_shift_template' selected_day_template.id entry.shift_template.id %}"><i class="material-icons">close</i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <div class="row">
+                    <a data-target="add-shift-modal" class="modal-trigger waves-effect waves-light btn light-blue darken-1 right"><i class="material-icons left">add</i>Assign shift template</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

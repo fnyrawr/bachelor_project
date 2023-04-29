@@ -95,8 +95,8 @@
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Shifts</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_available</i>Availabilities</a></li>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
-                                                {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>
-                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event</i>Day templates</a></li>{% endif %}
+                                                {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>{% endif %}
+                                                {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'day_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Day templates</a></li>{% endif %}
                                             </ul>
                                         </div>
                                     </li>

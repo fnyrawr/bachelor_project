@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'Qualifications.apps.QualificationsConfig',
     'Departments.apps.DepartmentsConfig',
     'Demand.apps.DemandConfig',
+    'ShiftTemplates.apps.ShifttemplatesConfig',
+    'DayTemplates.apps.DaytemplatesConfig',
 ]
 
 MIDDLEWARE = [

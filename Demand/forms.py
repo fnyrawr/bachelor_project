@@ -23,6 +23,7 @@ class DemandForm(forms.ModelForm):
     start_time = forms.TimeField(initial='12:00')
     end_time = forms.TimeField(initial='12:00')
     staff_count = forms.IntegerField(initial=1)
+    note = forms.Textarea(attrs={'required': False})
 
     class Meta:
         model = Demand

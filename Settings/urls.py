@@ -29,6 +29,8 @@ urlpatterns = [
     path("qualifications/", include("Qualifications.urls")),
     path("departments/", include("Departments.urls")),
     path("demand/", include("Demand.urls")),
+    path("shift_templates/", include("ShiftTemplates.urls")),
+    path("day_templates/", include("DayTemplates.urls")),
 ]
 
 if settings.DEBUG:

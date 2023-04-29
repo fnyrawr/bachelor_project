@@ -103,8 +103,13 @@ Follow all steps by order:
 - start_time
 - end_time
 - break_duration
-- qualifications
 - note
+
+> `Important` `ToDo` `2023-04-29`
+
+### ShiftTemplatesQualifications
+- shift_template_id
+- qualification_id
 
 > `Important` `ToDo` `2023-04-29`
 

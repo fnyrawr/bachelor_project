@@ -34,7 +34,7 @@ def edit_demand(request, **kwargs):
         if data['note'] != '':
             note = data['note']
         else:
-            note = None
+            note = ''
         Demand.objects.filter(id=demand_id).update(
             department=data['department'],
             weekday=data['weekday'],

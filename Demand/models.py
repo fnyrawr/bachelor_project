@@ -18,7 +18,7 @@ class Demand(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     staff_count = models.IntegerField()
-    note = models.TextField(blank=True)
+    note = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ['department', 'weekday', 'start_time', 'end_time']

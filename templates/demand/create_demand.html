@@ -22,23 +22,17 @@
                             <label>Weekday</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
-                        <div class="input-field col s4">
-                            <i class="material-icons prefix">event_calendar</i>
-                            <input id="id_end_contract" name="end_contract" type="text" class="datepicker grey-text text-darken-4">
-                            <label for="id_end_contract">Date</label>
-                            <span class="helper-text grey-text text-lighten-1">optional</span>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s4">
                             <i class="material-icons prefix">schedule</i>
-                            <input id="id_start_time" name="start_time" type="text" class="timepicker grey-text text-darken-4">
+                            <input id="id_start_time" name="start_time" type="text" required class="timepicker grey-text text-darken-4">
                             <label for="id_start_time">Start</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                         <div class="input-field col s4">
                             <i class="material-icons prefix">schedule</i>
-                            <input id="id_end_time" name="end_time" type="text" class="timepicker grey-text text-darken-4">
+                            <input id="id_end_time" name="end_time" type="text" required class="timepicker grey-text text-darken-4">
                             <label for="id_end_time">End</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
@@ -52,11 +46,9 @@
                         <div class="input-field col s12">
                             <i class="material-icons prefix">chat_bubble</i>
                             <label for="id_note">Note</label>
-                            <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4"></textarea>
+                            <textarea name="note" autocapitalize="none" required id="id_note" class="materialize-textarea grey-text text-darken-4"></textarea>
                         </div>
                     </div>
-                </div>
-                <div class="card-action">
                     <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create department</button>
                 </div>
             </form>

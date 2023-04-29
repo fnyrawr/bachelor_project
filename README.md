@@ -32,7 +32,9 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- demand
+- shift templates
+- day templates
+- association: shift to day templates
 
 ## Database
 ### Employee
@@ -85,15 +87,39 @@ Follow all steps by order:
 > `Important` `Done` `2023-04-27`
 
 ### Demand
-- department_id
+- demand_id
 - weekday
-- date (optional)
 - start_time
 - end_time
 - staff_count
 - note
 
-> `Important` `WIP` `2023-04-28`
+> `Optional` `Done` `2023-04-28`
+
+### ShiftTemplates
+- shift_template_id
+- name
+- department
+- start_time
+- end_time
+- break_duration
+- qualifications
+- note
+
+> `Important` `ToDo` `2023-04-29`
+
+### DayTemplates
+- day_template_id
+- name
+- description
+
+> `Important` `ToDo` `date`
+
+### DayShiftTemplates
+- day_template_id
+- shift_template_id
+
+> `Important` `ToDo` `date`
 
 ## Functions
 ### Needed
@@ -112,6 +138,10 @@ Follow all steps by order:
   - [x] Manage employee qualifications [admin]
   - [ ] Manage employee general availabilities [admin]
   - [ ] Manage employee shift wishes [admin]
+- [ ] Shifts
+  - [x] Manage demand [admin]
+  - [ ] Manage Shift templates [admin]
+  - [ ] Manage Day templates [admin]
 - [ ] My account
   - [x] Overview base data [all users]
   - [ ] Overview work hours [all users]

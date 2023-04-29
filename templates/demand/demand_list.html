@@ -11,7 +11,6 @@
                     <thead class="light-blue-text text-darken-1">
                         <tr>
                             <th>Department</th>
-                            <th>Date</th>
                             <th>Weekday</th>
                             <th>Start</th>
                             <th>End</th>
@@ -24,14 +23,13 @@
                         {% for entry in all_entries %}
                         <tr>
                             <td>{{ entry.department }}</td>
-                            <td>{% if entry.date != None %}{{ entry.date }}{% endif %}</td>
                             <td>{{ entry.get_weekday_display }}</td>
                             <td>{{ entry.start_time|date:"H:i" }}</td>
                             <td>{{ entry.end_time|date:"H:i" }}</td>
                             <td>{{ entry.staff_count }}</td>
                             <td>{{ entry.note }}</td>
                             <td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_department' entry.id %}"><i class="material-icons">edit</i></a>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_demand' entry.id %}"><i class="material-icons">edit</i></a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -15,7 +15,6 @@ class Demand(models.Model):
     ]
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     weekday = models.IntegerField(choices=WEEKDAYS, default=1)
-    date = models.DateField(blank=True, null=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
     staff_count = models.IntegerField()

@@ -20,11 +20,10 @@ class DemandForm(forms.ModelForm):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), to_field_name='name',
                                         empty_label='Select department')
     weekday = forms.ChoiceField(choices=WEEKDAYS)
-    date = forms.DateField(required=False)
     start_time = forms.TimeField(initial='12:00')
     end_time = forms.TimeField(initial='12:00')
     staff_count = forms.IntegerField(initial=1)
 
     class Meta:
         model = Demand
-        fields = ['department', 'weekday', 'date', 'start_time', 'end_time', 'staff_count', 'note']
+        fields = ['department', 'weekday', 'start_time', 'end_time', 'staff_count', 'note']

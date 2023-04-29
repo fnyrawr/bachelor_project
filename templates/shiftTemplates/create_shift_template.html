@@ -1,25 +1,25 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - Create demand{% endblock %}
+{% block title %}ShiftManager - Create shift template{% endblock %}
 
 {% block content %}
     {% if user.is_admin %}
-        <h3 class="light-blue-text text-darken-1">Create demand</h3>
-        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'demand' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <h3 class="light-blue-text text-darken-1">Create shift template</h3>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'shift_templates' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
-            <form method="POST" action="{% url 'create_demand' %}">
+            <form method="POST" action="{% url 'create_shift_template' %}">
                 {% csrf_token %}
                 <div class="card-content">
                     <div class="row">
                         <div class="input-field col s4">
-                            <i class="material-icons prefix">local_offer</i>
-                            {{ form.department }}
-                            <label>Department</label>
+                            <i class="material-icons prefix">label</i>
+                            <label for="id_name">Name</label>
+                            <input type="text" name="name" autofocus autocapitalize="none" maxlength="30" required id="id_name" class="grey-text text-darken-4">
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                         <div class="input-field col s4">
-                            <i class="material-icons prefix">event_calendar</i>
-                            {{ form.weekday }}
-                            <label>Weekday</label>
+                            <i class="material-icons prefix">local_offer</i>
+                            {{ form.department }}
+                            <label>Department</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                     </div>
@@ -37,9 +37,10 @@
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                         <div class="input-field col s4">
-                            <i class="material-icons prefix">group</i>
-                            <label for="id_staff_count">Staff count</label>
-                            <input type="number" name="staff_count" autocapitalize="none" value="1" id="id_staff_count" class="grey-text text-darken-4">
+                            <i class="material-icons prefix">label</i>
+                            <label for="id_break_duration">Name</label>
+                            <input type="time" name="break_duration" autofocus autocapitalize="none" maxlength="30" value="00:30" required id="id_break_duration" class="grey-text text-darken-4">
+                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                     </div>
                     <div class="row">
@@ -49,7 +50,7 @@
                             <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4"></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create demand</button>
+                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create shift template</button>
                 </div>
             </form>
         </div>

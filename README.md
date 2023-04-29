@@ -103,13 +103,13 @@ Follow all steps by order:
 - break_duration
 - note
 
-> `Important` `WIP` `2023-04-29`
+> `Important` `Done` `2023-04-29`
 
 ### ShiftTemplatesQualifications
 - shift_template_id
 - qualification_id
 
-> `Important` `WIP` `2023-04-29`
+> `Important` `Done` `2023-04-29`
 
 ### DayTemplates
 - day_template_id
@@ -144,7 +144,7 @@ Follow all steps by order:
   - [ ] Manage employee shift wishes [admin]
 - [ ] Shifts
   - [x] Manage demand [admin]
-  - [ ] Manage Shift templates [admin]
+  - [x] Manage Shift templates [admin]
   - [ ] Manage Day templates [admin]
   - [ ] Timeline view
   - [ ] Create shifts for dates

@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 from django.db import models
 
 from Departments.models import Department
@@ -19,10 +21,12 @@ class ShiftTemplate(models.Model):
 
     def get_work_hours(self):
         # calculate actual work hours (end-start-break)
-        work_hours = self.end_time-self.start_time
+        start_time = timedelta(hours=self.start_time.hour, minutes=self.start_time.minute)
+        end_time = timedelta(hours=self.end_time.hour, minutes=self.end_time.minute)
+        work_hours = end_time - start_time
         if self.break_duration is not None:
-            work_hours -= self.break_duration
-        return work_hours
+            work_hours -= timedelta(hours=self.break_duration.hour, minutes=self.break_duration.minute)
+        return (datetime.min + work_hours).time()
 
     def get_qualifications(self):
         qualifications = ShiftTemplateQualifications.objects.filter(shift_template=self)

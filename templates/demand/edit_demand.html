@@ -44,13 +44,13 @@
                     <div class="row">
                         <div class="input-field col s4">
                             <i class="material-icons prefix">schedule</i>
-                            <input id="id_start_time" name="start_time" type="text" required value="{{ selected_demand.start_time|date:"H:i" }}" class="timepicker grey-text text-darken-4">
+                            <input id="id_start_time" name="start_time" type="time" required value="{{ selected_demand.start_time|date:"H:i" }}" class="grey-text text-darken-4">
                             <label for="id_start_time">Start</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>
                         <div class="input-field col s4">
                             <i class="material-icons prefix">schedule</i>
-                            <input id="id_end_time" name="end_time" type="text" required value="{{ selected_demand.end_time|date:"H:i" }}" class="timepicker grey-text text-darken-4">
+                            <input id="id_end_time" name="end_time" type="time" required value="{{ selected_demand.end_time|date:"H:i" }}" class="grey-text text-darken-4">
                             <label for="id_end_time">End</label>
                             <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
                         </div>

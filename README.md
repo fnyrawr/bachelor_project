@@ -1,8 +1,6 @@
 # Bachelor Project Implementation
 Implementation of a staff management software tool as part of my bachelor thesis
 
-[[_TOC_]]
-
 ## How to start Project
 Follow all steps by order:
 - python -m venv .venv
@@ -15,9 +13,9 @@ Follow all steps by order:
 - python manage.py runserver
 
 ## Author
-| Name             | Student ID | E-Mail                                              |
-|------------------|------------|-----------------------------------------------------|
-| **Florian Kate** | 923081     | s51541@bht-berlin.de<br/>Florian.Kate.Bln@gmail.com |
+| Name           | Github  | E-Mail               |
+|----------------|---------|----------------------|
+| **Florian K.** | fnyrawr | s51541@bht-berlin.de |
 
 ### Status updates
     - `ToDo` not yet started
@@ -105,26 +103,26 @@ Follow all steps by order:
 - break_duration
 - note
 
-> `Important` `ToDo` `2023-04-29`
+> `Important` `WIP` `2023-04-29`
 
 ### ShiftTemplatesQualifications
 - shift_template_id
 - qualification_id
 
-> `Important` `ToDo` `2023-04-29`
+> `Important` `WIP` `2023-04-29`
 
 ### DayTemplates
 - day_template_id
 - name
 - description
 
-> `Important` `ToDo` `date`
+> `Important` `WIP` `2023-04-29`
 
 ### DayShiftTemplates
 - day_template_id
 - shift_template_id
 
-> `Important` `ToDo` `date`
+> `Important` `WIP` `2023-04-29`
 
 ## Functions
 ### Needed

@@ -124,6 +124,60 @@ Follow all steps by order:
 
 > `Important` `Done` `2023-04-29`
 
+### GeneralAvailabilities
+- employee
+- weekday
+- start_time
+- end_time
+- tendency
+- available
+- note
+
+> `Important` `ToDo` `date`
+
+### ShiftWishes
+- employee
+- date
+- start_time
+- end_time
+- tendency
+- available
+- note
+
+> `Important` `ToDo` `date`
+
+### Absences
+- employee
+- start_day
+- end_day
+- absence_type
+- approved
+- note
+
+> `Important` `ToDo` `date`
+
+### Holiday
+- employee
+- start_day
+- end_day
+- approved
+- note
+
+> `Important` `ToDo` `date`
+
+### Shifts
+- shift_id
+- department
+- employee
+- date
+- start_time
+- end_time
+- break_duration
+- note
+- highlight
+
+> `Important` `ToDo` `date`
+
 ## Functions
 ### Needed
 - [ ] Landing page

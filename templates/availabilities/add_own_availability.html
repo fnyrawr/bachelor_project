@@ -2,7 +2,7 @@
 {% block title %}ShiftManager - Add availability{% endblock %}
 
 {% block content %}
-    {% if user.is_admin %}
+    {% if user.is_authenticated %}
         <h3 class="light-blue-text text-darken-1">Add availability</h3>
         <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'own_availabilities' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">

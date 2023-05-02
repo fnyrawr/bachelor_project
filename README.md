@@ -149,19 +149,19 @@ Follow all steps by order:
 - start_day
 - end_day
 - absence_type
-- approved
+- status
 - note
 
-> `Important` `ToDo` `date`
+> `Important` `WIP` `2023-05-02`
 
-### Holiday
+### Holidays
 - employee
 - start_day
 - end_day
-- approved
+- status
 - note
 
-> `Important` `ToDo` `date`
+> `Important` `WIP` `2023-05-02`
 
 ### Shifts
 - shift_id
@@ -193,7 +193,9 @@ Follow all steps by order:
   - [x] Manage employee base data [admin]
   - [x] Manage employee qualifications [admin]
   - [x] Manage employee general availabilities [admin]
-  - [ ] Manage employee shift wishes [admin]
+  - [x] Manage employee shift wishes [admin]
+  - [ ] Manage employee absences [admin]
+  - [ ] Manage employee holidays [admin]
 - [ ] Shifts
   - [x] Manage demand [admin]
   - [x] Manage Shift templates [admin]

@@ -26,7 +26,13 @@
                         <tr>
                             <td>{{ entry.name }}</td>
                             <td>{{ entry.description }}</td>
-                            <td>{{ entry.is_important }}</td>
+                            <td>
+                                {% if entry.is_important %}
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
+                                {% else %}
+                                    <i class="material-icons red-text text-darken-1">close</i>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if entry.departments.count > 0 %}{{ entry.departments.count }}{% endif %}
                             </td>

@@ -22,7 +22,14 @@
                         {% for entry in all_entries %}
                         <tr>
                             <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
-                            <td>{{ entry.is_active }}<br>{{ entry.is_external }}</td>
+                            <td>
+                                {% if entry.is_active %}
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
+                                {% else %}
+                                    <i class="material-icons red-text text-darken-1">close</i>
+                                {% endif %}
+                                <br>{% if entry.is_external %}External{% endif %}
+                            </td>
                             <td>{{ entry.email }}<br>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
                             <td>{{ entry.department.name }}<br>
                                 {% for qualification in entry.qualifications %}

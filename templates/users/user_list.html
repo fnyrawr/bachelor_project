@@ -12,8 +12,7 @@
                         <tr>
                             <th>Username<br>E-Mail</th>
                             <th>Staff ID<br>External</th>
-                            <th>Last Name</th>
-                            <th>First Name</th>
+                            <th>Last Name<br>First Name</th>
                             <th>Address<br>Zip City</th>
                             <th>Telephone home<br>Telephone mobile</th>
                             <th>Start contract<br>End contract</th>
@@ -26,14 +25,30 @@
                         {% for entry in all_entries %}
                         <tr>
                             <td>{{ entry.username }}<br>{{ entry.email }}</td>
-                            <td>{{ entry.staff_id }}<br>{{ entry.is_external }}</td>
-                            <td>{{ entry.last_name }}</td>
-                            <td>{{ entry.first_name }}</td>
+                            <td>
+                                {{ entry.staff_id }}<br>
+                                {% if entry.is_external %}External{% endif %}
+                            </td>
+                            <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
                             <td>{{ entry.address }}<br>{{ entry.zip_city }}</td>
                             <td>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
                             <td>{{ entry.start_contract|date:"Y-m-d" }}<br>{{ entry.end_contract|date:"Y-m-d" }}</td>
-                            <td>{% if entry.role == 'A' %}Admin{% elif entry.role == 'P' %}Planner{% else %}Employee{% endif %}<br>{{ entry.is_verified }}</td>
-                            <td>{{ entry.is_active }}<br>{{ entry.last_login|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                {% if entry.role == 'A' %}Admin{% elif entry.role == 'P' %}Planner{% else %}Employee{% endif %}<br>
+                                {% if entry.is_verified %}
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
+                                {% else %}
+                                    <i class="material-icons red-text text-darken-1">close</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.is_active %}
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
+                                {% else %}
+                                    <i class="material-icons red-text text-darken-1">close</i>
+                                {% endif %}
+                                <br>{{ entry.last_login|date:"Y-m-d H:i" }}
+                            </td>
                             <td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a></td>
                         </tr>
                         {% endfor %}

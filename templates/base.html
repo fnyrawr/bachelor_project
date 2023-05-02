@@ -65,8 +65,8 @@
                         </li>
                         <li>
                             <ul class="collapsible grey-text text-darken-4">
-                                {% if user.is_authenticated %}
-                                    {% if user.is_authorized %}<li>
+                                {% if user.is_authorized %}
+                                    <li>
                                         <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">settings</i>General Management</div>
                                         <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                             <ul>
@@ -77,8 +77,8 @@
                                                 {% if user.is_admin %}<li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">cloud</i>Data management</a></li>{% endif %}
                                             </ul>
                                         </div>
-                                    </li>{% endif %}
-                                    {% if user.is_authorized %}<li>
+                                    </li>
+                                    <li>
                                         <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">group</i>Employee Management</div>
                                         <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                             <ul>
@@ -87,7 +87,7 @@
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
                                             </ul>
                                         </div>
-                                    </li>{% endif %}
+                                    </li>
                                     <li>
                                         <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">event</i>Shift Management</div>
                                         <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
@@ -97,6 +97,28 @@
                                                 <li><a class="waves-effect waves-light" href="{% url 'wishes' %}"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
                                                 {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>{% endif %}
                                                 {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'day_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Day templates</a></li>{% endif %}
+                                            </ul>
+                                        </div>
+                                    </li>
+                                {% elif user.role == 'E' %}
+                                    <li>
+                                        <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">event</i>Shift Management</div>
+                                        <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
+                                            <ul>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Shifts</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'own_availabilities' %}"><i class="material-icons light-blue-text text-darken-1">event_available</i>Availabilities</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'own_wishes' %}"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_busy</i>Absences</a></li>
+                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="collapsible-header"><i class="material-icons amber-text text-darken-1">person</i>My account</div>
+                                        <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
+                                            <ul>
+                                                <li><a class="waves-effect waves-light" href="{% url 'edit_basedata' %}"><i class="material-icons light-blue-text text-darken-1">settings</i>Base data</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'change_password' %}"><i class="material-icons light-blue-text text-darken-1">vpn_key</i>Change password</a></li>
                                             </ul>
                                         </div>
                                     </li>

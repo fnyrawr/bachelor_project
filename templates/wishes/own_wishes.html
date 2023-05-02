@@ -25,9 +25,9 @@
                             <td>{{ entry.date|date:"l" }}<br>{{ entry.date }}</td>
                             <td>
                                 {% if entry.is_available %}
-                                    <i class="material-icons left light-green-text text-darken-1">done</i>Yes
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
                                 {% else %}
-                                    <i class="material-icons left red-text text-darken-1">close</i> No
+                                    <i class="material-icons red-text text-darken-1">close</i>
                                 {% endif %}
                             </td>
                             <td>{{ entry.start_time|date:"H:i" }}</td>

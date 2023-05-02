@@ -124,24 +124,24 @@ Follow all steps by order:
 
 > `Important` `Done` `2023-04-29`
 
-### GeneralAvailabilities
+### Availabilities
 - employee
 - weekday
 - start_time
 - end_time
 - tendency
-- available
+- is_available
 - note
 
 > `Important` `ToDo` `date`
 
-### ShiftWishes
+### Wishes
 - employee
 - date
 - start_time
 - end_time
 - tendency
-- available
+- is_available
 - note
 
 > `Important` `ToDo` `date`

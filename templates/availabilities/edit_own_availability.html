@@ -10,24 +10,19 @@
             </div>
             <div class="modal-footer">
                 <a class="modal-close waves-effect waves-light btn-flat red darken-1 white-text"><i class="material-icons left">close</i>Abort and close</a>
-                <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'delete_availability' selected_availability.id %}"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+                <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'delete_own_availability' selected_availability.id %}"><i class="material-icons left">delete_forever</i>Yes, delete</a>
             </div>
         </div>
 
         <h3 class="light-blue-text text-darken-1">Edit availability</h3>
-        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'availabilities' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'own_availabilities' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
-            <form method="POST" action="{% url 'edit_availability' selected_availability.id %}">
+            <form method="POST" action="{% url 'edit_own_availability' selected_availability.id %}">
                 {% csrf_token %}
                 <div class="card-content">
                     <input type="hidden" name="employee" value="{{ selected_availability.employee.id }}">
                     <input type="hidden" name="weekday" value="{{ selected_availability.weekday }}">
                     <div class="row">
-                        <div class="input-field col s4">
-                            <i class="material-icons prefix">person</i>
-                            <label for="id_employee">Employee</label>
-                            <input type="text" autocapitalize="none" maxlength="25" disabled value="{{ selected_availability.employee }}" id="id_employee" class="grey-text text-lighten-1">
-                        </div>
                         <div class="input-field col s4">
                             <i class="material-icons prefix">event_calendar</i>
                             <label for="id_weekday">Weekday</label>

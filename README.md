@@ -133,7 +133,7 @@ Follow all steps by order:
 - is_available
 - note
 
-> `Important` `ToDo` `date`
+> `Important` `Done` `2023-05-02`
 
 ### Wishes
 - employee
@@ -194,7 +194,7 @@ Follow all steps by order:
   - [x] create employee user account [admin]
   - [x] Manage employee base data [admin]
   - [x] Manage employee qualifications [admin]
-  - [ ] Manage employee general availabilities [admin]
+  - [x] Manage employee general availabilities [admin]
   - [ ] Manage employee shift wishes [admin]
 - [ ] Shifts
   - [x] Manage demand [admin]
@@ -209,11 +209,11 @@ Follow all steps by order:
 - [ ] My account
   - [x] Overview base data [all users]
   - [ ] Overview work hours [all users]
-  - [ ] Overview availabilities [all users]
+  - [ ] Overview absences and holiday [all users]
   - [x] Manage base data [all users]
   - [x] Change password [all users]
   - [ ] Recover password [all users]
-  - [ ] Manage general availabilities [all users]
+  - [x] Manage general availabilities [all users]
   - [ ] Manage shift wishes [all users]
 - [ ] Data management
   - [ ] Importer for Qualifications

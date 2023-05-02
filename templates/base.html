@@ -26,7 +26,7 @@
         <ul id="userwidget" class="dropdown-content">
             <li><a href="#!">My shifts</a></li>
             <li><a href="{% url 'own_availabilities' %}">My general availabilities</a></li>
-            <li><a href="#!">My shift wishes</a></li>
+            <li><a href="{% url 'own_wishes' %}">My shift wishes</a></li>
             <li class="divider"></li>
             <li><a href="{% url 'edit_basedata' %}">My base data</a></li>
             <li><a href="{% url 'change_password' %}">Change password</a></li>
@@ -94,7 +94,7 @@
                                             <ul>
                                                 <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">view_list</i>Shifts</a></li>
                                                 <li><a class="waves-effect waves-light" href="{% url 'availabilities' %}"><i class="material-icons light-blue-text text-darken-1">event_available</i>Availabilities</a></li>
-                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'wishes' %}"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
                                                 {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>{% endif %}
                                                 {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'day_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Day templates</a></li>{% endif %}
                                             </ul>

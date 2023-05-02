@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ShiftTemplates.apps.ShifttemplatesConfig',
     'DayTemplates.apps.DaytemplatesConfig',
     'Availabilities.apps.AvailabilitiesConfig',
+    'Wishes.apps.WishesConfig',
 ]
 
 MIDDLEWARE = [

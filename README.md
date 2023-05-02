@@ -30,9 +30,7 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- shift templates
-- day templates
-- association: shift to day templates
+- implementing base functionalities [WIP]
 
 ## Database
 ### Employee
@@ -144,7 +142,7 @@ Follow all steps by order:
 - is_available
 - note
 
-> `Important` `ToDo` `date`
+> `Important` `Done` `2023-05-02`
 
 ### Absences
 - employee

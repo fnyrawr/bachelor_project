@@ -32,6 +32,7 @@ urlpatterns = [
     path("shift_templates/", include("ShiftTemplates.urls")),
     path("day_templates/", include("DayTemplates.urls")),
     path("availabilities/", include("Availabilities.urls")),
+    path("wishes/", include("Wishes.urls")),
 ]
 
 if settings.DEBUG:

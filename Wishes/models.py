@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from django.utils import timezone
 
 from Users.models import User
 
@@ -13,7 +13,7 @@ class Wish(models.Model):
         (4, 'Night shift')
     ]
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(default=datetime.today())
+    date = models.DateField(default=timezone.now)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     tendency = models.IntegerField(choices=TENDENCIES, default=0)

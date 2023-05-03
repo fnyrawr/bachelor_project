@@ -33,6 +33,8 @@ urlpatterns = [
     path("day_templates/", include("DayTemplates.urls")),
     path("availabilities/", include("Availabilities.urls")),
     path("wishes/", include("Wishes.urls")),
+    path("absences/", include("Absences.urls")),
+    path("holidays/", include("Holidays.urls")),
 ]
 
 if settings.DEBUG:

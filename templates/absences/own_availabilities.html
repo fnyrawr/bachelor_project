@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - My general availabilities{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3 class="light-blue-text text-darken-1">My general availabilities</h3>
+        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'add_own_availability' %}"><i class="material-icons left">add</i>Create availability</a><br><br>
+        <div class="card">
+            <div class="card-content">
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Weekday</th>
+                            <th>Available</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Tendency</th>
+                            <th>Note</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in all_entries %}
+                        <tr>
+                            <td>{{ entry.get_weekday_display }}</td>
+                            <td>
+                                {% if entry.is_available %}
+                                    <i class="material-icons light-green-text text-darken-1">done</i>
+                                {% else %}
+                                    <i class="material-icons red-text text-darken-1">close</i>
+                                {% endif %}
+                            </td>
+                            <td>{{ entry.start_time|date:"H:i" }}</td>
+                            <td>{{ entry.end_time|date:"H:i" }}</td>
+                            <td>{{ entry.get_tendency_display }}</td>
+                            <td>{{ entry.note }}</td>
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_own_availability' entry.id %}"><i class="material-icons">edit</i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

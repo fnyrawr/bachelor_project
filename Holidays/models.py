@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from Users.models import User
 
@@ -11,18 +12,18 @@ class Holiday(models.Model):
         (3, 'approved'),
     ]
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
-    start_day = models.DateField()
-    end_day = models.DateField()
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField()
     status = models.IntegerField(choices=STATUS, default=0)
     note = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = ['employee', 'start_day', 'end_day']
+        ordering = ['employee', 'start_date', 'end_date']
         verbose_name = 'Holidays'
         verbose_name_plural = 'Holidays'
 
     def __str__(self):
-        return self.employee + ' from ' + self.start_day + ' until ' + self.end_day
+        return self.employee + ' from ' + self.start_date + ' until ' + self.end_date
 
     def __repr__(self):
-        return self.employee + ' / ' + self.start_day + ' / ' + self.end_day + ' / ' + self.status + ' / ' + self.note
+        return self.employee + ' / ' + self.start_date + ' / ' + self.end_date + ' / ' + self.status + ' / ' + self.note

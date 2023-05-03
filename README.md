@@ -146,8 +146,8 @@ Follow all steps by order:
 
 ### Absences
 - employee
-- start_day
-- end_day
+- start_date
+- end_date
 - absence_type
 - status
 - note
@@ -156,8 +156,8 @@ Follow all steps by order:
 
 ### Holidays
 - employee
-- start_day
-- end_day
+- start_date
+- end_date
 - status
 - note
 

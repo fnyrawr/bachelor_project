@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'DayTemplates.apps.DaytemplatesConfig',
     'Availabilities.apps.AvailabilitiesConfig',
     'Wishes.apps.WishesConfig',
+    'Absences.apps.AbsencesConfig',
+    'Holidays.apps.HolidaysConfig',
 ]
 
 MIDDLEWARE = [

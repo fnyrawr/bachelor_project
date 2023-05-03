@@ -152,7 +152,7 @@ Follow all steps by order:
 - status
 - note
 
-> `Important` `WIP` `2023-05-02`
+> `Important` `Done` `2023-05-03`
 
 ### Holidays
 - employee
@@ -161,7 +161,7 @@ Follow all steps by order:
 - status
 - note
 
-> `Important` `WIP` `2023-05-02`
+> `Important` `Done` `2023-05-03`
 
 ### Shifts
 - shift_id
@@ -194,8 +194,8 @@ Follow all steps by order:
   - [x] Manage employee qualifications [admin]
   - [x] Manage employee general availabilities [admin]
   - [x] Manage employee shift wishes [admin]
-  - [ ] Manage employee absences [admin]
-  - [ ] Manage employee holidays [admin]
+  - [x] Manage employee absences [admin]
+  - [x] Manage employee holidays [admin]
 - [ ] Shifts
   - [x] Manage demand [admin]
   - [x] Manage Shift templates [admin]
@@ -209,12 +209,12 @@ Follow all steps by order:
 - [ ] My account
   - [x] Overview base data [all users]
   - [ ] Overview work hours [all users]
-  - [ ] Overview absences and holiday [all users]
+  - [x] Overview absences and holiday [all users]
   - [x] Manage base data [all users]
   - [x] Change password [all users]
   - [ ] Recover password [all users]
   - [x] Manage general availabilities [all users]
-  - [ ] Manage shift wishes [all users]
+  - [x] Manage shift wishes [all users]
 - [ ] Data management
   - [ ] Importer for Qualifications
   - [ ] Importer for Departments

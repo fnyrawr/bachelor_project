@@ -78,10 +78,6 @@ def edit_own_absence(request, **kwargs):
         form = AbsenceForm(request.POST)
         data = form.data
         Absence.objects.filter(id=absence_id).update(
-            employee=data['employee'],
-            start_date=data['start_date'],
-            end_date=data['end_date'],
-            reason=data['reason'],
             status=data['status'],
             note=data['note']
         )
@@ -92,7 +88,7 @@ def edit_own_absence(request, **kwargs):
         form = AbsenceForm()
         context = {
             'form': form,
-            'selected_availability': selected_absence
+            'selected_absence': selected_absence
         }
         return render(request, 'absences/edit_own_absence.html', context)
 
@@ -103,14 +99,6 @@ def delete_absence(request, **kwargs):
     selected_absence.delete()
     messages.success(request, "Absence successfully deleted.")
     return redirect('absences')
-
-
-def delete_own_absence(request, **kwargs):
-    absence_id = kwargs['pk']
-    selected_absence = Absence.objects.get(id=absence_id)
-    selected_absence.delete()
-    messages.success(request, "Absence successfully deleted.")
-    return redirect('own_absences')
 
 
 def own_absences(request):

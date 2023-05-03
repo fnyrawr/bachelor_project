@@ -3,12 +3,11 @@ from . import views
 
 urlpatterns = [
     # Holidays
-    # path('list/', views.availability_list, name='availabilities'),
-    # path('create/', views.AvailabilityCreationView.as_view(), name='create_availability'),
-    # path('edit/<int:pk>', views.edit_availability, name='edit_availability'),
-    # path('delete/<int:pk>', views.delete_availability, name='delete_availability'),
-    # path('list-own', views.own_availabilities, name='own_availabilities'),
-    # path('add-own', views.OwnAvailabilityCreationView.as_view(), name='add_own_availability'),
-    # path('edit-own/<int:pk>', views.edit_own_availability, name='edit_own_availability'),
-    # path('delete-own/<int:pk>', views.delete_own_availability, name='delete_own_availability'),
+    path('list/', views.holiday_list, name='holidays'),
+    path('create/', views.HolidayCreationView.as_view(), name='create_holiday'),
+    path('edit/<int:pk>', views.edit_holiday, name='edit_holiday'),
+    path('delete/<int:pk>', views.delete_holiday, name='delete_holiday'),
+    path('list-own', views.own_holidays, name='own_holidays'),
+    path('add-own', views.OwnHolidayCreationView.as_view(), name='add_own_holiday'),
+    path('edit-own/<int:pk>', views.edit_own_holiday, name='edit_own_holiday'),
 ]

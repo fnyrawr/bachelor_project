@@ -28,6 +28,9 @@
             <li><a href="{% url 'own_availabilities' %}">My general availabilities</a></li>
             <li><a href="{% url 'own_wishes' %}">My shift wishes</a></li>
             <li class="divider"></li>
+            <li><a href="{% url 'own_absences' %}">My absences</a></li>
+            <li><a href="{% url 'own_holidays' %}">My holidays</a></li>
+            <li class="divider"></li>
             <li><a href="{% url 'edit_basedata' %}">My base data</a></li>
             <li><a href="{% url 'change_password' %}">Change password</a></li>
             <li class="divider"></li>
@@ -84,7 +87,7 @@
                                             <ul>
                                                 <li><a class="waves-effect waves-light" href="{% url 'employees' %}"><i class="material-icons light-blue-text text-darken-1">view_list</i>Employees</a></li>
                                                 <li><a class="waves-effect waves-light" href="{% url 'absences' %}"><i class="material-icons light-blue-text text-darken-1">event_busy</i>Absences</a></li>
-                                                <li><a class="waves-effect waves-light"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'holidays' %}"><i class="material-icons light-blue-text text-darken-1">flight_takeoff</i>Holidays</a></li>
                                             </ul>
                                         </div>
                                     </li>

@@ -4,7 +4,7 @@ from Users.models import User
 from .models import Absence
 
 REASONS = [
-    (0, 'sickness (without medical proof'),
+    (0, 'sickness (without medical proof)'),
     (1, 'sickness (with medical proof)'),
     (2, 'private related'),
     (3, 'business related'),

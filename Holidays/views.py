@@ -77,9 +77,6 @@ def edit_own_holiday(request, **kwargs):
         form = HolidayForm(request.POST)
         data = form.data
         Holiday.objects.filter(id=holiday_id).update(
-            employee=data['employee'],
-            start_date=data['start_date'],
-            end_date=data['end_date'],
             status=data['status'],
             note=data['note']
         )
@@ -90,7 +87,7 @@ def edit_own_holiday(request, **kwargs):
         form = HolidayForm()
         context = {
             'form': form,
-            'selected_availability': selected_holiday
+            'selected_holiday': selected_holiday
         }
         return render(request, 'holidays/edit_own_holiday.html', context)
 
@@ -111,7 +108,7 @@ def delete_own_holiday(request, **kwargs):
     return redirect('own_holidays')
 
 
-def own_holiday(request):
+def own_holidays(request):
     user = request.user
     all_entries = None
     all_entries = Holiday.objects.filter(employee=user).order_by('start_date')

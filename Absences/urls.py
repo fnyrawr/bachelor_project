@@ -10,5 +10,4 @@ urlpatterns = [
     path('list-own', views.own_absences, name='own_absences'),
     path('add-own', views.OwnAbsenceCreationView.as_view(), name='add_own_absence'),
     path('edit-own/<int:pk>', views.edit_own_absence, name='edit_own_absence'),
-    path('delete-own/<int:pk>', views.delete_own_absence, name='delete_own_absence'),
 ]

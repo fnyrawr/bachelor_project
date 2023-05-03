@@ -14,6 +14,7 @@ $(document).ready(function(){
     $('.fixed-action-btn').floatingActionButton();
     $('.datepicker').datepicker({
         format: 'yyyy-mm-dd',
+        firstDay: 1,
         showClearBtn: true
     });
     $('.timepicker').timepicker({

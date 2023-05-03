@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - Absences{% endblock %}
+{% block title %}ShiftManager - Holidays{% endblock %}
 
 {% block content %}
     {% if user.is_authorized %}
-        <h3 class="light-blue-text text-darken-1">Absences</h3>
-        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_absence' %}"><i class="material-icons left">add</i>Create absence</a><br><br>{% endif %}
+        <h3 class="light-blue-text text-darken-1">Holidays</h3>
+        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_holiday' %}"><i class="material-icons left">add</i>Create holiday</a><br><br>{% endif %}
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -14,7 +14,6 @@
                             <th>End date</th>
                             <th>Duration</th>
                             <th>Employee</th>
-                            <th>Reason</th>
                             <th>Status</th>
                             <th>Note</th>
                             {% if user.is_admin %}<th>Edit</th>{% endif %}
@@ -27,7 +26,6 @@
                             <td>{{ entry.end_date|date:"l" }}<br>{{ entry.end_date }}</td>
                             <td>{{ entry.get_duration }} days</td>
                             <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
-                            <td>{{ entry.get_reason_display }}</td>
                             <td>
                                 {% if entry.status == 0 %}
                                     <i class="material-icons left grey-text text-darken-1">mail</i>{{ entry.get_status_display }}
@@ -41,7 +39,7 @@
                             </td>
                             <td>{{ entry.note }}</td>
                             {% if user.is_admin %}<td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_absence' entry.id %}"><i class="material-icons">edit</i></a>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_holiday' entry.id %}"><i class="material-icons">edit</i></a>
                             </td>{% endif %}
                         </tr>
                         {% endfor %}

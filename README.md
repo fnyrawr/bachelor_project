@@ -30,7 +30,8 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- implementing base functionalities [WIP]
+- password reset [ToDo] `Done`
+- importer [ToDo]
 
 ## Database
 ### Employee
@@ -181,14 +182,15 @@ Follow all steps by order:
 - [ ] Landing page
   - [ ] Infopage if not logged in
   - [ ] Restricted access note
+  - [x] Reset password
   - [ ] Admin dashboard [admin]
   - [ ] Planner dashboard [planner] (extending Employee dashboard)
   - [ ] Employee dashboard [employee]
-- [ ] Departments
+- [x] Departments
   - [x] Create department [admin]
   - [x] Manage department qualifications [admin]
-  - [ ] Additional information [admin]
-- [ ] Employees
+  - [x] Additional information [admin]
+- [x] Employees
   - [x] create employee user account [admin]
   - [x] Manage employee base data [admin]
   - [x] Manage employee qualifications [admin]
@@ -212,7 +214,6 @@ Follow all steps by order:
   - [x] Overview absences and holiday [all users]
   - [x] Manage base data [all users]
   - [x] Change password [all users]
-  - [ ] Recover password [all users]
   - [x] Manage general availabilities [all users]
   - [x] Manage shift wishes [all users]
 - [ ] Data management

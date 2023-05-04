@@ -45,6 +45,7 @@ urlpatterns = [
     path("wishes/", include("Wishes.urls")),
     path("absences/", include("Absences.urls")),
     path("holidays/", include("Holidays.urls")),
+    path("datamanagement/", include("DataManagement.urls")),
 ]
 
 if settings.DEBUG:

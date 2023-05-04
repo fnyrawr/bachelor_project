@@ -7,6 +7,8 @@ Follow all steps by order:
 - .venv\scripts\activate
 - pip install django
 - pip install Pillow
+- pip install pandas
+- pip install openpyxl
 - python manage.py makemigrations
 - python manage.py migrate
 - python manage.py createsuperuser
@@ -30,8 +32,9 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- password reset [ToDo] `Done`
-- importer [ToDo]
+- importers [WIP]
+- search and pagination [ToDo]
+- shifts [ToDo]
 
 ## Database
 ### Employee
@@ -217,10 +220,12 @@ Follow all steps by order:
   - [x] Manage general availabilities [all users]
   - [x] Manage shift wishes [all users]
 - [ ] Data management
-  - [ ] Importer for Qualifications
-  - [ ] Importer for Departments
-  - [ ] Importer for Users
-  - [ ] Importer for Shifts
+  - [x] Importer for Qualifications
+  - [x] Importer for Departments
+  - [x] Importer for Users
+  - [ ] Importer for Absence
+  - [ ] Importer for Holiday
+  - [ ] Importer for Demand
   - [ ] Importer for ShiftTemplates
   - [ ] Importer for DayTemplates
-  - [ ] Importer for Demand
+  - [ ] Importer for Shifts

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Data management{% endblock %}
+
+{% block content %}
+    {% if user.is_admin %}
+        <h3 class="light-blue-text text-darken-1">Data management</h3>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title light-blue-text text-darken-1">Imports</div>
+                <ul class="collection">
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="{% url 'import_qualifications' %}">
+                            <i class="material-icons circle light-blue darken-1 white-text">label</i>
+                            <span class="title">Qualifications</span>
+                            <p class="grey-text text-darken-3">Import Qualifications from .xlsx file</p>
+                        </a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="{% url 'import_departments' %}">
+                            <i class="material-icons circle light-blue darken-1 white-text">view_list</i>
+                            <span class="title">Departments</span>
+                            <p class="grey-text text-darken-3">Import Departments from .xlsx file</p>
+                        </a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="{% url 'import_users' %}">
+                            <i class="material-icons circle light-blue darken-1 white-text">person</i>
+                            <span class="title">Users</span>
+                            <p class="grey-text text-darken-3">Import Users from .xlsx file</p>
+                        </a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="#">
+                            <i class="material-icons circle light-blue darken-1 white-text">event_busy</i>
+                            <span class="title">Absences</span>
+                            <p class="grey-text text-darken-3">Import Absences from .xlsx file</p>
+                        </a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="#">
+                            <i class="material-icons circle light-blue darken-1 white-text">flight_takeoff</i>
+                            <span class="title">Holiday</span>
+                            <p class="grey-text text-darken-3">Import Holidays from .xlsx file</p>
+                        </a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <a class="black-text" href="#">
+                            <i class="material-icons circle light-blue darken-1 white-text">date_range</i>
+                            <span class="title">Demands</span>
+                            <p class="grey-text text-darken-3">Import Demands from .xlsx file</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

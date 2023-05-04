@@ -3,7 +3,7 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">Employees</h3>
+        <h3 class="light-blue-text text-darken-1">Employees ({{ all_entries.count }})</h3>
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -28,7 +28,11 @@
                                 {% else %}
                                     <i class="material-icons red-text text-darken-1">close</i>
                                 {% endif %}
-                                <br>{% if entry.is_external %}External{% endif %}
+                                <br>{% if entry.is_external %}
+                                    <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                        <b>External</b>
+                                    </span>
+                                {% endif %}
                             </td>
                             <td>{{ entry.email }}<br>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
                             <td>{{ entry.department.name }}<br>

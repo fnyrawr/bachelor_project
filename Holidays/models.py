@@ -19,7 +19,7 @@ class Holiday(models.Model):
     note = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = ['employee', 'start_date', 'end_date']
+        ordering = ['start_date', 'end_date', 'employee']
         verbose_name = 'Holidays'
         verbose_name_plural = 'Holidays'
 

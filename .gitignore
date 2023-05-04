@@ -20,6 +20,9 @@ out
 # ignore database
 **/db.sqlite3
 
+# ignore excel-files
+**/*.xlsx
+
 # ignore archives
 *.7z
 *.gz

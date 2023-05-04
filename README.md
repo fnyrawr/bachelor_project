@@ -223,9 +223,11 @@ Follow all steps by order:
   - [x] Importer for Qualifications
   - [x] Importer for Departments
   - [x] Importer for Users
-  - [ ] Importer for Absence
-  - [ ] Importer for Holiday
-  - [ ] Importer for Demand
+  - [x] Importer for Absence
+  - [x] Importer for Holiday
+  - [x] Importer for Demand
   - [ ] Importer for ShiftTemplates
   - [ ] Importer for DayTemplates
+  - [ ] Importer for General availabilities
+  - [ ] Importer for Shift wishes
   - [ ] Importer for Shifts

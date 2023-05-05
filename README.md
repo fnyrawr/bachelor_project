@@ -32,7 +32,7 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- importers [WIP]
+- ~~importers~~ [done]
 - search and pagination [ToDo]
 - shifts [ToDo]
 
@@ -226,8 +226,9 @@ Follow all steps by order:
   - [x] Importer for Absence
   - [x] Importer for Holiday
   - [x] Importer for Demand
-  - [ ] Importer for ShiftTemplates
-  - [ ] Importer for DayTemplates
-  - [ ] Importer for General availabilities
-  - [ ] Importer for Shift wishes
+  - [x] Importer for ShiftTemplates
+  - [x] Importer for DayTemplates
+  - [x] Importer for General availabilities
+  - [x] Importer for Shift wishes
   - [ ] Importer for Shifts
+  - [ ] Exporting data

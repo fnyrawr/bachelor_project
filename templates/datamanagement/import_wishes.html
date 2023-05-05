@@ -1,34 +1,34 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - Import shift templates{% endblock %}
+{% block title %}ShiftManager - Import wishes{% endblock %}
 
 {% block content %}
     {% if user.is_admin %}
-        <h3 class="light-blue-text text-darken-1">Import shift templates</h3>
+        <h3 class="light-blue-text text-darken-1">Import wishes</h3>
         <div class="card">
             <div class="card-content">
                 <div class="card-title light-blue-text text-darken-1">Before you start</div>
                 <p>Please structure your data in the following manner:</p>
-                <p><b>Worksheet "Shifts"</b></p>
                 <table class="striped">
                     <thead>
-                        <th>Name</th>
-                        <th>Department</th>
+                        <th>Username</th>
+                        <th>Date</th>
                         <th>Start</th>
                         <th>End</th>
-                        <th>Break</th>
+                        <th>Tendency</th>
                         <th>Note</th>
                     </thead>
                 </table>
-                <p>Name has to be unique. Note is optional. All other fields are required.</p>
-                <p>Start, End and Time have to be formatted "HH:mm"</p>
-                <br><p><b>Worksheet "Qualifications"</b></p>
-                <table class="striped">
-                    <thead>
-                        <th>Shift</th>
-                        <th>Qualification</th>
-                    </thead>
-                </table>
-                <p>Shift is Shift template Name column, Qualification is Qualification Name column</p>
+                <p>Start, End and Note are optional. All other fields are required.</p>
+                <p>Date has to be in ISO format "YYYY-MM-DD"</p>
+                <p>If Available is "Yes" it will be set to True, otherwise False</p>
+                <p>Start and end have to be in the format "HH:mm"</p>
+                <ul>Tendency only contains a number:
+                    <li>0 - No preference</li>
+                    <li>1 - Early shift</li>
+                    <li>2 - Midday shift</li>
+                    <li>3 - Late shift</li>
+                    <li>4 - Night shift</li>
+                </ul>
             </div>
         </div>
 

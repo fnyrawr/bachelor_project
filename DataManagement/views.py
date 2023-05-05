@@ -3,11 +3,15 @@ from django.shortcuts import render, redirect
 import pandas as pd
 
 from Absences.models import Absence
+from Availabilities.models import Availability
+from DayTemplates.models import DayTemplate, DayShiftTemplates
 from Demand.models import Demand
 from Holidays.models import Holiday
 from Qualifications.models import Qualification
-from Departments.models import Department
-from Users.models import User
+from Departments.models import Department, DepartmentQualifications
+from ShiftTemplates.models import ShiftTemplate, ShiftTemplateQualifications
+from Users.models import User, EmployeesQualifications
+from Wishes.models import Wish
 from .forms import FileForm
 
 
@@ -62,8 +66,8 @@ def import_departments(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             data = request.FILES['file_upload']
-            df = pd.read_excel(data)
-            for index, row in df.iterrows():
+            departments = pd.read_excel(data, sheet_name='Departments')
+            for index, row in departments.iterrows():
                 name = row['Name']
                 if row['Description'] is numpy.nan:
                     description = ''
@@ -78,6 +82,20 @@ def import_departments(request):
                     department.save()
                 else:
                     department.update(description=description)
+                # cleanup assigned qualifications
+                department_qualifications = DepartmentQualifications.objects \
+                    .filter(department__name__iexact=name)
+                department_qualifications.delete()
+            # import associated qualifications
+            qualifications = pd.read_excel(data, sheet_name='Qualifications')
+            for index, row in qualifications.iterrows():
+                department = Department.objects.get(name__iexact=row['Department'])
+                qualification = Qualification.objects.get(name__iexact=row['Qualification'])
+                department_qualification = DepartmentQualifications(
+                    department=department,
+                    qualification=qualification
+                )
+                department_qualification.save()
 
             return redirect('departments')
         return render(request, 'datamanagement/import_departments.html', {'form': form})
@@ -95,9 +113,9 @@ def import_users(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             data = request.FILES['file_upload']
-            df = pd.read_excel(data)
-            df = df.fillna('')
-            for index, row in df.iterrows():
+            users = pd.read_excel(data, sheet_name='Users')
+            users = users.fillna('')
+            for index, row in users.iterrows():
                 first_name = row['First Name']
                 last_name = row['Last Name']
                 email = row['E-Mail']
@@ -178,6 +196,21 @@ def import_users(request):
                         work_hours=work_hours,
                         holiday_count=holiday_count
                     )
+                # cleanup assigned qualifications
+                employees_qualifications = EmployeesQualifications.objects \
+                    .filter(employee__username__iexact=username)
+                employees_qualifications.delete()
+
+            # import associated qualifications
+            qualifications = pd.read_excel(data, sheet_name='Qualifications')
+            for index, row in qualifications.iterrows():
+                employee = User.objects.get(username__iexact=row['Username'])
+                qualification = Qualification.objects.get(name__iexact=row['Qualification'])
+                employees_qualification = EmployeesQualifications(
+                    employee=employee,
+                    qualification=qualification
+                )
+                employees_qualification.save()
 
             return redirect('useraccounts')
         return render(request, 'datamanagement/import_users.html', {'form': form})
@@ -328,3 +361,237 @@ def import_demand(request):
             'form': form
         }
         return render(request, 'datamanagement/import_demand.html', context)
+
+
+def import_availabilities(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = request.FILES['file_upload']
+            df = pd.read_excel(data)
+            df['Tendency'] = df['Tendency'].fillna(0)
+            for index, row in df.iterrows():
+                user = User.objects.get(username__iexact=row['Username'])
+                weekday = get_weekday(row['Weekday'])
+                if row['Available'] == 'Yes':
+                    is_available = True
+                else:
+                    is_available = False
+                if row['Start'] is numpy.nan:
+                    start_time = None
+                else:
+                    start_time = row['Start']
+                if row['End'] is numpy.nan:
+                    end_time = None
+                else:
+                    end_time = row['End']
+                tendency = None
+                if row['Tendency'] is not 0:
+                    tendency = row['Tendency']
+                if row['Note'] is numpy.nan:
+                    note = ''
+                else:
+                    note = row['Note']
+                availability = Availability.objects.filter(employee=user, weekday=weekday)
+                if not availability:
+                    availability = Availability(
+                        employee=user,
+                        weekday=weekday,
+                        is_available=is_available,
+                        start_time=start_time,
+                        end_time=end_time,
+                        tendency=tendency,
+                        note=note
+                    )
+                    availability.save()
+                else:
+                    availability.update(
+                        start_time=start_time,
+                        end_time=end_time,
+                        is_available=is_available,
+                        tendency=tendency,
+                        note=note
+                    )
+
+            return redirect('availabilities')
+        return render(request, 'datamanagement/import_availabilities.html', {'form': form})
+    # GET request
+    else:
+        form = FileForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'datamanagement/import_availabilities.html', context)
+
+
+def import_wishes(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = request.FILES['file_upload']
+            df = pd.read_excel(data)
+            df['Tendency'] = df['Tendency'].fillna(0)
+            for index, row in df.iterrows():
+                user = User.objects.get(username__iexact=row['Username'])
+                date = row['Date']
+                if row['Available'] == 'Yes':
+                    is_available = True
+                else:
+                    is_available = False
+                if row['Start'] is numpy.nan:
+                    start_time = None
+                else:
+                    start_time = row['Start']
+                if row['End'] is numpy.nan:
+                    end_time = None
+                else:
+                    end_time = row['End']
+                tendency = None
+                if row['Tendency'] is not 0:
+                    tendency = row['Tendency']
+                if row['Note'] is numpy.nan:
+                    note = ''
+                else:
+                    note = row['Note']
+                wish = Wish.objects.filter(employee=user, date=date)
+                if not wish:
+                    wish = Wish(
+                        employee=user,
+                        date=date,
+                        is_available=is_available,
+                        start_time=start_time,
+                        end_time=end_time,
+                        tendency=tendency,
+                        note=note
+                    )
+                    wish.save()
+                else:
+                    wish.update(
+                        start_time=start_time,
+                        end_time=end_time,
+                        is_available=is_available,
+                        tendency=tendency,
+                        note=note
+                    )
+
+            return redirect('wishes')
+        return render(request, 'datamanagement/import_wishes.html', {'form': form})
+    # GET request
+    else:
+        form = FileForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'datamanagement/import_wishes.html', context)
+
+
+def import_shift_templates(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = request.FILES['file_upload']
+            # import shifts
+            shifts = pd.read_excel(data, sheet_name='Shifts')
+            for index, row in shifts.iterrows():
+                name = row['Name']
+                department = Department.objects.get(name__iexact=row['Department'])
+                start_time = row['Start']
+                end_time = row['End']
+                break_duration = row['Break']
+                if row['Note'] is numpy.nan:
+                    note = ''
+                else:
+                    note = row['Note']
+                shift_template = ShiftTemplate.objects.filter(name__iexact=name)
+                if not shift_template:
+                    shift_template = ShiftTemplate(
+                        name=name,
+                        department=department,
+                        start_time=start_time,
+                        end_time=end_time,
+                        break_duration=break_duration,
+                        note=note
+                    )
+                    shift_template.save()
+                else:
+                    shift_template.update(
+                        department=department,
+                        start_time=start_time,
+                        end_time=end_time,
+                        break_duration=break_duration,
+                        note=note
+                    )
+                # cleanup associated qualifications
+                shift_template_qualifications = ShiftTemplateQualifications.objects \
+                    .filter(shift_template__name__iexact=name)
+                shift_template_qualifications.delete()
+            # import associated qualifications
+            qualifications = pd.read_excel(data, sheet_name='Qualifications')
+            for index, row in qualifications.iterrows():
+                shift_template = ShiftTemplate.objects.get(name__iexact=row['Shift'])
+                qualification = Qualification.objects.get(name__iexact=row['Qualification'])
+                shift_template_qualification = ShiftTemplateQualifications(
+                    shift_template=shift_template,
+                    qualification=qualification
+                )
+                shift_template_qualification.save()
+
+            return redirect('shift_templates')
+        return render(request, 'datamanagement/import_shift_templates.html', {'form': form})
+    # GET request
+    else:
+        form = FileForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'datamanagement/import_shift_templates.html', context)
+
+
+def import_day_templates(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = request.FILES['file_upload']
+            # import day templates
+            day_templates = pd.read_excel(data, sheet_name='Templates')
+            for index, row in day_templates.iterrows():
+                name = row['Name']
+                if row['Description'] is numpy.nan:
+                    description = ''
+                else:
+                    description = row['Description']
+                day_template = DayTemplate.objects.filter(name__iexact=name)
+                if not day_template:
+                    day_template = DayTemplate(
+                        name=name,
+                        description=description
+                    )
+                    day_template.save()
+                else:
+                    day_template.update(
+                        description=description
+                    )
+                # delete assigned shifts for cleanup
+                day_shift_template = DayShiftTemplates.objects \
+                    .filter(day_template__name__iexact=name)
+                day_shift_template.delete()
+            # import assigned shifts
+            shifts = pd.read_excel(data, sheet_name='Shifts')
+            for index, row in shifts.iterrows():
+                day_template = DayTemplate.objects.get(name__iexact=row['Template'])
+                shift_template = ShiftTemplate.objects.get(name__iexact=row['Shift'])
+                day_shift_template = DayShiftTemplates(
+                    day_template=day_template,
+                    shift_template=shift_template
+                )
+                day_shift_template.save()
+
+            return redirect('day_templates')
+        return render(request, 'datamanagement/import_day_templates.html', {'form': form})
+    # GET request
+    else:
+        form = FileForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'datamanagement/import_day_templates.html', context)

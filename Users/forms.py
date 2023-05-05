@@ -48,3 +48,11 @@ class SetPasswordFormImpl(SetPasswordForm):
     class Meta:
         model = User
         fields = ['new_password1', 'new_password2']
+
+
+class SearchForm(forms.ModelForm):
+    search = forms.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['search']

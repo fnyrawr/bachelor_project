@@ -3,6 +3,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import (
     login as auth_login,
 )
+from django.core.paginator import Paginator
+from django.db.models import CharField, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
@@ -10,7 +12,7 @@ from django.views.generic import CreateView
 from Departments.models import Department
 from Qualifications.models import Qualification
 from .models import User, EmployeesQualifications
-from .forms import CustomUserForm, SetPasswordFormImpl
+from .forms import CustomUserForm, SetPasswordFormImpl, SearchForm
 
 
 class CustomLoginView(LoginView):
@@ -201,34 +203,69 @@ def delete_user(request, **kwargs):
 
 
 def user_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
     if request.method == "POST":
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        keyword = data['keyword']
+        # perform search over all CharFields
+        fields = [f for f in User._meta.fields if isinstance(f, CharField)]
+        queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+        entries = User.objects.filter(qs) | User.objects.filter(department__name__icontains=keyword)
     else:
-        all_entries = User.objects.order_by('first_name').order_by('last_name')
+        entries = User.objects.order_by('first_name').order_by('last_name')
 
-    context = {'all_entries': all_entries}
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
+    }
     return render(request, 'users/user_list.html', context)
 
 
 def employee_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
-    if request.method == "POST":
+    if request.method == 'POST':
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        keyword = data['keyword']
+        # perform search over all CharFields
+        fields = [f for f in User._meta.fields if isinstance(f, CharField)]
+        queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+        entries = User.objects.filter(qs) | User.objects.filter(department__name__icontains=keyword)
     else:
-        all_entries = User.objects.filter(role='P') | User.objects.filter(role='E')\
-                      | User.objects.filter(role='A')
-        all_entries.order_by('first_name').order_by('last_name')
-        # add qualifications as list to each entry
-        for entry in all_entries:
-            qualifications = EmployeesQualifications.objects.filter(employee_id=entry.id).order_by('qualification__name')
-            entry.qualifications = qualifications
+        entries = User.objects.all()
+    entries.order_by('first_name').order_by('last_name')
+    # add qualifications as list to each entry
+    for entry in entries:
+        qualifications = EmployeesQualifications.objects.filter(employee_id=entry.id).order_by('qualification__name')
+        entry.qualifications = qualifications
 
-    context = {'all_entries': all_entries}
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
+    }
     return render(request, 'users/employee_list.html', context)

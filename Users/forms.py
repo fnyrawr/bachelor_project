@@ -51,8 +51,8 @@ class SetPasswordFormImpl(SetPasswordForm):
 
 
 class SearchForm(forms.ModelForm):
-    search = forms.CharField(required=False)
+    keyword = forms.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ['search']
+        fields = ['keyword']

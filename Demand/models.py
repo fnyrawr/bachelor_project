@@ -26,9 +26,9 @@ class Demand(models.Model):
         verbose_name_plural = 'Departments'
 
     def __str__(self):
-        return self.department + ' on ' + self.get_weekday_display() + ' between ' +\
-               self.start_time + ' and ' + self.end_time
+        return self.department.name + ' on ' + self.get_weekday_display() + ' between ' +\
+               str(self.start_time) + ' and ' + str(self.end_time)
 
     def __repr__(self):
-        return self.department + ' / ' + self.weekday + ' / ' + self.start_time + ' / ' + self.end_time +\
-               ' / ' + self.staff_count
+        return self.department.name + ' / ' + self.get_weekday_display() + ' / ' +\
+               str(self.start_time) + ' / ' + str(self.end_time) + ' / ' + str(self.staff_count)

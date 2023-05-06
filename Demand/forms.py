@@ -28,3 +28,13 @@ class DemandForm(forms.ModelForm):
     class Meta:
         model = Demand
         fields = ['department', 'weekday', 'start_time', 'end_time', 'staff_count', 'note']
+
+
+class SearchForm(forms.ModelForm):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), to_field_name='name',
+                                        empty_label='Select department')
+    weekday = forms.ChoiceField(choices=WEEKDAYS)
+
+    class Meta:
+        model = Demand
+        fields = ['department', 'weekday']

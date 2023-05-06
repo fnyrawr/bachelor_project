@@ -8,7 +8,7 @@
             <li {% if search %}class="active"{% endif %}>
                 <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
                 <div class="collapsible-body grey lighten-5">
-                    <form method="POST" action="{% url 'employees' %}">
+                    <form method="POST" action="{% url 'users' %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="input-field col s12 m6">

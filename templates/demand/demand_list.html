@@ -4,7 +4,42 @@
 {% block content %}
     {% if user.is_authorized %}
         <h3 class="light-blue-text text-darken-1">Demand</h3>
-        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_demand' %}"><i class="material-icons left">add</i>Create demand</a><br><br>
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
+                <div class="collapsible-body grey lighten-5">
+                    <form method="POST" action="{% url 'demand' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">local_offer</i>
+                                <select name="department">
+                                    {% for department in departments %}
+                                        <option value="{{ department.id }}" {% if data.department == department.id %}selected{% endif %}>{{ department.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Department</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">local_offer</i>
+                                <select name="weekday">
+                                    {% for weekday in form.weekday %}
+                                        <option value="{{ weekday.data.value }}" {% if data.weekday == weekday.data.value %}selected{% endif %}>{{ weekday.data.label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Weekday</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
+                        {% if search %}
+                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'demand' %}"><i class="material-icons left">clear</i>Clear</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_demand' %}"><i class="material-icons left">add</i>Create demand</a><br><br>{% endif %}
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -20,7 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for entry in all_entries %}
+                        {% for entry in page_obj %}
                         <tr>
                             <td>{{ entry.department }}</td>
                             <td>{{ entry.get_weekday_display }}</td>
@@ -35,8 +70,31 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <br>
+                <img src='data:image/png;base64,{{ timeline }}' style="width: 100%">
             </div>
         </div>
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+        <ul class="pagination center">
+            {% if page_obj.has_previous %}
+                <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+            {% else %}
+                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+            {% endif %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page == page_obj.number %}
+                    <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
+                {% else %}
+                    <li class="waves-effect"><a href="?page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+            {% else %}
+                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+            {% endif %}
+        </ul>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

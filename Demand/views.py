@@ -1,10 +1,14 @@
+import base64
+
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
-from Demand.forms import DemandForm
+from Demand.forms import DemandForm, SearchForm
 from Demand.models import Demand
 from Departments.models import Department
+from utils.create_timeline import draw_timeline
 
 
 class DemandCreationView(CreateView):
@@ -66,16 +70,37 @@ def delete_demand(request, **kwargs):
 
 
 def demand_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
     if request.method == "POST":
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        department = data['department']
+        weekday = data['weekday']
+        entries = Demand.objects.filter(department=department) & Demand.objects.filter(weekday=weekday)
     else:
-        all_entries = Demand.objects.order_by('department__name')
+        entries = Demand.objects.all()
+    entries.order_by('department__name')
+    departments = Department.objects.all()
+
+    # get timeline rendered
+    contents = draw_timeline(entries)
+    timeline = base64.b64encode(contents).decode()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'all_entries': all_entries,
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data,
+        'departments': departments,
+        'timeline': timeline
     }
+
     return render(request, 'demand/demand_list.html', context)

@@ -29,8 +29,7 @@ class Department(models.Model):
         return work_hours
 
     def get_qualifications(self):
-        qualifications = DepartmentQualifications.objects.filter(department=self)
-        return qualifications
+        return DepartmentQualifications.objects.filter(department=self)
 
     def __str__(self):
         return self.name

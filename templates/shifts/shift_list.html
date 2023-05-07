@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Shifts{% endblock %}
+
+{% block content %}
+    {% if user.is_authorized %}
+        <h3 class="light-blue-text text-darken-1">Shifts</h3>
+        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_shift' %}"><i class="material-icons left">add</i>Create shift</a><br><br>
+        <div class="card">
+            <div class="card-content">
+                <table class="striped highlight responsive-table">
+                    <thead class="light-blue-text text-darken-1">
+                        <tr>
+                            <th>Date<br>Time</th>
+                            <th>Work hours<br>Break</th>
+                            <th>Qualifications</th>
+                            <th>Department</th>
+                            <th>Employee</th>
+                            <th>Note</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in all_entries %}
+                        <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
+                            <td>
+                                {{ entry.get_date|date:"l" }}<br>
+                                <b>{{ entry.get_date|date:"m.d.Y" }}</b><br>
+                                <b>{{ entry.get_start_time|date:"H:i" }} - {{ entry.get_end_time|date:"H:i" }}</b>
+                            </td>
+                            <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
+                            <td>
+                                {% for qualification in entry.get_qualifications %}
+                                    <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                        <b>{{ qualification.qualification.name }}</b>
+                                    </span><br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if entry.employee != None and entry.employee.department != entry.department %}
+                                    <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
+                                        <b>{{ entry.department }}</b>
+                                    </span>
+                                {% else %}
+                                    {{ entry.department }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ entry.employee.first_name }}<br>
+                                <b>{{ entry.employee.last_name }}</b><br>
+                                {% if entry.employee != None and entry.employee.department != entry.department %}
+                                    <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
+                                        <b>{{ entry.employee.department }}</b>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ entry.note }}</td>
+                            {% if user.is_admin %}
+                                <td>
+                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift' entry.id %}"><i class="material-icons">edit</i></a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Demand.apps.DemandConfig',
     'ShiftTemplates.apps.ShifttemplatesConfig',
     'DayTemplates.apps.DaytemplatesConfig',
+    'Shifts.apps.ShiftsConfig',
     'Availabilities.apps.AvailabilitiesConfig',
     'Wishes.apps.WishesConfig',
     'Absences.apps.AbsencesConfig',

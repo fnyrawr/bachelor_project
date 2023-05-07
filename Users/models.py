@@ -34,6 +34,9 @@ class User(AbstractUser):
     class Meta:
         ordering = ['last_name', 'first_name', 'start_contract']
 
+    def get_qualifications(self):
+        return EmployeesQualifications.objects.filter(employee=self)
+
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 

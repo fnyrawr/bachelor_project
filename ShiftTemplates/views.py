@@ -32,7 +32,7 @@ def add_qualification(request, **kwargs):
     selected_shift_template = ShiftTemplate.objects.get(id=shift_template_id)
     selected_qualification = Qualification.objects.get(id=qualification_id)
     if not ShiftTemplateQualifications.objects\
-            .filter(shift_template=selected_shift_template, qualification=selected_qualification).exists():
+            .filter(shift_template_id=selected_shift_template, qualification=qualification_id).exists():
         ShiftTemplateQualifications.objects.create(shift_template=selected_shift_template,
                                                    qualification=selected_qualification)
 
@@ -43,10 +43,8 @@ def remove_qualification(request, **kwargs):
     shift_template_id = kwargs['pk1']
     qualification_id = kwargs['pk2']
 
-    selected_user = ShiftTemplate.objects.get(id=shift_template_id)
-    selected_qualification = Qualification.objects.get(id=qualification_id)
     entry = ShiftTemplateQualifications.objects.filter(shift_template=shift_template_id,
-                                                       qualification=selected_qualification)
+                                                       qualification=qualification_id)
     if entry is not None:
         entry.delete()
 

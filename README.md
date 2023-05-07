@@ -171,14 +171,13 @@ Follow all steps by order:
 - shift_id
 - department
 - employee
-- date
-- start_time
-- end_time
+- start
+- end
 - break_duration
 - note
 - highlight
 
-> `Important` `ToDo` `date`
+> `Important` `Done` `2023-05-07`
 
 ## Functions
 ### Needed
@@ -206,7 +205,7 @@ Follow all steps by order:
   - [x] Manage Shift templates [admin]
   - [x] Manage Day templates [admin]
   - [ ] Timeline view
-  - [ ] Create shifts for dates
+  - [x] Create shifts for dates
   - [ ] Copy day templates to dates
   - [ ] Cloning weeks
   - [ ] Assign employees
@@ -230,5 +229,5 @@ Follow all steps by order:
   - [x] Importer for DayTemplates
   - [x] Importer for General availabilities
   - [x] Importer for Shift wishes
-  - [ ] Importer for Shifts
+  - [x] Importer for Shifts
   - [ ] Exporting data

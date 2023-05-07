@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import numpy
 from django.shortcuts import render, redirect
 import pandas as pd
@@ -10,6 +12,7 @@ from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Departments.models import Department, DepartmentQualifications
 from ShiftTemplates.models import ShiftTemplate, ShiftTemplateQualifications
+from Shifts.models import Shift
 from Users.models import User, EmployeesQualifications
 from Wishes.models import Wish
 from .forms import FileForm
@@ -386,7 +389,7 @@ def import_availabilities(request):
                 else:
                     end_time = row['End']
                 tendency = None
-                if row['Tendency'] is not 0:
+                if row['Tendency'] != 0:
                     tendency = row['Tendency']
                 if row['Note'] is numpy.nan:
                     note = ''
@@ -447,7 +450,7 @@ def import_wishes(request):
                 else:
                     end_time = row['End']
                 tendency = None
-                if row['Tendency'] is not 0:
+                if row['Tendency'] != 0:
                     tendency = row['Tendency']
                 if row['Note'] is numpy.nan:
                     note = ''
@@ -595,3 +598,57 @@ def import_day_templates(request):
             'form': form
         }
         return render(request, 'datamanagement/import_day_templates.html', context)
+
+
+def import_shifts(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = request.FILES['file_upload']
+            # import shifts
+            df = pd.read_excel(data)
+            for index, row in df.iterrows():
+                date = str(row['Date'])
+                start_time = str(row['Start'])
+                end_time = str(row['End'])
+                # set dates
+                start = date + ' ' + start_time
+                if datetime.strptime(start_time, '%H:%M:%S') < datetime.strptime(end_time, '%H:%M:%S'):
+                    end = date + ' ' + end_time
+                else:
+                    end = (datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)) \
+                                           .strftime('%Y-%m-%d') + ' ' + end_time
+                break_duration = row['Break']
+                if row['Username'] is numpy.nan:
+                    employee = None
+                else:
+                    employee = User.objects.get(username__iexact=row['Username'])
+                department = Department.objects.get(name__iexact=row['Department'])
+                if row['Note'] is numpy.nan:
+                    note = ''
+                else:
+                    note = row['Note']
+                if row['Highlight'] == 'Yes':
+                    highlight = True
+                else:
+                    highlight = False
+                shift = Shift(
+                    start=start,
+                    end=end,
+                    break_duration=break_duration,
+                    department=department,
+                    employee=employee,
+                    note=note,
+                    highlight=highlight
+                )
+                shift.save()
+
+            return redirect('shifts')
+        return render(request, 'datamanagement/import_shifts.html', {'form': form})
+    # GET request
+    else:
+        form = FileForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'datamanagement/import_shifts.html', context)

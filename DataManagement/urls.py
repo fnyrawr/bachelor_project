@@ -14,4 +14,5 @@ urlpatterns = [
     path('wishes/', views.import_wishes, name='import_wishes'),
     path('shift_templates/', views.import_shift_templates, name='import_shift_templates'),
     path('day_templates/', views.import_day_templates, name='import_day_templates'),
+    path('shifts/', views.import_shifts, name='import_shifts'),
 ]

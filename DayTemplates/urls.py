@@ -8,6 +8,7 @@ urlpatterns = [
     path('show/<int:pk>', views.view_day_template, name='view_day_template'),
     path('edit/<int:pk>', views.edit_day_template, name='edit_day_template'),
     path('delete/<int:pk>', views.delete_day_template, name='delete_day_template'),
+    path('paste/<int:pk>', views.paste_shifts_to_date, name='paste_to_date'),
     # DayShiftTemplates
     path('show/<int:pk1>/add_shift_template/<int:pk2>', views.add_shift_template,
          name='add_shift_template'),

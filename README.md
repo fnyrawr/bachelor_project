@@ -206,7 +206,7 @@ Follow all steps by order:
   - [x] Manage Day templates [admin]
   - [ ] Timeline view
   - [x] Create shifts for dates
-  - [ ] Copy day templates to dates
+  - [x] Copy day templates to dates
   - [ ] Cloning weeks
   - [x] Assign employees
     - [x] Filter out already assigned that day

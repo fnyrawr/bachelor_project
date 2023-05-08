@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
+
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from ShiftTemplates.models import ShiftTemplate, ShiftTemplateQualifications
-from .forms import DayTemplateForm
+from Shifts.models import Shift, ShiftQualifications
+from .forms import DayTemplateForm, PasteTemplateForm
 from .models import DayTemplate, DayShiftTemplates
 
 
@@ -96,6 +99,48 @@ def delete_day_template(request, **kwargs):
     selected_day_template.delete()
     messages.success(request, "Day template successfully deleted.")
     return redirect('day_templates')
+
+
+def paste_shifts_to_date(request, **kwargs):
+    day_template_id = kwargs['pk']
+
+    if request.method == "POST":
+        form = PasteTemplateForm(request.POST)
+        data = form.data
+        shifts = DayShiftTemplates.objects.filter(day_template=day_template_id)
+        to_date = data['to_date']
+
+        for shift in shifts:
+            start = to_date + ' ' + str(shift.shift_template.start_time)[:5]
+            if shift.shift_template.start_time < shift.shift_template.end_time:
+                end = to_date + ' ' + str(shift.shift_template.end_time)[:5]
+            else:
+                end = (datetime.strptime(to_date, '%Y-%m-%d') + timedelta(days=1)) \
+                                  .strftime('%Y-%m-%d') + ' ' + str(shift.shift_template.end_time)[:5]
+            start = datetime.strptime(start, "%Y-%m-%d %H:%M")
+            end = datetime.strptime(end, "%Y-%m-%d %H:%M")
+            qualifications = shift.shift_template.get_qualifications()
+
+            new_shift = Shift(
+                department=shift.shift_template.department,
+                employee=None,
+                start=start,
+                end=end,
+                break_duration=shift.shift_template.break_duration,
+                note=shift.shift_template.note,
+                highlight=False
+            )
+            new_shift.save()
+            for qualification in qualifications:
+                print(qualification.qualification)
+                new_qualification = ShiftQualifications(
+                    shift=new_shift,
+                    qualification=qualification.qualification
+                )
+                new_qualification.save()
+        messages.success(request, "Successfully pasted shifts.")
+
+    return redirect('view_day_template', pk=day_template_id)
 
 
 def view_day_template(request, **kwargs):

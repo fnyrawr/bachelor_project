@@ -35,6 +35,19 @@
                         </div>
                     </div>
                 {% endif %}
+                <form method="POST" action="{% url 'paste_to_date' selected_day_template.id %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <i class="material-icons prefix">event_calendar</i>
+                            <input id="id_to_date" name="to_date" type="text" required class="datepicker grey-text text-darken-4">
+                            <label for="id_to_date">Date</label>
+                        </div>
+                        <div class="col s4">
+                            <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Paste to date</button>
+                        </div>
+                    </div>
+                </form>
                 {% if user.is_admin %}
                     <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
                 {% endif %}

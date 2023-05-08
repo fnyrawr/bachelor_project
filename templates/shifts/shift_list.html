@@ -24,7 +24,7 @@
                         <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
                             <td>
                                 {{ entry.get_date|date:"l" }}<br>
-                                <b>{{ entry.get_date|date:"m.d.Y" }}</b><br>
+                                <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
                                 <b>{{ entry.get_start_time|date:"H:i" }} - {{ entry.get_end_time|date:"H:i" }}</b>
                             </td>
                             <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>

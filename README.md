@@ -208,7 +208,9 @@ Follow all steps by order:
   - [x] Create shifts for dates
   - [ ] Copy day templates to dates
   - [ ] Cloning weeks
-  - [ ] Assign employees
+  - [x] Assign employees
+    - [x] Filter out already assigned that day
+    - [ ] Filter out absent/holiday
     - [ ] Assign helper with AI tools / rule based
 - [ ] My account
   - [x] Overview base data [all users]

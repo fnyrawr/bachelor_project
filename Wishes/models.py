@@ -25,6 +25,22 @@ class Wish(models.Model):
         verbose_name = 'Wish'
         verbose_name_plural = 'Wishes'
 
+    def get_availability(self):
+        return self.is_available
+
+    def get_preference(self):
+        return self.get_tendency_display()
+
+    def get_start_time(self):
+        if self.start_time:
+            return str(self.start_time.strftime('%H:%M'))
+        return None
+
+    def get_end_time(self):
+        if self.end_time:
+            return str(self.end_time.strftime('%H:%M'))
+        return None
+
     def __str__(self):
         return self.employee + ' on ' + self.date + ' is available ' + self.is_available
 

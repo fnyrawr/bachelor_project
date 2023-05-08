@@ -7,6 +7,8 @@ urlpatterns = [
     path('create/', views.ShiftCreationView.as_view(), name='create_shift'),
     # path('show/<int:pk>', views.view_shift, name='view_shift'),
     path('edit/<int:pk>', views.edit_shift, name='edit_shift'),
+    path('assign/<int:pk1>/employee/<int:pk2>', views.assign_employee, name='assign_employee'),
+    path('remove/<int:pk>', views.remove_employee, name='remove_employee'),
     path('delete/<int:pk>', views.delete_shift, name='delete_shift'),
     # ShiftQualifications
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification,

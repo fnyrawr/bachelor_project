@@ -1,12 +1,16 @@
 from datetime import datetime, timedelta
 
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
+from Absences.models import Absence
+from Availabilities.models import Availability
 from Departments.models import Department
 from Qualifications.models import Qualification
 from Users.models import User
+from Wishes.models import Wish
 from .forms import ShiftForm
 from .models import Shift, ShiftQualifications
 
@@ -24,8 +28,8 @@ class ShiftCreationView(CreateView):
         if datetime.strptime(data['start_time'], '%H:%M') < datetime.strptime(data['end_time'], '%H:%M'):
             data['end'] = data['date'] + ' ' + data['end_time']
         else:
-            data['end'] = (datetime.strptime(data['date'], '%Y-%m-%d') + timedelta(days=1))\
-                .strftime('%Y-%m-%d') + ' ' + data['end_time']
+            data['end'] = (datetime.strptime(data['date'], '%Y-%m-%d') + timedelta(days=1)) \
+                              .strftime('%Y-%m-%d') + ' ' + data['end_time']
         data._mutable = False
         form = self.form_class(data=data)
         if form.is_valid():
@@ -77,7 +81,7 @@ def edit_shift(request, **kwargs):
             post_data['end'] = post_data['date'] + ' ' + post_data['end_time']
         else:
             post_data['end'] = (datetime.strptime(post_data['date'], '%Y-%m-%d') + timedelta(days=1)) \
-                              .strftime('%Y-%m-%d') + ' ' + post_data['end_time']
+                                   .strftime('%Y-%m-%d') + ' ' + post_data['end_time']
         post_data._mutable = False
 
         form = ShiftForm(post_data)
@@ -103,11 +107,35 @@ def edit_shift(request, **kwargs):
         return redirect('shifts')
     # GET request
     else:
+        weekday = selected_shift.start.weekday() + 1
+        date = selected_shift.start
         associated_qualifications = ShiftQualifications.objects.filter(shift=selected_shift)
         non_associated_qualifications = Qualification.objects.all().exclude(
             id__in=associated_qualifications.values('qualification'))
         departments = Department.objects.all()
         employees = User.objects.all()
+        # absences and holidays to filter out (date range not working correctly)
+        # for employee in employees:
+        #     if Absence.objects.filter(employee=employee, start_date__lte=date).exists():
+        #         absence = Absence.objects.get(employee=employee, start_date__lte=date)
+        #         print(absence.employee.username + ' ' + str(absence.start_date) + ' ' + str(absence.end_date))
+
+        for employee in employees:
+            if Shift.objects.filter(employee=employee,
+                                    start__year=date.year,
+                                    start__month=date.month,
+                                    start__day=date.day).exists():
+                employees = employees.exclude(id=employee.id)
+
+        for employee in employees:
+            employee.available = None
+            if Availability.objects.filter(employee=employee, weekday=weekday).exists():
+                employee.available = Availability.objects.get(employee=employee, weekday=weekday)
+        for employee in employees:
+            employee.wish = None
+            if Wish.objects.filter(employee=employee, date=date).exists():
+                employee.wish = Wish.objects.get(employee=employee, date=date)
+
         form = ShiftForm()
         context = {
             'form': form,
@@ -118,6 +146,21 @@ def edit_shift(request, **kwargs):
             'associated_qualifications': associated_qualifications
         }
         return render(request, 'shifts/edit_shift.html', context)
+
+
+def assign_employee(request, **kwargs):
+    shift_id = kwargs['pk1']
+    employee_id = kwargs['pk2']
+
+    Shift.objects.filter(id=shift_id).update(employee=employee_id)
+    return redirect('edit_shift', pk=shift_id)
+
+
+def remove_employee(request, **kwargs):
+    shift_id = kwargs['pk']
+
+    Shift.objects.filter(id=shift_id).update(employee=None)
+    return redirect('edit_shift', pk=shift_id)
 
 
 def delete_shift(request, **kwargs):

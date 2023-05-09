@@ -9,6 +9,7 @@ from django.views.generic import CreateView
 from Absences.models import Absence
 from Availabilities.models import Availability
 from Departments.models import Department
+from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
@@ -115,12 +116,16 @@ def edit_shift(request, **kwargs):
             id__in=associated_qualifications.values('qualification'))
         departments = Department.objects.all()
         employees = User.objects.all()
-        # absences and holidays to filter out (date range not working correctly)
-        # for employee in employees:
-        #     if Absence.objects.filter(employee=employee, start_date__lte=date).exists():
-        #         absence = Absence.objects.get(employee=employee, start_date__lte=date)
-        #         print(absence.employee.username + ' ' + str(absence.start_date) + ' ' + str(absence.end_date))
 
+        # absences and holidays to filter out
+        for employee in employees:
+            if Absence.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
+                employees = employees.exclude(id=employee.id)
+        for employee in employees:
+            if Holiday.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
+                employees = employees.exclude(id=employee.id)
+
+        # already assigned employees of this day to filter out
         for employee in employees:
             if Shift.objects.filter(employee=employee,
                                     start__year=date.year,
@@ -128,6 +133,7 @@ def edit_shift(request, **kwargs):
                                     start__day=date.day).exists():
                 employees = employees.exclude(id=employee.id)
 
+        # get availabilities and wishes for remaining
         for employee in employees:
             employee.available = None
             if Availability.objects.filter(employee=employee, weekday=weekday).exists():

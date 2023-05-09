@@ -35,6 +35,22 @@ STATUS_search = [
     (3, 'approved'),
 ]
 
+MONTHS = [
+    (0, 'All'),
+    (1, 'January'),
+    (2, 'February'),
+    (3, 'March'),
+    (4, 'April'),
+    (5, 'May'),
+    (6, 'June'),
+    (7, 'July'),
+    (8, 'August'),
+    (9, 'September'),
+    (10, 'October'),
+    (11, 'November'),
+    (12, 'December'),
+]
+
 
 class AbsenceForm(forms.ModelForm):
     employee = forms.ModelChoiceField(queryset=User.objects.all(),
@@ -51,6 +67,8 @@ class AbsenceForm(forms.ModelForm):
 
 
 class SearchForm(forms.ModelForm):
+    filter_year = forms.CharField(max_length=4, required=False)
+    filter_month = forms.ChoiceField(choices=MONTHS)
     filter_date = forms.DateField(required=False)
     keyword = forms.CharField(required=False)
     filter_status = forms.ChoiceField(choices=STATUS_search)
@@ -58,4 +76,4 @@ class SearchForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['filter_date', 'filter_status', 'filter_reason', 'keyword']
+        fields = ['filter_year', 'filter_month', 'filter_date', 'filter_status', 'filter_reason', 'keyword']

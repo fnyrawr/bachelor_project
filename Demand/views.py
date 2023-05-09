@@ -100,7 +100,8 @@ def demand_list(request):
         'form': SearchForm,
         'data': data,
         'departments': departments,
-        'timeline': timeline
+        'timeline': timeline,
+        'range': range(24)
     }
 
     return render(request, 'demand/demand_list.html', context)

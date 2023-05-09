@@ -13,6 +13,22 @@
                         <div class="row">
                             <div class="input-field col s6 m4">
                                 <i class="material-icons prefix">event_calendar</i>
+                                <input id="id_filter_year" name="filter_year" type="text" maxlength="4" {% if data.filter_year %}value="{{ data.filter_year }}"{% endif %} class="grey-text text-darken-4">
+                                <label for="id_filter_year">Year</label>
+                            </div>
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">event_calendar</i>
+                                <select name="filter_month">
+                                    {% for month in form.filter_month %}
+                                        <option value="{{ month.data.value }}" {% if data.filter_month == month.data.value %}selected{% endif %}>{{ month.data.label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Month</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">event_calendar</i>
                                 <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
                                 <label for="id_filter_date">Filter date</label>
                             </div>

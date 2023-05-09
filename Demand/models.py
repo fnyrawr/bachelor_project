@@ -25,6 +25,12 @@ class Demand(models.Model):
         verbose_name = 'Department'
         verbose_name_plural = 'Departments'
 
+    def get_start_hour(self):
+        return self.start_time.hour
+
+    def get_end_hour(self):
+        return self.end_time.hour
+
     def __str__(self):
         return self.department.name + ' on ' + self.get_weekday_display() + ' between ' +\
                str(self.start_time) + ' and ' + str(self.end_time)

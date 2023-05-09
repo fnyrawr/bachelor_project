@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
@@ -11,7 +12,7 @@ from Departments.models import Department
 from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
-from .forms import ShiftForm
+from .forms import ShiftForm, SearchForm
 from .models import Shift, ShiftQualifications
 
 
@@ -172,20 +173,46 @@ def delete_shift(request, **kwargs):
 
 
 def shift_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
     if request.method == "POST":
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        keyword = data['keyword']
+        q_keyword = Q()
+        q_date = Q()
+
+        if keyword != '':
+            last_name = Q(employee__last_name__icontains=keyword)
+            first_name = Q(employee__first_name__icontains=keyword)
+            department = Q(department__name__icontains=keyword)
+            note = Q(note__icontains=keyword)
+            q_keyword = Q(last_name | first_name | department | note)
+        if filter_date != '':
+            q_date_start = Q(start__date__lte=filter_date)
+            q_date_end = Q(end__date__gte=filter_date)
+            q_date = Q(q_date_start & q_date_end)
+        q = Q(q_keyword & q_date)
+        entries = Shift.objects.filter(q)
     else:
-        all_entries = Shift.objects.all()
-        for entry in all_entries:
+        entries = Shift.objects.all()
+        for entry in entries:
             qualifications = ShiftQualifications.objects.filter(shift_id=entry.id).order_by(
                 'qualification__name')
             entry.qualifications = qualifications
 
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'all_entries': all_entries,
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
     }
     return render(request, 'shifts/shift_list.html', context)

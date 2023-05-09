@@ -18,3 +18,12 @@ class ShiftForm(forms.ModelForm):
     class Meta:
         model = Shift
         fields = ['start', 'end', 'department', 'employee', 'break_duration', 'note']
+
+
+class SearchForm(forms.ModelForm):
+    filter_date = forms.DateField(required=False)
+    keyword = forms.CharField(required=False)
+
+    class Meta:
+        model = Shift
+        fields = ['filter_date', 'keyword']

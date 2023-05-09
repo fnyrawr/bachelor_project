@@ -13,7 +13,7 @@ class Holiday(models.Model):
         (3, 'approved'),
     ]
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
-    start_date = models.DateField(default=timezone.now)
+    start_date = models.DateField()
     end_date = models.DateField()
     status = models.IntegerField(choices=STATUS, default=0)
     note = models.TextField(blank=True, null=True)
@@ -31,7 +31,8 @@ class Holiday(models.Model):
         return duration.days
 
     def __str__(self):
-        return self.employee + ' from ' + self.start_date + ' until ' + self.end_date
+        return self.employee.username + ' from ' + str(self.start_date) + ' until ' + str(self.end_date)
 
     def __repr__(self):
-        return self.employee + ' / ' + self.start_date + ' / ' + self.end_date + ' / ' + self.status + ' / ' + self.note
+        return self.employee.username + ' / ' + str(self.start_date) + ' / ' + str(self.end_date) + ' / ' +\
+               self.get_status_display() + ' / ' + self.note

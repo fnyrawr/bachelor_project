@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Users.models import User
 from .models import Holiday
-from .forms import HolidayForm
+from .forms import HolidayForm, SearchForm
 
 
 class HolidayCreationView(CreateView):
@@ -120,16 +122,50 @@ def own_holidays(request):
 
 
 def holiday_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
-    if request.method == "POST":
+    if request.method == 'POST':
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        filter_status = data['filter_status']
+        keyword = data['keyword']
+        # perform search over all CharFields
+        # fields = [f for f in Holiday._meta.fields if isinstance(f, CharField)]
+        # queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
+        # qs = Q()
+        # for query in queries:
+        #    qs = qs | query
+        q_keyword = Q()
+        q_status = Q()
+        q_date = Q()
+        if keyword != '':
+            last_name = Q(employee__last_name__icontains=keyword)
+            first_name = Q(employee__first_name__icontains=keyword)
+            note = Q(note__icontains=keyword)
+            q_keyword = Q(last_name | first_name | note)
+        if int(filter_status) > -1:
+            q_status = Q(status__exact=filter_status)
+        if filter_date != '':
+            q_date_start = Q(start_date__lte=filter_date)
+            q_date_end = Q(end_date__gte=filter_date)
+            q_date = Q(q_date_start & q_date_end)
+        q = Q(q_keyword & q_status & q_date)
+        entries = Holiday.objects.filter(q)
     else:
-        all_entries = Holiday.objects.all()
+        entries = Holiday.objects.all()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'all_entries': all_entries
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
     }
     return render(request, 'holidays/holiday_list.html', context)

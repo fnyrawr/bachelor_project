@@ -10,6 +10,14 @@ STATUS = [
     (3, 'approved'),
 ]
 
+STATUS_search = [
+    (-1, 'all'),
+    (0, 'sent'),
+    (1, 'not decided'),
+    (2, 'declined'),
+    (3, 'approved'),
+]
+
 
 class HolidayForm(forms.ModelForm):
     employee = forms.ModelChoiceField(queryset=User.objects.all(),
@@ -22,3 +30,13 @@ class HolidayForm(forms.ModelForm):
     class Meta:
         model = Holiday
         fields = ['employee', 'start_date', 'end_date', 'status', 'note']
+
+
+class SearchForm(forms.ModelForm):
+    filter_date = forms.DateField(required=False)
+    keyword = forms.CharField(required=False)
+    filter_status = forms.ChoiceField(choices=STATUS_search)
+
+    class Meta:
+        model = User
+        fields = ['filter_date', 'filter_status', 'keyword']

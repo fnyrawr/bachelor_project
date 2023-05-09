@@ -10,7 +10,16 @@ REASONS = [
     (3, 'business related'),
     (4, 'other reason')
 ]
+
 STATUS = [
+    (0, 'sent'),
+    (1, 'not decided'),
+    (2, 'declined'),
+    (3, 'approved'),
+]
+
+STATUS_search = [
+    (-1, 'all'),
     (0, 'sent'),
     (1, 'not decided'),
     (2, 'declined'),
@@ -30,3 +39,13 @@ class AbsenceForm(forms.ModelForm):
     class Meta:
         model = Absence
         fields = ['employee', 'start_date', 'end_date', 'reason', 'status', 'note']
+
+
+class SearchForm(forms.ModelForm):
+    filter_date = forms.DateField(required=False)
+    keyword = forms.CharField(required=False)
+    filter_status = forms.ChoiceField(choices=STATUS_search)
+
+    class Meta:
+        model = User
+        fields = ['filter_date', 'filter_status', 'keyword']

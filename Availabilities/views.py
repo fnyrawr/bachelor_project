@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Users.models import User
 from .models import Availability
-from .forms import AvailabilityForm
+from .forms import AvailabilityForm, SearchForm
 
 
 class AvailabilityCreationView(CreateView):
@@ -161,16 +163,43 @@ def own_availabilities(request):
 
 
 def availability_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
     if request.method == "POST":
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_weekday = data['filter_weekday']
+        filter_tendency = data['filter_tendency']
+        keyword = data['keyword']
+        q_weekday = Q()
+        q_tendency = Q()
+        q_keyword = Q()
+
+        if int(filter_weekday) > 0:
+            q_weekday = Q(weekday__exact=filter_weekday)
+        if int(filter_tendency) > -1:
+            q_tendency = Q(tendency__exact=filter_tendency)
+        if keyword != '':
+            last_name = Q(employee__last_name__icontains=keyword)
+            first_name = Q(employee__first_name__icontains=keyword)
+            note = Q(note__icontains=keyword)
+            q_keyword = Q(last_name | first_name | note)
+        q = Q(q_weekday & q_tendency & q_keyword)
+        entries = Availability.objects.filter(q)
     else:
-        all_entries = Availability.objects.all()
+        entries = Availability.objects.all()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'all_entries': all_entries
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
     }
     return render(request, 'availabilities/availability_list.html', context)

@@ -132,12 +132,6 @@ def holiday_list(request):
         filter_date = data['filter_date']
         filter_status = data['filter_status']
         keyword = data['keyword']
-        # perform search over all CharFields
-        # fields = [f for f in Holiday._meta.fields if isinstance(f, CharField)]
-        # queries = [Q(**{f.name + "__icontains": keyword}) for f in fields]
-        # qs = Q()
-        # for query in queries:
-        #    qs = qs | query
         q_keyword = Q()
         q_status = Q()
         q_date = Q()

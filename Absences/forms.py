@@ -18,6 +18,15 @@ STATUS = [
     (3, 'approved'),
 ]
 
+REASONS_search = [
+    (-1, 'all'),
+    (0, 'sickness (without medical proof)'),
+    (1, 'sickness (with medical proof)'),
+    (2, 'private related'),
+    (3, 'business related'),
+    (4, 'other reason')
+]
+
 STATUS_search = [
     (-1, 'all'),
     (0, 'sent'),
@@ -45,7 +54,8 @@ class SearchForm(forms.ModelForm):
     filter_date = forms.DateField(required=False)
     keyword = forms.CharField(required=False)
     filter_status = forms.ChoiceField(choices=STATUS_search)
+    filter_reason = forms.ChoiceField(choices=REASONS_search)
 
     class Meta:
         model = User
-        fields = ['filter_date', 'filter_status', 'keyword']
+        fields = ['filter_date', 'filter_status', 'filter_reason', 'keyword']

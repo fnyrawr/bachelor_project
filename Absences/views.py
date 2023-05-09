@@ -124,9 +124,11 @@ def absence_list(request):
         data = searchForm.data
         filter_date = data['filter_date']
         filter_status = data['filter_status']
+        filter_reason = data['filter_reason']
         keyword = data['keyword']
         q_keyword = Q()
         q_status = Q()
+        q_reason = Q()
         q_date = Q()
         if keyword != '':
             last_name = Q(employee__last_name__icontains=keyword)
@@ -135,11 +137,13 @@ def absence_list(request):
             q_keyword = Q(last_name | first_name | note)
         if int(filter_status) > -1:
             q_status = Q(status__exact=filter_status)
+        if int(filter_reason) > -1:
+            q_status = Q(reason__exact=filter_reason)
         if filter_date != '':
             q_date_start = Q(start_date__lte=filter_date)
             q_date_end = Q(end_date__gte=filter_date)
             q_date = Q(q_date_start & q_date_end)
-        q = Q(q_keyword & q_status & q_date)
+        q = Q(q_keyword & q_status & q_reason & q_date)
         entries = Absence.objects.filter(q)
     else:
         entries = Absence.objects.all()

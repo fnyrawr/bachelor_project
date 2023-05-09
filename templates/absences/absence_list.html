@@ -28,6 +28,20 @@
                                 <label>Status</label>
                             </div>
                             <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">event_calendar</i>
+                                <select name="filter_reason">
+                                    <option value="-1">All</option>
+                                    <option {% if data.filter_reason == '0' %}selected{% endif %} value="0">Sickness (without medical proof)</option>
+                                    <option {% if data.filter_reason == '1' %}selected{% endif %} value="1">Sickness (with medical proof)</option>
+                                    <option {% if data.filter_reason == '2' %}selected{% endif %} value="2">Private related</option>
+                                    <option {% if data.filter_reason == '3' %}selected{% endif %} value="3">Business related</option>
+                                    <option {% if data.filter_reason == '4' %}selected{% endif %} value="4">Other reason</option>
+                                </select>
+                                <label>Reason</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s6 m6">
                                 <i class="material-icons prefix">search</i>
                                 <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %}>
                                 <label for="id_keyword">Keyword</label>

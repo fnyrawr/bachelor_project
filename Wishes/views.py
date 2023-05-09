@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Users.models import User
 from .models import Wish
-from .forms import WishForm
+from .forms import WishForm, SearchForm
 
 
 class WishCreationView(CreateView):
@@ -161,16 +163,43 @@ def own_wishes(request):
 
 
 def wish_list(request):
-    all_entries = None
-    entries_found = None
+    data = None
     search = False
 
     if request.method == "POST":
         search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        filter_tendency = data['filter_tendency']
+        keyword = data['keyword']
+        q_date = Q()
+        q_tendency = Q()
+        q_keyword = Q()
+
+        if filter_date != '':
+            q_date = Q(date__exact=filter_date)
+        if int(filter_tendency) > -1:
+            q_tendency = Q(tendency__exact=filter_tendency)
+        if keyword != '':
+            last_name = Q(employee__last_name__icontains=keyword)
+            first_name = Q(employee__first_name__icontains=keyword)
+            note = Q(note__icontains=keyword)
+            q_keyword = Q(last_name | first_name | note)
+        q = Q(q_date & q_tendency & q_keyword)
+        entries = Wish.objects.filter(q)
     else:
-        all_entries = Wish.objects.all()
+        entries = Wish.objects.all()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'all_entries': all_entries
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data
     }
     return render(request, 'wishes/wish_list.html', context)

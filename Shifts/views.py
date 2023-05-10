@@ -180,6 +180,44 @@ def delete_shift(request, **kwargs):
     return redirect('shifts')
 
 
+def own_shifts(request):
+    data = None
+    search = False
+    user = request.user
+
+    if request.method == "POST":
+        entries = Shift.objects.filter(employee=user)
+        paginator = Paginator(entries, per_page=10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        timeline = None
+
+    else:
+        page_obj = None
+        today = datetime.today()
+        d_today = today.weekday()
+        filter_start = today - timedelta(days=7)
+        filter_end = today - timedelta(days=1)
+        recent_shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+        filter_start = today
+        filter_end = today + timedelta(days=6)
+        upcoming_shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+        entries = upcoming_shifts
+        timeline = None
+
+    context = {
+        'page_obj': page_obj,
+        'recent_shifts': recent_shifts,
+        'upcoming_shifts': upcoming_shifts,
+        'entries': entries.count(),
+        'search': search,
+        'form': SearchForm,
+        'data': data,
+        'timeline': timeline
+    }
+    return render(request, 'shifts/own_shifts.html', context)
+
+
 def shift_list(request):
     data = None
     search = False

@@ -25,7 +25,7 @@
         {% include 'registration/login.html' %}
 
         <ul id="userwidget" class="dropdown-content">
-            <li><a href="#!">My shifts</a></li>
+            <li><a href="{% url 'own_shifts' %}">My shifts</a></li>
             <li><a href="{% url 'own_availabilities' %}">My general availabilities</a></li>
             <li><a href="{% url 'own_wishes' %}">My shift wishes</a></li>
             <li class="divider"></li>

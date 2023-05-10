@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     # Shifts
     path('list/', views.shift_list, name='shifts'),
+    path('own/', views.own_shifts, name='own_shifts'),
     path('create/', views.ShiftCreationView.as_view(), name='create_shift'),
     # path('show/<int:pk>', views.view_shift, name='view_shift'),
     path('edit/<int:pk>', views.edit_shift, name='edit_shift'),

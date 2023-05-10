@@ -32,9 +32,11 @@ Follow all steps by order:
 > Deadline for bachelor thesis: 2022-07-11
 
 ### upcoming next ToDos
-- ~~importers~~ [done]
-- search and pagination [ToDo]
-- shifts [ToDo]
+- landing page [toDo]
+- dashboard (Admin/Planner/Employee) [toDo]
+- overview work hours [toDo]
+- employee assign helper [toDo]
+- data export [toDo]
 
 ## Database
 ### Employee
@@ -204,7 +206,7 @@ Follow all steps by order:
   - [x] Manage demand [admin]
   - [x] Manage Shift templates [admin]
   - [x] Manage Day templates [admin]
-  - [ ] Timeline view
+  - [x] Timeline view
   - [x] Create shifts for dates
   - [x] Copy day templates to dates
   - [ ] Cloning weeks

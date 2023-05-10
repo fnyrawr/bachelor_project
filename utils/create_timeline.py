@@ -11,7 +11,7 @@ def time_to_dec(t):
     return hours + minutes/60.0
 
 
-def draw_timeline(objects):
+def draw_timeline(objects, target):
     # (almost) empty image if no object is given
     if len(objects) == 0:
         bitmap = Image.new("RGB", (1000, 1), color='white')
@@ -29,12 +29,22 @@ def draw_timeline(objects):
     lst_rows = []
     lst_text = []
     rows_max = [0.0]
+    text_lines = 1
     for obj in objects:
-        t_start = time_to_dec(obj.start_time)
-        t_end = time_to_dec(obj.end_time)
+        if target == 'demand':
+            lst_text.append(str(obj.staff_count))
+            t_start = time_to_dec(obj.start_time)
+            t_end = time_to_dec(obj.end_time)
+        elif target == 'day_templates':
+            lst_text.append(obj.department.name + '\n' + obj.name)
+            t_start = time_to_dec(obj.start_time)
+            t_end = time_to_dec(obj.end_time)
+        else:
+            lst_text.append('')
+            t_start = 0
+            t_end = 0
         lst_start.append(t_start)
         lst_end.append(t_end)
-        lst_text.append(str(obj.staff_count))
         if t_start < t_min:
             t_min = math.floor(t_start)
         if t_end > t_max:
@@ -52,7 +62,7 @@ def draw_timeline(objects):
         lst_rows.append(i)
 
     # constants
-    h_row = 50
+    h_row = 75
     width = 1500
     height = h_row*(row_count+1)
     w_row = width / (t_max - t_min)
@@ -72,7 +82,7 @@ def draw_timeline(objects):
 
     # clear image
     fillcolor = white
-    fontsize = height / 4
+    fontsize = h_row / 3
     font = ImageFont.truetype(font_family, int(fontsize))
     img.rectangle((0, 0, width, height), fill=fillcolor, outline=fillcolor)
     # grid pattern
@@ -84,6 +94,8 @@ def draw_timeline(objects):
         img.rectangle((i*w_row, 0, (i+1)*w_row, height), fill=fillcolor, outline=fillcolor)
         img.text((i*w_row+mgs, 0+mgs), str(t_min+i), fill=black, font=font)
     # draw objects in timeline
+    fontsize = h_row / 4
+    font = ImageFont.truetype(font_family, int(fontsize))
     for i in range(len(objects)):
         fillcolor = blue
         start = lst_start[i]-t_min

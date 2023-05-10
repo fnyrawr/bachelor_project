@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timedelta
 
 from django.contrib import messages
@@ -6,6 +7,7 @@ from django.views.generic import CreateView
 
 from ShiftTemplates.models import ShiftTemplate, ShiftTemplateQualifications
 from Shifts.models import Shift, ShiftQualifications
+from utils.create_timeline import draw_timeline
 from .forms import DayTemplateForm, PasteTemplateForm
 from .models import DayTemplate, DayShiftTemplates
 
@@ -83,12 +85,21 @@ def edit_day_template(request, **kwargs):
             qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by(
                 'qualification__name')
             entry.qualifications = qualifications
+        # get timeline rendered
+        shift_templates = []
+        for template in associated_shift_templates:
+            shift_templates.append(template.shift_template)
+        timeline = None
+        if len(shift_templates) > 0:
+            contents = draw_timeline(shift_templates, 'day_templates')
+            timeline = base64.b64encode(contents).decode()
         form = DayTemplateForm()
         context = {
             'form': form,
             'selected_day_template': selected_day_template,
             'non_associated_shift_templates': non_associated_shift_templates,
-            'associated_shift_templates': associated_shift_templates
+            'associated_shift_templates': associated_shift_templates,
+            'timeline': timeline
         }
         return render(request, 'dayTemplates/edit_day_template.html', context)
 
@@ -151,9 +162,16 @@ def view_day_template(request, **kwargs):
         qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id) \
             .order_by('qualification__name')
         entry.qualifications = qualifications
+    # get timeline rendered
+    shift_templates = []
+    for template in associated_shift_templates:
+        shift_templates.append(template.shift_template)
+    contents = draw_timeline(shift_templates, 'day_templates')
+    timeline = base64.b64encode(contents).decode()
     context = {
         'selected_day_template': selected_day_template,
-        'associated_shift_templates': associated_shift_templates
+        'associated_shift_templates': associated_shift_templates,
+        'timeline': timeline
     }
     return render(request, 'dayTemplates/day_template_detail.html', context)
 

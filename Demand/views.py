@@ -82,7 +82,7 @@ def demand_list(request):
         entries = Demand.objects.filter(department=department) & Demand.objects.filter(weekday=weekday)
 
         # get timeline rendered
-        contents = draw_timeline(entries)
+        contents = draw_timeline(entries, 'demand')
         timeline = base64.b64encode(contents).decode()
     else:
         entries = Demand.objects.all()

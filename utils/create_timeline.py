@@ -11,14 +11,18 @@ def time_to_dec(t):
     return hours + minutes/60.0
 
 
+def empty_timeline():
+    bitmap = Image.new("RGB", (1000, 1), color='white')
+    with BytesIO() as output:
+        bitmap.save(output, format="PNG")
+        contents = output.getvalue()
+    return contents
+
+
 def draw_timeline(objects, target):
     # (almost) empty image if no object is given
     if len(objects) == 0:
-        bitmap = Image.new("RGB", (1000, 1), color='white')
-        with BytesIO() as output:
-            bitmap.save(output, format="PNG")
-            contents = output.getvalue()
-        return contents
+        return empty_timeline()
 
     # prepare rows
     t_min = 24
@@ -28,21 +32,40 @@ def draw_timeline(objects, target):
     lst_end = []
     lst_rows = []
     lst_text = []
+    lst_highlight = []  # 0: normal (blue) | 1: no employee (grey) | 2: highlighted (yellow)
     rows_max = [0.0]
     text_lines = 1
     for obj in objects:
+        # since data structure is different filter target
         if target == 'demand':
             lst_text.append(str(obj.staff_count))
+            lst_highlight.append(0)
             t_start = time_to_dec(obj.start_time)
             t_end = time_to_dec(obj.end_time)
         elif target == 'day_templates':
             lst_text.append(obj.department.name + '\n' + obj.name)
             t_start = time_to_dec(obj.start_time)
             t_end = time_to_dec(obj.end_time)
+            lst_highlight.append(0)
+        elif target == 'shifts':
+            if obj.employee:
+                employee = str(obj.employee)
+            else:
+                employee = '(not assigned)'
+            text = obj.department.name + '\n' + employee
+            if obj.note != '':
+                text += '\n' + obj.note
+            lst_text.append(text)
+            t_start = time_to_dec(obj.start)
+            t_end = time_to_dec(obj.end)
+            if obj.highlight:
+                lst_highlight.append(2)
+            elif not obj.employee:
+                lst_highlight.append(1)
+            else:
+                lst_highlight.append(0)
         else:
-            lst_text.append('')
-            t_start = 0
-            t_end = 0
+            return empty_timeline()
         if t_end < t_start:
             t_end += 24
         lst_start.append(t_start)
@@ -72,6 +95,7 @@ def draw_timeline(objects, target):
     black = PIL.ImageColor.getrgb('#000000')
     white = PIL.ImageColor.getrgb('#FFFFFF')
     blue = PIL.ImageColor.getrgb('#039BE5')
+    lightblue = PIL.ImageColor.getrgb('#29B6F6')
     amber = PIL.ImageColor.getrgb('#FFB300')
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
@@ -113,16 +137,24 @@ def draw_timeline(objects, target):
     fontsize = h_row / 4
     font = ImageFont.truetype(font_family, int(fontsize))
     for i in range(len(objects)):
-        fillcolor = blue
         start = lst_start[i]-t_min
         end = lst_end[i]-t_min
         tw, th = img.textsize(lst_text[i], font=font)
         w_center = start + (end-start)/2
         row = lst_rows[i]
         h_center = (row + 1) * h_row + h_row/2
+        if lst_highlight[i] == 1:
+            fillcolor = lightblue
+            textcolor = white
+        elif lst_highlight[i] == 2:
+            fillcolor = amber
+            textcolor = black
+        else:
+            fillcolor = blue
+            textcolor = white
         img.rounded_rectangle((start*w_row+mgs, (row+1)*h_row+mgs, end*w_row-mgs, (row+2)*h_row-mgs), radius=mgs,
                               fill=fillcolor, outline=fillcolor)
-        img.text((w_center*w_row-tw/2, h_center-th/2-mgs/2), lst_text[i], fill=white, font=font, align='center')
+        img.text((w_center*w_row-tw/2, h_center-th/2-mgs/2), lst_text[i], fill=textcolor, font=font, align='center')
 
     # save image and return it
     with BytesIO() as output:

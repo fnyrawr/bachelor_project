@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timedelta
 
 from django.contrib import messages
@@ -13,6 +14,7 @@ from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
+from utils.create_timeline import draw_timeline
 from .forms import ShiftForm, SearchForm
 from .models import Shift, ShiftQualifications
 
@@ -203,12 +205,17 @@ def shift_list(request):
             q_date = Q(q_date_start & q_date_end)
         q = Q(q_keyword & q_date)
         entries = Shift.objects.filter(q)
+        timeline = None
+        if len(entries) > 0:
+            contents = draw_timeline(entries, 'shifts')
+            timeline = base64.b64encode(contents).decode()
     else:
         entries = Shift.objects.all()
         for entry in entries:
             qualifications = ShiftQualifications.objects.filter(shift_id=entry.id).order_by(
                 'qualification__name')
             entry.qualifications = qualifications
+        timeline = None
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')
@@ -219,6 +226,7 @@ def shift_list(request):
         'entries': entries.count(),
         'search': search,
         'form': SearchForm,
-        'data': data
+        'data': data,
+        'timeline': timeline
     }
     return render(request, 'shifts/shift_list.html', context)

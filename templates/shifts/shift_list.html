@@ -90,6 +90,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% if search %}
+                    <img src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
+                {% endif %}
             </div>
         </div>
 

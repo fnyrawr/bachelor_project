@@ -206,7 +206,7 @@ def shift_list(request):
         q = Q(q_keyword & q_date)
         entries = Shift.objects.filter(q)
         timeline = None
-        if len(entries) > 0:
+        if len(entries) > 0 and filter_date != '':
             contents = draw_timeline(entries, 'shifts')
             timeline = base64.b64encode(contents).decode()
     else:

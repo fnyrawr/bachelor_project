@@ -34,7 +34,7 @@ def draw_timeline(objects, target):
     lst_text = []
     lst_highlight = []  # 0: normal (blue) | 1: no employee (grey) | 2: highlighted (yellow)
     rows_max = [0.0]
-    text_lines = 1
+
     for obj in objects:
         # since data structure is different filter target
         if target == 'demand':

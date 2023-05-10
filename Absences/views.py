@@ -1,3 +1,6 @@
+import base64
+from datetime import datetime, timedelta
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -5,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Users.models import User
+from utils.create_calendar import draw_calendar
 from .models import Absence
 from .forms import AbsenceForm, SearchForm
 
@@ -154,8 +158,23 @@ def absence_list(request):
             q_month = Q(Q(start_date__month=filter_month) | Q(end_date__month=filter_month))
         q = Q(q_keyword & q_status & q_date & q_reason & q_year & q_month)
         entries = Absence.objects.filter(q)
+
+        timeline = None
+        if filter_date != '':
+            # get holidays 1 week before and after for timeline reference
+            start = datetime.strptime(filter_date, "%Y-%m-%d") - timedelta(days=7)
+            end = datetime.strptime(filter_date, "%Y-%m-%d") + timedelta(days=6)
+            q_date_start = Q(start_date__lte=end)
+            q_date_end = Q(end_date__gte=start)
+            q_date = Q(q_date_start & q_date_end)
+            q = Q(q_keyword & q_status & q_date)
+            timeline_entries = Absence.objects.filter(q)
+
+            contents = draw_calendar(filter_date, timeline_entries, 'absences')
+            timeline = base64.b64encode(contents).decode()
     else:
         entries = Absence.objects.all()
+        timeline = None
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')
@@ -166,6 +185,7 @@ def absence_list(request):
         'entries': entries.count(),
         'search': search,
         'form': SearchForm,
-        'data': data
+        'data': data,
+        'timeline': timeline
     }
     return render(request, 'absences/absence_list.html', context)

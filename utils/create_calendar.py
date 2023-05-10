@@ -56,6 +56,17 @@ def draw_calendar(center_date=None, objects=None, target=None):
         lst_start.append(start)
         lst_end.append(end)
 
+        # absence only: add text depending on reason
+        if target == 'absences':
+            if obj.reason == 0 or obj.reason == 1:
+                text += '\nsickness'
+            elif obj.reason == 2:
+                text += '\nprivate related'
+            elif obj.reason == 2:
+                text += '\nbusiness related'
+            else:
+                text += '\nother reason'
+
         # add text depending on status
         if obj.status == 0:
             lst_highlight.append(1)

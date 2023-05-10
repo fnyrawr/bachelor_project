@@ -172,7 +172,7 @@ def holiday_list(request):
             q = Q(q_keyword & q_status & q_date)
             timeline_entries = Holiday.objects.filter(q)
 
-            contents = draw_calendar(filter_date, timeline_entries, 'holiday')
+            contents = draw_calendar(filter_date, timeline_entries, 'holidays')
             timeline = base64.b64encode(contents).decode()
     else:
         entries = Holiday.objects.all()

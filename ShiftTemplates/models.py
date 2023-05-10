@@ -23,6 +23,8 @@ class ShiftTemplate(models.Model):
         # calculate actual work hours (end-start-break)
         start_time = timedelta(hours=self.start_time.hour, minutes=self.start_time.minute)
         end_time = timedelta(hours=self.end_time.hour, minutes=self.end_time.minute)
+        if end_time < start_time:
+            end_time += timedelta(days=1)
         work_hours = end_time - start_time
         if self.break_duration is not None:
             work_hours -= timedelta(hours=self.break_duration.hour, minutes=self.break_duration.minute)

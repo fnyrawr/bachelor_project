@@ -43,6 +43,8 @@ def draw_timeline(objects, target):
             lst_text.append('')
             t_start = 0
             t_end = 0
+        if t_end < t_start:
+            t_end += 24
         lst_start.append(t_start)
         lst_end.append(t_end)
         if t_start < t_min:
@@ -66,14 +68,14 @@ def draw_timeline(objects, target):
     width = 1500
     height = h_row*(row_count+1)
     w_row = width / (t_max - t_min)
-    mgs = h_row/12
+    mgs = h_row/20
     black = PIL.ImageColor.getrgb('#000000')
     white = PIL.ImageColor.getrgb('#FFFFFF')
     blue = PIL.ImageColor.getrgb('#039BE5')
     amber = PIL.ImageColor.getrgb('#FFB300')
-    grey1 = PIL.ImageColor.getrgb('#E0E0E0')
-    grey2 = PIL.ImageColor.getrgb('#BDBDBD')
-    grey3 = PIL.ImageColor.getrgb('#757575')
+    grey1 = PIL.ImageColor.getrgb('#FAFAFA')
+    grey2 = PIL.ImageColor.getrgb('#EEEEEE')
+    grey3 = PIL.ImageColor.getrgb('#424242')
     font_family = "arial.ttf"
 
     # init
@@ -82,17 +84,31 @@ def draw_timeline(objects, target):
 
     # clear image
     fillcolor = white
-    fontsize = h_row / 3
+    fontsize = h_row / 2.25
     font = ImageFont.truetype(font_family, int(fontsize))
     img.rectangle((0, 0, width, height), fill=fillcolor, outline=fillcolor)
+
     # grid pattern
-    for i in range(t_max - t_min + 1):
+    fontsize = h_row / 3
+    font = ImageFont.truetype(font_family, int(fontsize))
+    # horizontal
+    for i in range(row_count):
         if i % 2 == 0:
             fillcolor = grey1
         else:
             fillcolor = grey2
-        img.rectangle((i*w_row, 0, (i+1)*w_row, height), fill=fillcolor, outline=fillcolor)
-        img.text((i*w_row+mgs, 0+mgs), str(t_min+i), fill=black, font=font)
+        img.rectangle((0, (i+1)*h_row, width, (i+2)*h_row), fill=fillcolor, outline=fillcolor)
+    # vertical
+    for i in range(t_max - t_min):
+        h = t_min+i if t_min+i < 24 else t_min+i-24
+        tw, th = img.textsize(str(h), font=font)
+        w_center = i*w_row - tw/2
+        if i > 0:
+            img.line((i * w_row, h_row-2*mgs, i * w_row, height), fill=grey3, width=1)
+        if i == 0:
+            img.text((i*w_row, h_row/2+mgs), str(h), fill=black, font=font)
+        else:
+            img.text((w_center, h_row/2+mgs), str(h), fill=black, font=font)
     # draw objects in timeline
     fontsize = h_row / 4
     font = ImageFont.truetype(font_family, int(fontsize))

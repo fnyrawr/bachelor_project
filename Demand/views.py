@@ -80,14 +80,15 @@ def demand_list(request):
         department = data['department']
         weekday = data['weekday']
         entries = Demand.objects.filter(department=department) & Demand.objects.filter(weekday=weekday)
+
+        # get timeline rendered
+        contents = draw_timeline(entries)
+        timeline = base64.b64encode(contents).decode()
     else:
         entries = Demand.objects.all()
+        timeline = None
     entries.order_by('department__name')
     departments = Department.objects.all()
-
-    # get timeline rendered
-    contents = draw_timeline(entries)
-    timeline = base64.b64encode(contents).decode()
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')

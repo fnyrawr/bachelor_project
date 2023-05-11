@@ -1,4 +1,5 @@
 import base64
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from itertools import chain
 
@@ -396,19 +397,12 @@ def shift_list(request):
     return render(request, 'shifts/shift_list.html', context)
 
 
+@dataclass
 class DayEntry:
-    def __init__(self, etype=None, department_id=None, department=None, start=None, end=None, work_hours=None,
-                 break_duration=None, qualifications=None, highlight=False, note=''):
-        self.etype = etype,
-        self.department_id = department_id,
-        self.department = department,
-        self.start = start,
-        self.end = end,
-        self.work_hours = work_hours,
-        self.break_duration = break_duration,
-        self.qualifications = qualifications,
-        self.highlight = highlight,
-        self.note = note
+    etype: str
+    employee: User = None
+    shift: Shift = None
+    department: Department = None
 
 
 def shiftplan(request):
@@ -446,13 +440,26 @@ def shiftplan(request):
             # get all employees from that list
             employees = User.objects.filter(id__in=q_emp_ids).order_by('last_name', 'first_name', 'department')
 
-            # employee_entry list contains entry for each day allowing fast iteration
-            for employee in employees:
-                employee.entries = []
-            # iterate over days
-            dates = []
+            # iterate over days to find the maximum row length (employees + max_unassigned_shifts)
+            i_day = week_start
+            max_unassigned_shifts = 0
+            for i in range(7):
+                unassigned_shifts = Shift.objects.filter(employee=None, department=department, start__date=i_day)
+                if len(unassigned_shifts) > max_unassigned_shifts:
+                    max_unassigned_shifts = len(unassigned_shifts)
+
+            # two dimensional array for entries
+            rows, cols = len(employees) + max_unassigned_shifts, 7
+            all_entries = []
+
+            i_day += timedelta(days=1)
+
+            # write entries in array while iterating over days
             i_day = week_start
             for i in range(7):
+                # reserve 0 for the actual date
+                row = [i_day]
+                j = 1
                 for employee in employees:
                     # get absences
                     absence = Absence.objects.filter(employee=employee,
@@ -460,7 +467,7 @@ def shiftplan(request):
                                                      end_date__gte=i_day,
                                                      status=3)
                     if absence.exists():
-                        entry = DayEntry(etype='Absent')
+                        entry = DayEntry(etype='Absent', employee=employee)
                     else:
                         # get holidays
                         holiday = Holiday.objects.filter(employee=employee,
@@ -468,34 +475,41 @@ def shiftplan(request):
                                                          end_date__gte=i_day,
                                                          status=3)
                         if holiday.exists():
-                            entry = DayEntry(etype='Holiday')
+                            entry = DayEntry(etype='Holiday', employee=employee)
                         else:
                             # get shift
                             shift = Shift.objects.filter(employee=employee, start__date=i_day)
                             if shift.exists():
                                 shift = shift.get()
                                 wh = shift.get_work_hours()
-                                entry = DayEntry(etype='Shift', department_id=str(shift.department.id),
-                                                 department=shift.department,
-                                                 start=shift.start, end=shift.end, work_hours=wh,
-                                                 break_duration=shift.break_duration,
-                                                 highlight=shift.highlight, note=shift.note)
+                                entry = DayEntry(etype='Shift', employee=employee, department=department, shift=shift)
                             else:
-                                entry = DayEntry()
-                    employee.entries.append(entry)
-                dates.append(i_day)
+                                entry = DayEntry(etype='None', employee=employee)
+                    row.append(entry)
+                    j += 1
+                # append unassigned shifts at the bottom
+                unassigned_shifts = Shift.objects.filter(employee=None, department=department, start__date=i_day)
+                for shift in unassigned_shifts:
+                    entry = DayEntry(etype='Shift', department=department, shift=shift)
+                    row.append(entry)
+                    j += 1
+                while j < max_unassigned_shifts+1:
+                    entry = DayEntry(etype='None')
+                    row.append(entry)
+                    j += 1
                 i_day += timedelta(days=1)
-        # ToDo: add empty shifts without employee
+                all_entries.append(row)
+
+    print(all_entries)
 
     departments = Department.objects.all()
     context = {
         'search': search,
         'form': ShiftplanSearchForm,
         'data': data,
-        'dates': dates,
         'employees': employees,
         'departments': departments,
-        'department': department,
+        'entries': all_entries,
         'timeline': timeline
     }
     return render(request, 'shifts/shiftplan.html', context)

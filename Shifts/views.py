@@ -397,9 +397,10 @@ def shift_list(request):
 
 
 class DayEntry:
-    def __init__(self, etype=None, department=None, start=None, end=None, work_hours=None, break_duration=None,
-                 qualifications=None, highlight=False, note=''):
+    def __init__(self, etype=None, department_id=None, department=None, start=None, end=None, work_hours=None,
+                 break_duration=None, qualifications=None, highlight=False, note=''):
         self.etype = etype,
+        self.department_id = department_id,
         self.department = department,
         self.start = start,
         self.end = end,
@@ -474,7 +475,8 @@ def shiftplan(request):
                             if shift.exists():
                                 shift = shift.get()
                                 wh = shift.get_work_hours()
-                                entry = DayEntry(etype='Shift', department=shift.department,
+                                entry = DayEntry(etype='Shift', department_id=str(shift.department.id),
+                                                 department=shift.department,
                                                  start=shift.start, end=shift.end, work_hours=wh,
                                                  break_duration=shift.break_duration,
                                                  highlight=shift.highlight, note=shift.note)

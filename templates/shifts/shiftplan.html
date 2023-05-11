@@ -51,17 +51,32 @@
                         <tbody>
                             {% for emp in employees %}
                                 <tr>
-                                    <td>{{ emp }}</td>
+                                    <td><b>{{ emp }}</b></td>
                                     {% for entry in emp.entries %}
                                         {% if entry.etype|first == 'Absent' %}
-                                            <td class="center"><b>Absent</b></td>
+                                            <td class="center red-text text-darken-1">
+                                                <b>Absent</b>
+                                            </td>
                                         {% elif entry.etype|first == 'Holiday' %}
-                                            <td class="center"><b>Holiday</b></td>
+                                            <td class="center light-blue-text text-darken-1">
+                                                <b>Holiday</b>
+                                            </td>
                                         {% elif entry.etype|first == 'Shift' %}
+                                            {% if entry.highlight|first == True %}
+                                            <td class="center amber lighten-3">
+                                            {% else %}
                                             <td class="center">
-                                                <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b><br>
-                                                Work: {{ entry.work_hours|first|date:"H:i" }}<br>
-                                                <span class="grey-text text-darken-1">Break: {{ entry.break_duration|first|date:"H:i" }}</span>
+                                            {% endif %}
+                                                {% if entry.department_id|first != data.department %}
+                                                    <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b>
+                                                    <br><span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                                        <b>{{ entry.department|first }}</b>
+                                                    </span>
+                                                {% else %}
+                                                    <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b><br>
+                                                    Work: {{ entry.work_hours|first|date:"H:i" }}<br>
+                                                    <span class="grey-text text-darken-1">Break: {{ entry.break_duration|first|date:"H:i" }}</span>
+                                                {% endif %}
                                             </td>
                                         {% else %}
                                             <td></td>

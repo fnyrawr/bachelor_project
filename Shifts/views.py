@@ -14,8 +14,8 @@ from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
-from utils.create_timeline import draw_timeline
-from .forms import ShiftForm, SearchForm
+from utils.create_timeline import draw_timeline, time_to_dec
+from .forms import ShiftForm, SearchForm, WorkHoursSearchForm
 from .models import Shift, ShiftQualifications
 
 
@@ -180,40 +180,165 @@ def delete_shift(request, **kwargs):
     return redirect('shifts')
 
 
+class Week:
+    def __init__(self, name, start, end, shift_count, work_hours):
+        self.name = name
+        self.start = start
+        self.end = end
+        self.shift_count = shift_count
+        self.work_hours = work_hours
+
+
+def work_hours(request):
+    data = None
+    search = False
+    weeks = []
+    shift_count_total = 0
+    work_hours_total = 0
+    target_hours = 0
+    employee = request.user
+
+    if request.method == "POST":
+        search = True
+        searchForm = WorkHoursSearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        count_weeks = int(data['count_weeks'])
+        employee_id = data['employee']
+        if employee_id != '' and int(employee_id) > 0:
+            employee = User.objects.get(id=employee_id)
+
+            if filter_date == '':
+                start_day = datetime.today().date()
+            else:
+                start_day = datetime.strptime(filter_date, "%Y-%m-%d")
+            weekday_idx = start_day.weekday()
+
+            # overview work hours last n weeks for employee
+            filter_start = start_day - timedelta(days=weekday_idx)
+            filter_end = start_day + timedelta(days=6-weekday_idx)
+            shift_count_total = 0
+            work_hours_total = 0
+            weeks = []
+            for i in range(count_weeks):
+                shifts = Shift.objects.filter(employee=employee, start__gte=filter_start, start__lte=filter_end)
+                hours = 0
+                shift_count = 0
+                for shift in shifts:
+                    shift_count += 1
+                    hours += time_to_dec(shift.get_work_hours())
+                week = Week(name='Week ' + str(filter_start.isocalendar().week), start=filter_start, end=filter_end,
+                            shift_count=shift_count, work_hours=hours)
+                weeks.append(week)
+                shift_count_total += shift_count
+                work_hours_total += hours
+                filter_start -= timedelta(days=7)
+                filter_end -= timedelta(days=7)
+            target_hours = count_weeks*employee.work_hours
+    employees = User.objects.all()
+
+    context = {
+        'weeks': weeks,
+        'shift_count_total': shift_count_total,
+        'work_hours_total': work_hours_total,
+        'target_hours': target_hours,
+        'employee': employee,
+        'employees': employees,
+        'search': search,
+        'form': WorkHoursSearchForm,
+        'data': data
+    }
+    return render(request, 'shifts/work_hours.html', context)
+
+
 def own_shifts(request):
     data = None
     search = False
     user = request.user
 
     if request.method == "POST":
-        entries = Shift.objects.filter(employee=user)
+        search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        keyword = data['keyword']
+        q_keyword = Q()
+        q_date = Q()
+
+        if keyword != '':
+            department = Q(department__name__icontains=keyword)
+            note = Q(note__icontains=keyword)
+            q_keyword = Q(department | note)
+        if filter_date != '':
+            q_date_start = Q(start__date__lte=filter_date)
+            q_date_end = Q(end__date__gte=filter_date)
+            q_date = Q(q_date_start & q_date_end)
+        q = Q(q_keyword & q_date)
+        entries = Shift.objects.filter(q)
+
         paginator = Paginator(entries, per_page=10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        timeline = None
+
+        # setting not needed attributes none
+        recent_shifts = None
+        upcoming_shifts = None
+        weeks = None
+        shift_count_total = None
+        work_hours_total = None
+        target_hours = None
 
     else:
         page_obj = None
-        today = datetime.today()
+        today = datetime.today().date()
         d_today = today.weekday()
-        filter_start = today - timedelta(days=7)
-        filter_end = today - timedelta(days=1)
+        # recent and upcoming shifts
+        filter_start = today - timedelta(days=7+d_today)
+        filter_end = today
         recent_shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+        recent_shifts.filter_start = filter_start
+        recent_shifts.filter_end = filter_end
         filter_start = today
-        filter_end = today + timedelta(days=6)
+        filter_end = today + timedelta(days=13-d_today)
         upcoming_shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+        upcoming_shifts.filter_start = filter_start
+        upcoming_shifts.filter_end = filter_end
         entries = upcoming_shifts
-        timeline = None
+        # overview work hours last 12 weeks
+        filter_start = today + timedelta(days=7-d_today)
+        filter_end = today + timedelta(days=13-d_today)
+        shift_count_total = 0
+        work_hours_total = 0
+        weeks = []
+        week_count = 10
+        for i in range(week_count):
+            shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+            hours = 0
+            shift_count = 0
+            for shift in shifts:
+                shift_count += 1
+                hours += time_to_dec(shift.get_work_hours())
+            week = Week(name='Week ' + str(filter_start.isocalendar().week), start=filter_start, end=filter_end,
+                        shift_count=shift_count, work_hours=hours)
+            weeks.append(week)
+            shift_count_total += shift_count
+            work_hours_total += hours
+            filter_start -= timedelta(days=7)
+            filter_end -= timedelta(days=7)
+        target_hours = week_count*user.work_hours
 
     context = {
         'page_obj': page_obj,
         'recent_shifts': recent_shifts,
         'upcoming_shifts': upcoming_shifts,
+        'weeks': weeks,
+        'shift_count_total': shift_count_total,
+        'work_hours_total': work_hours_total,
+        'target_hours': target_hours,
         'entries': entries.count(),
         'search': search,
         'form': SearchForm,
-        'data': data,
-        'timeline': timeline
+        'data': data
     }
     return render(request, 'shifts/own_shifts.html', context)
 

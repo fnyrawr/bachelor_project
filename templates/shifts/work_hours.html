@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Work hours{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3 class="light-blue-text text-darken-1">Work hours</h3>
+        <ul class="collapsible">
+            <li class="active">
+                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
+                <div class="collapsible-body grey lighten-5">
+                    <form method="POST" action="{% url 'work_hours' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">event_calendar</i>
+                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
+                                <label for="id_filter_date">Filter date (default: today)</label>
+                            </div>
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">person</i>
+                                <select name="employee">
+                                    {% for entry in employees %}
+                                        <option value="{{ entry.id }}" {% if entry.id == employee.id %}selected{% endif %}>{{ entry }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Employee</label>
+                                <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            </div>
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">search</i>
+                                <input id="id_count_weeks" type="number" name="count_weeks" {% if data.count_weeks %}value="{{ data.count_weeks }}"{% else %}value="10"{% endif %}>
+                                <label for="id_count_weeks">Count weeks</label>
+                                <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
+                        {% if search %}
+                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'work_hours' %}"><i class="material-icons left">clear</i>Clear</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        {% if search == True and data != None %}
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-title light-blue-text text-darken-1"><b>Overview work hours of {{ employee }}</b></div>
+                    <table class="striped highlight responsive-table">
+                        <thead class="light-blue-text text-darken-1">
+                            <tr>
+                                <th>Calendar week</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Shift count</th>
+                                <th>Work hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for week in weeks %}
+                                <tr>
+                                    <td><b>{{ week.name }}</b></td>
+                                    <td>{{ week.start|date:"d.m.Y" }}</td>
+                                    <td>{{ week.end|date:"d.m.Y" }}</td>
+                                    <td>{{ week.shift_count }} shifts</td>
+                                    <td>{{ week.work_hours }}/{{ employee.work_hours }} hours</td>
+                                </tr>
+                            {% endfor %}
+                            <tr class="grey lighten-3">
+                                <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
+                                <td>{{ shift_count_total }} shifts</td>
+                                <td>{{ work_hours_total }}/{{ target_hours }} hours</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

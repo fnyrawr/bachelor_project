@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - Create absence{% endblock %}
+{% block title %}ShiftManager - Create holiday{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">Create absence</h3>
-        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'own_absences' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <h3 class="light-blue-text text-darken-1">Create holiday</h3>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'own_holidays' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
         <div class="card">
-            <form method="POST" action="{% url 'add_own_absence' %}">
+            <form method="POST" action="{% url 'add_own_holiday' %}">
                 {% csrf_token %}
                 <div class="card-content">
                     <input type="hidden" name="employee" value="{{ user.id }}">
@@ -30,21 +30,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s4">
-                            <i class="material-icons prefix">event_calendar</i>
-                            {{ form.reason }}
-                            <label>Reason</label>
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="input-field col s12">
                             <i class="material-icons prefix">chat_bubble</i>
                             <label for="id_note">Note</label>
                             <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4"></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create absence</button>
+                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">add</i>Create holiday</button>
                 </div>
             </form>
         </div>

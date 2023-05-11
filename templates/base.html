@@ -97,6 +97,8 @@
                                         <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                             <ul>
                                                 <li><a class="waves-effect waves-light" href="{% url 'shifts' %}"><i class="material-icons light-blue-text text-darken-1">view_list</i>Shifts</a></li>
+                                                <li><a class="waves-effect waves-light" href="{% url 'shifts' %}"><i class="material-icons light-blue-text text-darken-1">event_note</i>Shiftplan</a></li>
+                                                {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'work_hours' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Work hours</a></li>{% endif %}
                                                 <li><a class="waves-effect waves-light" href="{% url 'availabilities' %}"><i class="material-icons light-blue-text text-darken-1">event_available</i>Availabilities</a></li>
                                                 <li><a class="waves-effect waves-light" href="{% url 'wishes' %}"><i class="material-icons light-blue-text text-darken-1">event_note</i>Wishes</a></li>
                                                 {% if user.is_authorized %}<li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons light-blue-text text-darken-1">event</i>Shift templates</a></li>{% endif %}

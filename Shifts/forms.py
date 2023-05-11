@@ -27,3 +27,14 @@ class SearchForm(forms.ModelForm):
     class Meta:
         model = Shift
         fields = ['filter_date', 'keyword']
+
+
+class WorkHoursSearchForm(forms.ModelForm):
+    filter_date = forms.DateField(required=False)
+    employee = forms.ModelChoiceField(queryset=User.objects.all(),
+                                      empty_label='Select employee')
+    count_weeks = forms.IntegerField(initial=10)
+
+    class Meta:
+        model = Shift
+        fields = ['filter_date', 'employee', 'count_weeks']

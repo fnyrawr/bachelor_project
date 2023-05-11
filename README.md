@@ -34,7 +34,7 @@ Follow all steps by order:
 ### upcoming next ToDos
 - landing page [toDo]
 - dashboard (Admin/Planner/Employee) [toDo]
-- overview work hours [toDo]
+- shiftplan drawing [toDo]
 - employee assign helper [toDo]
 - data export [toDo]
 
@@ -214,14 +214,16 @@ Follow all steps by order:
     - [x] Filter out already assigned that day
     - [x] Filter out absent/holiday
     - [ ] Assign helper with AI tools / rule based
+  - [ ] create shift plan as PDF
 - [ ] My account
   - [x] Overview base data [all users]
-  - [ ] Overview work hours [all users]
+  - [x] Overview work hours [all users]
   - [x] Overview absences and holiday [all users]
   - [x] Manage base data [all users]
   - [x] Change password [all users]
   - [x] Manage general availabilities [all users]
   - [x] Manage shift wishes [all users]
+  - [ ] Create calendar as PDF[all users]
 - [ ] Data management
   - [x] Importer for Qualifications
   - [x] Importer for Departments

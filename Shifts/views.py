@@ -1,5 +1,6 @@
 import base64
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -15,7 +16,7 @@ from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
 from utils.create_timeline import draw_timeline, time_to_dec
-from .forms import ShiftForm, SearchForm, WorkHoursSearchForm
+from .forms import ShiftForm, SearchForm, WorkHoursSearchForm, ShiftplanSearchForm
 from .models import Shift, ShiftQualifications
 
 
@@ -393,3 +394,106 @@ def shift_list(request):
         'timeline': timeline
     }
     return render(request, 'shifts/shift_list.html', context)
+
+
+class DayEntry:
+    def __init__(self, etype=None, department=None, start=None, end=None, work_hours=None, break_duration=None,
+                 qualifications=None, highlight=False, note=''):
+        self.etype = etype,
+        self.department = department,
+        self.start = start,
+        self.end = end,
+        self.work_hours = work_hours,
+        self.break_duration = break_duration,
+        self.qualifications = qualifications,
+        self.highlight = highlight,
+        self.note = note
+
+
+def shiftplan(request):
+    data = None
+    search = False
+    timeline = None
+    department = None
+    employees = None
+    dates = None
+
+    if request.method == "POST":
+        search = True
+        searchForm = ShiftplanSearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        department_id = data['department']
+
+        if department_id != '' and int(department_id) > 0:
+            department = Department.objects.get(id=department_id)
+
+            if filter_date == '':
+                start_day = datetime.today().date()
+            else:
+                start_day = datetime.strptime(filter_date, "%Y-%m-%d")
+            weekday_idx = start_day.weekday()
+            week_start = start_day - timedelta(days=weekday_idx)
+            week_end = start_day + timedelta(days=6-weekday_idx)
+
+            # get employees from department or with shifts in department
+            q_emp_ids_from_department = User.objects.filter(department=department).values_list('id', flat=True)
+            q_emp_ids_from_shifts = Shift.objects.filter(start__date__gte=week_start, start__date__lte=week_end,
+                                                         department=department).values_list('employee', flat=True)
+            # merge results in distinct list
+            q_emp_ids = list(set(chain(q_emp_ids_from_department, q_emp_ids_from_shifts)))
+            # get all employees from that list
+            employees = User.objects.filter(id__in=q_emp_ids).order_by('last_name', 'first_name', 'department')
+
+            # employee_entry list contains entry for each day allowing fast iteration
+            for employee in employees:
+                employee.entries = []
+            # iterate over days
+            dates = []
+            i_day = week_start
+            for i in range(7):
+                for employee in employees:
+                    # get absences
+                    absence = Absence.objects.filter(employee=employee,
+                                                     start_date__lte=i_day,
+                                                     end_date__gte=i_day,
+                                                     status=3)
+                    if absence.exists():
+                        entry = DayEntry(etype='Absent')
+                    else:
+                        # get holidays
+                        holiday = Holiday.objects.filter(employee=employee,
+                                                         start_date__lte=i_day,
+                                                         end_date__gte=i_day,
+                                                         status=3)
+                        if holiday.exists():
+                            entry = DayEntry(etype='Holiday')
+                        else:
+                            # get shift
+                            shift = Shift.objects.filter(employee=employee, start__date=i_day)
+                            if shift.exists():
+                                shift = shift.get()
+                                wh = shift.get_work_hours()
+                                entry = DayEntry(etype='Shift', department=shift.department,
+                                                 start=shift.start, end=shift.end, work_hours=wh,
+                                                 break_duration=shift.break_duration,
+                                                 highlight=shift.highlight, note=shift.note)
+                            else:
+                                entry = DayEntry()
+                    employee.entries.append(entry)
+                dates.append(i_day)
+                i_day += timedelta(days=1)
+        # ToDo: add empty shifts without employee
+
+    departments = Department.objects.all()
+    context = {
+        'search': search,
+        'form': ShiftplanSearchForm,
+        'data': data,
+        'dates': dates,
+        'employees': employees,
+        'departments': departments,
+        'department': department,
+        'timeline': timeline
+    }
+    return render(request, 'shifts/shiftplan.html', context)

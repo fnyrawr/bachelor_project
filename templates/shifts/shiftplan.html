@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}ShiftManager - Shiftplan{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3 class="light-blue-text text-darken-1">Shiftplan</h3>
+        <ul class="collapsible">
+            <li class="active">
+                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
+                <div class="collapsible-body grey lighten-5">
+                    <form method="POST" action="{% url 'shiftplan' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">event_calendar</i>
+                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
+                                <label for="id_filter_date">Filter date (default: today)</label>
+                            </div>
+                            <div class="input-field col s6 m4">
+                                <i class="material-icons prefix">local_offer</i>
+                                <select name="department">
+                                    {% for entry in departments %}
+                                        <option value="{{ entry.id }}" {% if entry.id == department.id %}selected{% endif %}>{{ entry }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Department</label>
+                                <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
+                        {% if search %}
+                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'shiftplan' %}"><i class="material-icons left">clear</i>Clear</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        {% if search == True and data != None %}
+            <div class="card">
+                <div class="card-content">
+                    <table class="striped highlight responsive-table">
+                        <thead class="light-blue-text text-darken-1">
+                            <tr>
+                                <th>Employee</th>
+                                {% for date in dates %}
+                                    <th class="center">{{ date|date:"l" }}<br>{{ date|date:"d.m.y" }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees %}
+                                <tr>
+                                    <td>{{ emp }}</td>
+                                    {% for entry in emp.entries %}
+                                        {% if entry.etype|first == 'Absent' %}
+                                            <td class="center"><b>Absent</b></td>
+                                        {% elif entry.etype|first == 'Holiday' %}
+                                            <td class="center"><b>Holiday</b></td>
+                                        {% elif entry.etype|first == 'Shift' %}
+                                            <td class="center">
+                                                <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b><br>
+                                                Work: {{ entry.work_hours|first|date:"H:i" }}<br>
+                                                <span class="grey-text text-darken-1">Break: {{ entry.break_duration|first|date:"H:i" }}</span>
+                                            </td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <!-- INSERT IMAGE HERE -->
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        {% include 'forbidden.html' %}
+    {% endif %}
+{% endblock %}

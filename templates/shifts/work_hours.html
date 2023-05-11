@@ -5,7 +5,7 @@
     {% if user.is_authenticated %}
         <h3 class="light-blue-text text-darken-1">Work hours</h3>
         <ul class="collapsible">
-            <li class="active">
+            <li {% if search %}class="active"{% endif %}>
                 <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
                 <div class="collapsible-body grey lighten-5">
                     <form method="POST" action="{% url 'work_hours' %}">

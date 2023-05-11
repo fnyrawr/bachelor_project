@@ -34,7 +34,7 @@ Follow all steps by order:
 ### upcoming next ToDos
 - landing page [toDo]
 - dashboard (Admin/Planner/Employee) [toDo]
-- shiftplan drawing [toDo]
+- shiftplan drawing [WIP]
 - employee assign helper [toDo]
 - data export [toDo]
 

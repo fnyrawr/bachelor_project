@@ -38,3 +38,13 @@ class WorkHoursSearchForm(forms.ModelForm):
     class Meta:
         model = Shift
         fields = ['filter_date', 'employee', 'count_weeks']
+
+
+class ShiftplanSearchForm(forms.ModelForm):
+    filter_date = forms.DateField(required=False)
+    department = forms.ModelChoiceField(queryset=Department.objects.all(),
+                                        empty_label='Select department')
+
+    class Meta:
+        model = Shift
+        fields = ['filter_date', 'department']

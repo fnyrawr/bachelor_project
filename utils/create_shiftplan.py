@@ -24,10 +24,14 @@ def draw_shiftplan(objects=None, department=None, target=None):
     col_count = len(objects)+1
     row_count = len(objects[0])
 
-    # constants
-    h_row = 75
-    width = 1500
-    height = h_row * row_count
+    # constants [dimensions: A4 landscape page]
+    h_row = 150
+    width = 3508
+    height = 2480
+
+    if row_count*h_row > height:
+        h_row = height / row_count
+
     w_col = width / col_count
     mgs = h_row/20
     black = PIL.ImageColor.getrgb('#000000')
@@ -39,6 +43,10 @@ def draw_shiftplan(objects=None, department=None, target=None):
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
     grey4 = PIL.ImageColor.getrgb('#757575')
+
+    l_width = 15
+    hl_width = int(l_width/2)
+
     font_family = "arial.ttf"
 
     # init
@@ -64,7 +72,6 @@ def draw_shiftplan(objects=None, department=None, target=None):
         # mark weekends
         i_sat = 6
         i_sun = 7
-        l_width = 5
         img.line((i_sat*w_col, h_row - l_width/2+1, (i_sat+1)*w_col, h_row - l_width/2+1), fill=blue, width=l_width)
         img.line((i_sun*w_col, h_row - l_width/2+1, (i_sun+1)*w_col, h_row - l_width/2+1), fill=amber, width=l_width)
 
@@ -79,7 +86,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
         if i > 0:
             # draw lines between dates
             img.line((i * w_col, h_row/2, i * w_col, h_row), fill=white, width=1)
-            img.line((i*w_col, h_row, i*w_col, height), fill=grey3, width=1)
+            img.line((i*w_col, h_row, i*w_col, h_row*row_count), fill=grey3, width=1)
             # print out dates
             d = objects[i-1][0]
             d_str = d.strftime("%A") + '\n' + d.strftime("%d. %B %Y")
@@ -116,14 +123,18 @@ def draw_shiftplan(objects=None, department=None, target=None):
                     img.text(((i+1)*w_col + w_col/2 - tw/2, j*h_row + h_row/2 - th/2),
                              text, fill=fontcolor, font=font, align='center')
                     if entry.etype == 'Absent':
-                        img.line(((i+1)*w_col+1, j*h_row, (i+2)*w_col-1, j*h_row), fill=amber, width=3)
+                        img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
+                                 fill=amber, width=hl_width)
                     else:
-                        img.line(((i+1)*w_col+1, j*h_row, (i+2)*w_col-1, j*h_row), fill=blue, width=3)
+                        img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
+                                 fill=blue, width=hl_width)
                 # draw shift
                 elif entry.etype == 'Shift':
                     if entry.shift.highlight:
                         img.rectangle(((i+1)*w_col+1, j*h_row+1, (i+2)*w_col-1, j*h_row + h_row/3 + mgs), fill=amber)
-                        img.line(((i+1)*w_col+1, j*h_row, (i+2)*w_col-1, j*h_row), fill=grey4, width=3)
+                        # mark shifts with grey lines above
+                        img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
+                                 fill=grey4, width=hl_width)
 
                     # define if employee's shift is in the displayed department
                     if entry.shift.employee:
@@ -139,7 +150,8 @@ def draw_shiftplan(objects=None, department=None, target=None):
                     else:
                         other_department = False
                         fontcolor = black
-                        img.line(((i+1)*w_col+1, j*h_row, (i+2)*w_col-1, j*h_row), fill=darkamber, width=3)
+                        img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
+                                 fill=darkamber, width=hl_width)
 
                     # change color for better contrast if shift is highlighted
                     if entry.shift.highlight:
@@ -182,7 +194,8 @@ def draw_shiftplan(objects=None, department=None, target=None):
                         tw, th = img.textsize(dep, font=font)
                         img.text(((i+1)*w_col + w_col/2 - tw/2, j*h_row + h_row/2 - th/2),
                                  dep, fill=fontcolor, font=font, align='left')
-                        img.line(((i+1)*w_col+1, j*h_row, (i+2)*w_col-1, j*h_row), fill=grey4, width=3)
+                        img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
+                                 fill=grey4, width=hl_width)
 
         # draw work hours
         fontsize = h_row / 5

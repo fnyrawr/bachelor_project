@@ -100,6 +100,7 @@ def draw_timeline(objects, target):
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
+    grey4 = PIL.ImageColor.getrgb('#757575')
     font_family = "arial.ttf"
 
     # init
@@ -108,31 +109,32 @@ def draw_timeline(objects, target):
 
     # clear image
     fillcolor = white
-    fontsize = h_row / 2.25
-    font = ImageFont.truetype(font_family, int(fontsize))
     img.rectangle((0, 0, width, height), fill=fillcolor, outline=fillcolor)
 
     # grid pattern
     fontsize = h_row / 3
     font = ImageFont.truetype(font_family, int(fontsize))
     # horizontal
-    for i in range(row_count):
-        if i % 2 == 0:
-            fillcolor = grey1
-        else:
+    for i in range(row_count+1):
+        if i == 0:
+            fillcolor = grey4
+        elif i % 2 == 0:
             fillcolor = grey2
-        img.rectangle((0, (i+1)*h_row, width, (i+2)*h_row), fill=fillcolor, outline=fillcolor)
+        else:
+            fillcolor = grey1
+        img.rectangle((0, i*h_row, width, (i+1)*h_row), fill=fillcolor, outline=fillcolor)
     # vertical
     for i in range(t_max - t_min):
         h = t_min+i if t_min+i < 24 else t_min+i-24
         tw, th = img.textsize(str(h), font=font)
         w_center = i*w_row - tw/2
         if i > 0:
-            img.line((i * w_row, h_row-2*mgs, i * w_row, height), fill=grey3, width=1)
+            img.line((i * w_row, 3*h_row/4, i * w_row, h_row), fill=white, width=1)
+            img.line((i * w_row, h_row, i * w_row, height), fill=grey3, width=1)
         if i == 0:
-            img.text((i*w_row, h_row/2+mgs), str(h), fill=black, font=font)
+            img.text((mgs, h_row/2-th/2), str(h), fill=white, font=font)
         else:
-            img.text((w_center, h_row/2+mgs), str(h), fill=black, font=font)
+            img.text((w_center, h_row/2-th/2), str(h), fill=white, font=font)
     # draw objects in timeline
     fontsize = h_row / 4
     font = ImageFont.truetype(font_family, int(fontsize))

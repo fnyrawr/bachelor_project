@@ -39,54 +39,7 @@
         {% if search == True and data != None %}
             <div class="card">
                 <div class="card-content">
-                    <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
-                            <tr>
-                                <th>Employee</th>
-                                {% for date in dates %}
-                                    <th class="center">{{ date|date:"l" }}<br>{{ date|date:"d.m.y" }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for emp in employees %}
-                                <tr>
-                                    <td><b>{{ emp }}</b></td>
-                                    {% for entry in emp.entries %}
-                                        {% if entry.etype|first == 'Absent' %}
-                                            <td class="center red-text text-darken-1">
-                                                <b>Absent</b>
-                                            </td>
-                                        {% elif entry.etype|first == 'Holiday' %}
-                                            <td class="center light-blue-text text-darken-1">
-                                                <b>Holiday</b>
-                                            </td>
-                                        {% elif entry.etype|first == 'Shift' %}
-                                            {% if entry.highlight|first == True %}
-                                            <td class="center amber lighten-3">
-                                            {% else %}
-                                            <td class="center">
-                                            {% endif %}
-                                                {% if entry.department_id|first != data.department %}
-                                                    <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b>
-                                                    <br><span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
-                                                        <b>{{ entry.department|first }}</b>
-                                                    </span>
-                                                {% else %}
-                                                    <b>{{ entry.start|first|date:"H:i" }} - {{ entry.end|first|date:"H:i" }}</b><br>
-                                                    Work: {{ entry.work_hours|first|date:"H:i" }}<br>
-                                                    <span class="grey-text text-darken-1">Break: {{ entry.break_duration|first|date:"H:i" }}</span>
-                                                {% endif %}
-                                            </td>
-                                        {% else %}
-                                            <td></td>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <!-- INSERT IMAGE HERE -->
+                    <img src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
                 </div>
             </div>
         {% endif %}

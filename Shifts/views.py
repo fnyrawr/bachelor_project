@@ -16,6 +16,7 @@ from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Users.models import User
 from Wishes.models import Wish
+from utils.create_shiftplan import draw_shiftplan
 from utils.create_timeline import draw_timeline, time_to_dec
 from .forms import ShiftForm, SearchForm, WorkHoursSearchForm, ShiftplanSearchForm
 from .models import Shift, ShiftQualifications
@@ -411,7 +412,7 @@ def shiftplan(request):
     timeline = None
     department = None
     employees = None
-    dates = None
+    all_entries = None
 
     if request.method == "POST":
         search = True
@@ -438,18 +439,31 @@ def shiftplan(request):
             # merge results in distinct list
             q_emp_ids = list(set(chain(q_emp_ids_from_department, q_emp_ids_from_shifts)))
             # get all employees from that list
-            employees = User.objects.filter(id__in=q_emp_ids).order_by('last_name', 'first_name', 'department')
+            employees = User.objects.filter(id__in=q_emp_ids, is_active=True)\
+                .order_by('last_name', 'first_name', 'department')
 
             # iterate over days to find the maximum row length (employees + max_unassigned_shifts)
             i_day = week_start
             max_unassigned_shifts = 0
             for i in range(7):
-                unassigned_shifts = Shift.objects.filter(employee=None, department=department, start__date=i_day)
+                unassigned_shifts = Shift.objects.filter(employee__isnull=True, department=department,
+                                                         start__date=i_day)
                 if len(unassigned_shifts) > max_unassigned_shifts:
                     max_unassigned_shifts = len(unassigned_shifts)
+                i_day += timedelta(days=1)
+
+            # get this weeks work hours for each employee
+            i_day = week_start
+            for employee in employees:
+                week_work_hours = 0
+                shifts = Shift.objects.filter(employee=employee, start__date__gte=i_day,
+                                              end__date__lte=i_day+timedelta(days=7))
+                for shift in shifts:
+                    week_work_hours += time_to_dec(shift.get_work_hours())
+                employee.week_work_hours = week_work_hours
 
             # two dimensional array for entries
-            rows, cols = len(employees) + max_unassigned_shifts, 7
+            row_count = len(employees) + max_unassigned_shifts
             all_entries = []
 
             i_day += timedelta(days=1)
@@ -481,26 +495,28 @@ def shiftplan(request):
                             shift = Shift.objects.filter(employee=employee, start__date=i_day)
                             if shift.exists():
                                 shift = shift.get()
-                                wh = shift.get_work_hours()
                                 entry = DayEntry(etype='Shift', employee=employee, department=department, shift=shift)
                             else:
                                 entry = DayEntry(etype='None', employee=employee)
                     row.append(entry)
                     j += 1
                 # append unassigned shifts at the bottom
-                unassigned_shifts = Shift.objects.filter(employee=None, department=department, start__date=i_day)
+                unassigned_shifts = Shift.objects.filter(employee__isnull=True, department=department, start__date=i_day)
                 for shift in unassigned_shifts:
                     entry = DayEntry(etype='Shift', department=department, shift=shift)
                     row.append(entry)
                     j += 1
-                while j < max_unassigned_shifts+1:
+                while j < row_count+1:
                     entry = DayEntry(etype='None')
                     row.append(entry)
                     j += 1
                 i_day += timedelta(days=1)
                 all_entries.append(row)
 
-    print(all_entries)
+    if all_entries is not None:
+        department = Department.objects.get(id=department_id)
+        contents = draw_shiftplan(all_entries, department, 'web')
+        timeline = base64.b64encode(contents).decode()
 
     departments = Department.objects.all()
     context = {

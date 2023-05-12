@@ -49,8 +49,11 @@ class Shift(models.Model):
         return str(self.start.date()) + ' from ' + str(self.start.time()) + ' to ' + str(self.end.time())
 
     def __repr__(self):
-        return str(self.start) + ' / ' + str(self.end) + ' / ' + self.department.name + ' / '\
+        if self.employee:
+            return str(self.start) + ' / ' + str(self.end) + ' / ' + self.department.name + ' / '\
                + self.employee.username + ' / ' + self.note
+        else:
+            return str(self.start) + ' / ' + str(self.end) + ' / ' + self.department.name + ' / ' + self.note
 
 
 class ShiftQualifications(models.Model):

@@ -92,13 +92,12 @@ def draw_calendar(center_date=None, objects=None, target=None):
     black = PIL.ImageColor.getrgb('#000000')
     white = PIL.ImageColor.getrgb('#FFFFFF')
     blue = PIL.ImageColor.getrgb('#039BE5')
-    lightblue1 = PIL.ImageColor.getrgb('#29B6F6')
-    lightblue2 = PIL.ImageColor.getrgb('#E1F5FE')
     red = PIL.ImageColor.getrgb('#E53935')
-    amber = PIL.ImageColor.getrgb('#FFECB3')
+    amber = PIL.ImageColor.getrgb('#FFB300')
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
+    grey4 = PIL.ImageColor.getrgb('#757575')
     font_family = "arial.ttf"
 
     # init
@@ -114,25 +113,25 @@ def draw_calendar(center_date=None, objects=None, target=None):
     font = ImageFont.truetype(font_family, int(fontsize))
     # vertical
     for i in range(row_count):
-        d = (d_min + timedelta(days=i-1))
-        if d == d_center:
-            fillcolor = lightblue1
-        elif i == 0:
-            fillcolor = white
-        elif d.strftime("%w") == '6':
-            fillcolor = lightblue2
-        elif d.strftime("%w") == '0':
-            fillcolor = amber
+        if i == 0:
+            fillcolor = grey4
         elif i % 2 == 0:
             fillcolor = grey2
         else:
             fillcolor = grey1
         img.rectangle((0, i*h_row, width, (i+1)*h_row), fill=fillcolor, outline=fillcolor)
+
         # color coding for today, weekend
+        d = (d_min + timedelta(days=i - 1))
         if d == d_center:
-            fontcolor = white
-        else:
-            fontcolor = black
+            fillcolor = amber
+            img.rectangle((0, i*h_row, width, (i+1)*h_row), fill=fillcolor, outline=fillcolor)
+        l_width = 10
+        fontcolor = black
+        if i > 0 and d.strftime("%w") == '6':
+            img.line((w_col-l_width/2-1, i*h_row, w_col-l_width/2-1, (i+1)*h_row), fill=blue, width=l_width)
+        if i > 0 and d.strftime("%w") == '0':
+            img.line((w_col-l_width/2-1, i*h_row, w_col-l_width/2-1, (i+1)*h_row), fill=amber, width=l_width)
         # print out dates
         if i > 0:
             d_str = d.strftime("%A") + '\n' + d.strftime("%d. %B %Y")
@@ -142,8 +141,9 @@ def draw_calendar(center_date=None, objects=None, target=None):
     # horizontal
     for i in range(col_count):
         if i > 0:
-            img.line((i*w_col, h_row/2, i*w_col, height), fill=grey3, width=1)
-    fontcolor = black
+            img.line((i*w_col, h_row/2, i*w_col, h_row), fill=white, width=1)
+            img.line((i*w_col, h_row, i*w_col, height), fill=grey3, width=1)
+    fontcolor = white
     text = 'Date'
     tw, th = img.textsize(str(text), font=font)
     h_center = h_row/2 - th/2

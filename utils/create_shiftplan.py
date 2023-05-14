@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import BytesIO
 
 import PIL.ImageColor
@@ -29,8 +29,9 @@ def draw_shiftplan(objects=None, department=None, target=None):
     width = 3508
     height = 2480
 
-    if row_count*h_row > height:
-        h_row = height / row_count
+    # adjust row height to fit all lines on one page, leaving a small margin at the bottom
+    if row_count*h_row >= height:
+        h_row = (height-75) / row_count
 
     w_col = width / col_count
     mgs = h_row/20
@@ -209,8 +210,25 @@ def draw_shiftplan(objects=None, department=None, target=None):
                 img.text((w_col - tw - 2*mgs, (i+1)*h_row - th - 2*mgs), text,
                          fill=fontcolor, font=font)
 
-    # save image and return it
-    with BytesIO() as output:
-        bitmap.save(output, format="PNG")
-        contents = output.getvalue()
-    return contents
+    # add generation date at the bottom
+    fontcolor = grey3
+    fontsize = h_row / 4
+    font = ImageFont.truetype(font_family, int(fontsize))
+    text = 'Shiftplan ' + department.name + (objects[0][0]).strftime(" - Week %W") + '\ngenerated at ' +\
+           datetime.now().strftime("%d.%m.%Y %H:%M")
+    tw, th = img.textsize(text, font=font)
+    img.text((width-tw-2*mgs, height-th-2*mgs), text,
+             fill=fontcolor, font=font, align='right')
+
+    if target == 'pdf':
+        # bitmap.save(filename, format="PDF")
+        with BytesIO() as output:
+            bitmap.save(output, format="PDF")
+            contents = output.getvalue()
+        return contents
+    else:
+        # save image and return it
+        with BytesIO() as output:
+            bitmap.save(output, format="PNG")
+            contents = output.getvalue()
+        return contents

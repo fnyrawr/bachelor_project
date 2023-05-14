@@ -34,7 +34,7 @@ Follow all steps by order:
 ### upcoming next ToDos
 - landing page [toDo]
 - dashboard (Admin/Planner/Employee) [toDo]
-- export shiftplan as PDF file [toDo]
+- ~~export shiftplan as PDF file~~ [done]
 - employee assign helper [toDo]
 - data export [toDo]
 
@@ -215,7 +215,7 @@ Follow all steps by order:
     - [x] Filter out absent/holiday
     - [ ] Assign helper with AI tools / rule based
   - [x] shift plan displayed on page
-  - [ ] create shift plan as PDF
+  - [x] create shift plan as PDF
 - [ ] My account
   - [x] Overview base data [all users]
   - [x] Overview work hours [all users]

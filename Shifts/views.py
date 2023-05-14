@@ -6,6 +6,7 @@ from itertools import chain
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -406,11 +407,10 @@ class DayEntry:
     department: Department = None
 
 
-def shiftplan(request):
+def shiftplan(request, **kwargs):
     data = None
     search = False
     timeline = None
-    department = None
     employees = None
     all_entries = None
 
@@ -515,8 +515,17 @@ def shiftplan(request):
 
     if all_entries is not None:
         department = Department.objects.get(id=department_id)
-        contents = draw_shiftplan(all_entries, department, 'web')
-        timeline = base64.b64encode(contents).decode()
+        if 'create_pdf' in request.POST:
+            # create PDF
+            filename = 'Shiftplan_' + department.name + (all_entries[0][0]).strftime("_Week_%W") + '.pdf'
+            pdf_file = draw_shiftplan(all_entries, department, 'pdf')
+            response = HttpResponse(pdf_file, content_type='application/pdf')
+            response['Content-Disposition'] = 'inline;filename=' + filename
+            return response
+        else:
+            # create preview
+            contents = draw_shiftplan(all_entries, department, 'web')
+            timeline = base64.b64encode(contents).decode()
 
     departments = Department.objects.all()
     context = {
@@ -526,6 +535,6 @@ def shiftplan(request):
         'employees': employees,
         'departments': departments,
         'entries': all_entries,
-        'timeline': timeline
+        'timeline': timeline,
     }
     return render(request, 'shifts/shiftplan.html', context)

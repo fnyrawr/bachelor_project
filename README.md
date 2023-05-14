@@ -33,7 +33,7 @@ Follow all steps by order:
 
 ### upcoming next ToDos
 - landing page [toDo]
-- dashboard (Admin/Planner/Employee) [toDo]
+- dashboard (Admin/Planner/~~Employee~~) [WIP]
 - ~~export shiftplan as PDF file~~ [done]
 - employee assign helper [toDo]
 - data export [toDo]
@@ -189,7 +189,7 @@ Follow all steps by order:
   - [x] Reset password
   - [ ] Admin dashboard [admin]
   - [ ] Planner dashboard [planner] (extending Employee dashboard)
-  - [ ] Employee dashboard [employee]
+  - [x] Employee dashboard [employee]
 - [x] Departments
   - [x] Create department [admin]
   - [x] Manage department qualifications [admin]

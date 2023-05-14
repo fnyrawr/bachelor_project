@@ -259,6 +259,8 @@ def own_shifts(request):
     data = None
     search = False
     user = request.user
+    timeline_upcoming = None
+    timeline_recent = None
 
     if request.method == "POST":
         search = True
@@ -268,6 +270,7 @@ def own_shifts(request):
         keyword = data['keyword']
         q_keyword = Q()
         q_date = Q()
+        q_employee = Q(employee=request.user)
 
         if keyword != '':
             department = Q(department__name__icontains=keyword)
@@ -277,7 +280,7 @@ def own_shifts(request):
             q_date_start = Q(start__date__lte=filter_date)
             q_date_end = Q(end__date__gte=filter_date)
             q_date = Q(q_date_start & q_date_end)
-        q = Q(q_keyword & q_date)
+        q = Q(q_keyword & q_date & q_employee)
         entries = Shift.objects.filter(q)
 
         paginator = Paginator(entries, per_page=10)
@@ -308,6 +311,7 @@ def own_shifts(request):
         upcoming_shifts.filter_start = filter_start
         upcoming_shifts.filter_end = filter_end
         entries = upcoming_shifts
+
         # overview work hours last 12 weeks
         filter_start = today + timedelta(days=7-d_today)
         filter_end = today + timedelta(days=13-d_today)
@@ -331,6 +335,14 @@ def own_shifts(request):
             filter_end -= timedelta(days=7)
         target_hours = week_count*user.work_hours
 
+        # timelines upcoming and recent shifts
+        if len(upcoming_shifts) > 0:
+            contents = draw_timeline(upcoming_shifts, 'shifts_listed')
+            timeline_upcoming = base64.b64encode(contents).decode()
+        if len(recent_shifts) > 0:
+            contents = draw_timeline(recent_shifts, 'shifts_listed')
+            timeline_recent = base64.b64encode(contents).decode()
+
     context = {
         'page_obj': page_obj,
         'recent_shifts': recent_shifts,
@@ -342,7 +354,9 @@ def own_shifts(request):
         'entries': entries.count(),
         'search': search,
         'form': SearchForm,
-        'data': data
+        'data': data,
+        'timeline_upcoming': timeline_upcoming,
+        'timeline_recent': timeline_recent
     }
     return render(request, 'shifts/own_shifts.html', context)
 
@@ -520,7 +534,7 @@ def shiftplan(request, **kwargs):
             filename = 'Shiftplan_' + department.name + (all_entries[0][0]).strftime("_Week_%W") + '.pdf'
             pdf_file = draw_shiftplan(all_entries, department, 'pdf')
             response = HttpResponse(pdf_file, content_type='application/pdf')
-            response['Content-Disposition'] = 'inline;filename=' + filename
+            response['Content-Disposition'] = 'inline;filename=/media/generated/' + filename
             return response
         else:
             # create preview

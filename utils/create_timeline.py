@@ -64,8 +64,23 @@ def draw_timeline(objects, target):
                 lst_highlight.append(1)
             else:
                 lst_highlight.append(0)
+        elif target == 'shifts_listed':
+            weekday = obj.start.strftime("%A %d.%m.\n%H:%M ") + obj.end.strftime("- %H:%M")
+            text = weekday + '\n' + obj.department.name
+            if obj.note != '':
+                text += '\n' + obj.note
+            lst_text.append(text)
+            t_start = time_to_dec(obj.start)
+            t_end = time_to_dec(obj.end)
+            if obj.highlight:
+                lst_highlight.append(2)
+            elif not obj.employee:
+                lst_highlight.append(1)
+            else:
+                lst_highlight.append(0)
         else:
             return empty_timeline()
+
         if t_end < t_start:
             t_end += 24
         lst_start.append(t_start)
@@ -74,17 +89,24 @@ def draw_timeline(objects, target):
             t_min = math.floor(t_start)
         if t_end > t_max:
             t_max = math.ceil(t_end)
-        # allocate space in rows
-        i = 0
-        while t_start + 1/60 <= rows_max[i]:
-            i += 1
-            # new row if no existing row has free space
-            if i >= len(rows_max):
-                rows_max.append(0.0)
+
+        if target == 'shifts_listed':
+            # new row for every shift
+            lst_rows.append(row_count-1)
+            if row_count < len(objects):
                 row_count += 1
-        # set the allocated row for obj and block this row until the end time
-        rows_max[i] = t_end
-        lst_rows.append(i)
+        else:
+            # allocate space in rows
+            i = 0
+            while t_start + 1/60 <= rows_max[i]:
+                i += 1
+                # new row if no existing row has free space
+                if i >= len(rows_max):
+                    rows_max.append(0.0)
+                    row_count += 1
+            # set the allocated row for obj and block this row until the end time
+            rows_max[i] = t_end
+            lst_rows.append(i)
 
     # constants
     h_row = 75
@@ -136,12 +158,17 @@ def draw_timeline(objects, target):
         else:
             img.text((w_center, h_row/2-th/2), str(h), fill=white, font=font)
     # draw objects in timeline
-    fontsize = h_row / 4
-    font = ImageFont.truetype(font_family, int(fontsize))
     for i in range(len(objects)):
+        fontsize = h_row / 4
+        font = ImageFont.truetype(font_family, int(fontsize))
         start = lst_start[i]-t_min
         end = lst_end[i]-t_min
         tw, th = img.textsize(lst_text[i], font=font)
+        # make font smaller if text is bigger than row
+        while th > h_row-4*mgs:
+            fontsize -= 1
+            font = ImageFont.truetype(font_family, int(fontsize))
+            tw, th = img.textsize(lst_text[i], font=font)
         w_center = start + (end-start)/2
         row = lst_rows[i]
         h_center = (row + 1) * h_row + h_row/2

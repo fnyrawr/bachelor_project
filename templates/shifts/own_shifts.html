@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - My shifts{% endblock %}
+{% block title %}ShiftManager - Dashboard{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">My shifts</h3>
+        <h3 class="light-blue-text text-darken-1">Dashboard</h3>
         <ul class="collapsible">
             <li {% if search %}class="active"{% endif %}>
-                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
+                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search own shifts</div>
                 <div class="collapsible-body grey lighten-5">
                     <form method="POST" action="{% url 'own_shifts' %}">
                         {% csrf_token %}
@@ -22,7 +22,7 @@
                                 <label for="id_keyword">Keyword</label>
                             </div>
                         </div>
-                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
+                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search own shifts</button>
                         {% if search %}
                             <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'own_shifts' %}"><i class="material-icons left">clear</i>Clear</a>
                         {% endif %}
@@ -143,6 +143,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if timeline_upcoming != None %}
+                        <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_upcoming }}' style="max-width: 100%">
+                    {% endif %}
                 </div>
             </div>
 
@@ -189,6 +192,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if timeline_recent != None %}
+                        <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
+                    {% endif %}
                 </div>
             </div>
 

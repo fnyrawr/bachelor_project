@@ -1,18 +1,33 @@
 # Bachelor Project Implementation
 Implementation of a staff management software tool as part of my bachelor thesis
 
-## How to start Project
-Follow all steps by order:
-- python -m venv .venv
-- .venv\scripts\activate
-- pip install django
-- pip install Pillow
-- pip install pandas
-- pip install openpyxl
-- python manage.py makemigrations
-- python manage.py migrate
-- python manage.py createsuperuser
-- python manage.py runserver
+### How to make the application run
+1) create a virtual environment
+> python -m venv .venv  
+> .venv\scripts\activate
+2) install requirements (dependencies)
+> pip install -r requirements.txt
+3) prepare database
+> python manage.py makemigrations  
+> python manage.py migrate
+4) create a superuser for administration
+> python manage.py createsuperuser
+
+`name, mail and password are required`
+5) name the superuser and grant admin rights
+> python manage.py shell  
+> from Users.models import User  
+> user = User.objects.get(username='`superuser_name`')  
+> user.first_name = '`admin_first_name`'  
+> user.last_name = '`admin_last_name`'  
+> user.role = 'A'  
+> user.save()
+
+`close the shell with CTRL+Z + return`
+6) run the server
+> python manage.py runserver
+
+7) login, then import or create data
 
 ## Author
 | Name           | Github  | E-Mail               |

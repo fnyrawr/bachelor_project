@@ -29,8 +29,10 @@ def view_qualification(request, **kwargs):
     qualification_id = kwargs['pk']
     selected_qualification = Qualification.objects.get(id=qualification_id)
 
-    associated_departments = DepartmentQualifications.objects.filter(qualification=qualification_id)
-    associated_employees = EmployeesQualifications.objects.filter(qualification=qualification_id)
+    associated_departments = DepartmentQualifications.objects.filter(qualification=qualification_id)\
+        .order_by('department__name')
+    associated_employees = EmployeesQualifications.objects.filter(qualification=qualification_id)\
+        .order_by('employee__department__name', 'employee__last_name', 'employee__first_name')
 
     context = {
         'selected_qualification': selected_qualification,

@@ -314,13 +314,13 @@ def own_shifts(request):
 
         # overview work hours last 12 weeks
         filter_start = today + timedelta(days=7-d_today)
-        filter_end = today + timedelta(days=13-d_today)
+        filter_end = today + timedelta(days=14-d_today)
         shift_count_total = 0
         work_hours_total = 0
         weeks = []
         week_count = 10
         for i in range(week_count):
-            shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lte=filter_end)
+            shifts = Shift.objects.filter(employee=user, start__gte=filter_start, start__lt=filter_end)
             hours = 0
             shift_count = 0
             for shift in shifts:
@@ -333,7 +333,10 @@ def own_shifts(request):
             work_hours_total += hours
             filter_start -= timedelta(days=7)
             filter_end -= timedelta(days=7)
-        target_hours = week_count*user.work_hours
+        if user.work_hours:
+            target_hours = week_count*user.work_hours
+        else:
+            target_hours = 0
 
         # timelines upcoming and recent shifts
         if len(upcoming_shifts) > 0:

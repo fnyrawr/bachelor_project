@@ -30,7 +30,7 @@
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
-                    <thead class="light-blue-text text-darken-1">
+                    <thead class="grey darken-1 white-text">
                         <tr>
                             <th>Last Name<br>First Name</th>
                             <th>E-Mail<br>Username</th>
@@ -63,7 +63,7 @@
                             </td>
                             <td>{{ entry.address }}<br>{{ entry.zip_city }}</td>
                             <td>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
-                            <td>{{ entry.start_contract|date:"Y-m-d" }}<br>{{ entry.end_contract|date:"Y-m-d" }}</td>
+                            <td>{{ entry.start_contract|date:"d.m.Y" }}<br>{{ entry.end_contract|date:"d.m.Y" }}</td>
                             <td>
                                 {% if entry.is_verified %}
                                     <i class="material-icons light-green-text text-darken-1">done</i>
@@ -90,7 +90,7 @@
                                 {% else %}
                                     <i class="material-icons red-text text-darken-1">close</i>
                                 {% endif %}
-                                <br>{{ entry.last_login|date:"Y-m-d H:i" }}
+                                <br>{{ entry.last_login|date:"d.m.Y H:i" }}
                             </td>
                             <td><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a></td>
                         </tr>

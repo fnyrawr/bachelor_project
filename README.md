@@ -14,6 +14,7 @@ Implementation of a staff management software tool as part of my bachelor thesis
 > python manage.py createsuperuser
 
 `name, mail and password are required`
+
 5) name the superuser and grant admin rights
 > python manage.py shell  
 > from Users.models import User  
@@ -24,6 +25,7 @@ Implementation of a staff management software tool as part of my bachelor thesis
 > user.save()
 
 `close the shell with CTRL+Z + return`
+
 6) run the server
 > python manage.py runserver
 

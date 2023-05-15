@@ -35,7 +35,7 @@
             <div class="card">
                 <div class="card-content">
                     <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
+                        <thead class="grey darken-1 white-text">
                             <tr>
                                 <th>Date</th>
                                 <th>Start</th>
@@ -102,9 +102,9 @@
         {% if search == False and data == None %}
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Upcoming shifts</b><br>now - {{ upcoming_shifts.filter_end|date:"l, d.m.Y" }}</div>
+                    <div class="card-title"><b>Upcoming shifts</b><br>now - {{ upcoming_shifts.filter_end|date:"l, d.m.Y" }}</div>
                     <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
+                        <thead class="grey darken-1 white-text">
                             <tr>
                                 <th>Date</th>
                                 <th>Start</th>
@@ -151,9 +151,9 @@
 
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Recent shifts</b><br>{{ recent_shifts.filter_start|date:"l, d.m.Y" }} - now</div>
+                    <div class="card-title"><b>Recent shifts</b><br>{{ recent_shifts.filter_start|date:"l, d.m.Y" }} - now</div>
                     <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
+                        <thead class="grey darken-1 white-text">
                             <tr>
                                 <th>Date</th>
                                 <th>Start</th>
@@ -200,9 +200,9 @@
 
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Overview work hours</b></div>
+                    <div class="card-title"><b>Overview work hours</b></div>
                     <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
+                        <thead class="grey darken-1 white-text">
                             <tr>
                                 <th>Calendar week</th>
                                 <th>Start</th>
@@ -218,13 +218,21 @@
                                     <td>{{ week.start|date:"d.m.Y" }}</td>
                                     <td>{{ week.end|date:"d.m.Y" }}</td>
                                     <td>{{ week.shift_count }} shifts</td>
-                                    <td>{{ week.work_hours }}/{{ user.work_hours }} hours</td>
+                                    {% if user.work_hours %}
+                                    <td>{{ week.work_hours|floatformat:"g" }}/{{ user.work_hours|floatformat:"g" }} hours</td>
+                                    {% else %}
+                                    <td>{{ week.work_hours|floatformat:"g" }} hours</td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
-                            <tr class="grey lighten-3">
+                            <tr class="grey darken-1 white-text">
                                 <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
                                 <td>{{ shift_count_total }} shifts</td>
-                                <td>{{ work_hours_total }}/{{ target_hours }} hours</td>
+                                {% if target_hours > 0 %}
+                                <td>{{ work_hours_total|floatformat:"g" }}/{{ target_hours }} hours</td>
+                                {% else %}
+                                <td>{{ work_hours_total|floatformat:"g" }} hours</td>
+                                {% endif %}
                             </tr>
                         </tbody>
                     </table>

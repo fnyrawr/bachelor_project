@@ -167,14 +167,18 @@ def draw_shiftplan(objects=None, department=None, target=None):
                     if not other_department:
                         # print hours and break
                         fontcolor = black
-                        hrs = str(time_to_dec(entry.shift.get_work_hours())) + ' hours'
+                        hrs = '{0:g}'.format(time_to_dec(entry.shift.get_work_hours())) + ' hours'
                         tw, th = img.textsize(hrs, font=font)
                         img.text(((i+1)*w_col + 2*mgs, j*h_row + h_row/2 - th/2),
                                  hrs, fill=fontcolor, font=font, align='left')
                         fontcolor = grey4
                         brk_min = int(time_to_dec(entry.shift.break_duration)*60)
-                        if brk_min > 0:
+                        if 0 < brk_min < 60:
                             brk = str(brk_min) + ' min'
+                        elif brk_min == 60:
+                            brk = '{0:g}'.format(brk_min/60) + ' hour'
+                        elif brk_min > 60:
+                            brk = '{0:g}'.format(brk_min/60) + ' hours'
                         else:
                             brk = 'no break'
                         tw, th = img.textsize(brk, font=font)
@@ -204,8 +208,11 @@ def draw_shiftplan(objects=None, department=None, target=None):
         for i in range(len(objects[0])):
             if i > 0 and objects[1][i].employee:
                 fontcolor = grey4
-                text = '{0:g}'.format(objects[1][i].employee.week_work_hours) + '/' +\
-                       str(objects[1][i].employee.work_hours) + ' hours'
+                if objects[1][i].employee.work_hours:
+                    text = '{0:g}'.format(objects[1][i].employee.week_work_hours) + '/' +\
+                           str(objects[1][i].employee.work_hours) + ' hours'
+                else:
+                    text = '{0:g}'.format(objects[1][i].employee.week_work_hours) + ' hours'
                 tw, th = img.textsize(text, font=font)
                 img.text((w_col - tw - 2*mgs, (i+1)*h_row - th - 2*mgs), text,
                          fill=fontcolor, font=font)

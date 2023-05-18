@@ -388,9 +388,10 @@ def import_availabilities(request):
                     end_time = None
                 else:
                     end_time = row['End']
-                tendency = None
                 if row['Tendency'] != 0:
                     tendency = row['Tendency']
+                else:
+                    tendency = 0
                 if row['Note'] is numpy.nan:
                     note = ''
                 else:
@@ -449,7 +450,6 @@ def import_wishes(request):
                     end_time = None
                 else:
                     end_time = row['End']
-                tendency = None
                 if row['Tendency'] != 0:
                     tendency = row['Tendency']
                 if row['Note'] is numpy.nan:
@@ -495,16 +495,14 @@ def import_shift_templates(request):
             data = request.FILES['file_upload']
             # import shifts
             shifts = pd.read_excel(data, sheet_name='Shifts')
+            shifts = shifts.fillna('')
             for index, row in shifts.iterrows():
                 name = row['Name']
                 department = Department.objects.get(name__iexact=row['Department'])
                 start_time = row['Start']
                 end_time = row['End']
                 break_duration = row['Break']
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
                 shift_template = ShiftTemplate.objects.filter(name__iexact=name)
                 if not shift_template:
                     shift_template = ShiftTemplate(
@@ -557,6 +555,7 @@ def import_day_templates(request):
             data = request.FILES['file_upload']
             # import day templates
             day_templates = pd.read_excel(data, sheet_name='Templates')
+            day_templates = day_templates.fillna('')
             for index, row in day_templates.iterrows():
                 name = row['Name']
                 if row['Description'] is numpy.nan:
@@ -607,6 +606,7 @@ def import_shifts(request):
             data = request.FILES['file_upload']
             # import shifts
             df = pd.read_excel(data)
+            df = df.fillna('')
             for index, row in df.iterrows():
                 date = str(row['Date'])
                 start_time = str(row['Start'])
@@ -632,16 +632,32 @@ def import_shifts(request):
                     highlight = True
                 else:
                     highlight = False
-                shift = Shift(
-                    start=start,
-                    end=end,
-                    break_duration=break_duration,
-                    department=department,
-                    employee=employee,
-                    note=note,
-                    highlight=highlight
-                )
-                shift.save()
+                date = datetime.strptime(date, '%Y-%m-%d')
+                shift = Shift.objects.filter(employee=employee,
+                                             start__year=date.year,
+                                             start__month=date.month,
+                                             start__day=date.day)
+                if not shift:
+                    shift = Shift(
+                        start=start,
+                        end=end,
+                        break_duration=break_duration,
+                        department=department,
+                        employee=employee,
+                        note=note,
+                        highlight=highlight
+                    )
+                    shift.save()
+                else:
+                    shift.update(
+                        start=start,
+                        end=end,
+                        break_duration=break_duration,
+                        department=department,
+                        employee=employee,
+                        note=note,
+                        highlight=highlight
+                    )
 
             return redirect('shifts')
         return render(request, 'datamanagement/import_shifts.html', {'form': form})

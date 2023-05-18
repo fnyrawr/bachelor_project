@@ -1,6 +1,7 @@
 import base64
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -170,7 +171,23 @@ def absence_list(request):
             q = Q(q_keyword & q_status & q_date)
             timeline_entries = Absence.objects.filter(q)
 
-            contents = draw_calendar(filter_date, timeline_entries, 'absences')
+            contents = draw_calendar(start_date=start, end_date=end, center_date=filter_date,
+                                     objects=timeline_entries, target='absences')
+            timeline = base64.b64encode(contents).decode()
+        elif int(filter_month) > 0 and filter_year != '':
+            month = int(filter_month)
+            year = int(filter_year)
+            # get absences for selected month in year
+            start = datetime(year=year, month=month, day=1)
+            end = start + relativedelta(months=+1) - timedelta(days=1)
+            q_date_start = Q(start_date__lte=end)
+            q_date_end = Q(end_date__gte=start)
+            q_date = Q(q_date_start & q_date_end)
+            q = Q(q_keyword & q_status & q_date)
+            timeline_entries = Absence.objects.filter(q)
+
+            contents = draw_calendar(start_date=start, end_date=end, center_date=None,
+                                     objects=timeline_entries, target='absences')
             timeline = base64.b64encode(contents).decode()
     else:
         entries = Absence.objects.all()

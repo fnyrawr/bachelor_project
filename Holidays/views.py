@@ -1,6 +1,7 @@
 import base64
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -144,6 +145,8 @@ def holiday_list(request):
         q_year = Q()
         q_month = Q()
 
+        print(filter_year)
+
         if keyword != '':
             last_name = Q(employee__last_name__icontains=keyword)
             first_name = Q(employee__first_name__icontains=keyword)
@@ -166,13 +169,30 @@ def holiday_list(request):
             # get holidays 1 week before and after for timeline reference
             start = datetime.strptime(filter_date, "%Y-%m-%d") - timedelta(days=7)
             end = datetime.strptime(filter_date, "%Y-%m-%d") + timedelta(days=6)
+            filter_date = datetime.strptime(filter_date, "%Y-%m-%d")
             q_date_start = Q(start_date__lte=end)
             q_date_end = Q(end_date__gte=start)
             q_date = Q(q_date_start & q_date_end)
             q = Q(q_keyword & q_status & q_date)
             timeline_entries = Holiday.objects.filter(q)
 
-            contents = draw_calendar(filter_date, timeline_entries, 'holidays')
+            contents = draw_calendar(start_date=start, end_date=end, center_date=filter_date,
+                                     objects=timeline_entries, target='holidays')
+            timeline = base64.b64encode(contents).decode()
+        elif int(filter_month) > 0 and filter_year != '':
+            month = int(filter_month)
+            year = int(filter_year)
+            # get holidays for selected month in year
+            start = datetime(year=year, month=month, day=1)
+            end = start + relativedelta(months=+1) - timedelta(days=1)
+            q_date_start = Q(start_date__lte=end)
+            q_date_end = Q(end_date__gte=start)
+            q_date = Q(q_date_start & q_date_end)
+            q = Q(q_keyword & q_status & q_date)
+            timeline_entries = Holiday.objects.filter(q)
+
+            contents = draw_calendar(start_date=start, end_date=end, center_date=None,
+                                     objects=timeline_entries, target='holidays')
             timeline = base64.b64encode(contents).decode()
     else:
         entries = Holiday.objects.all()

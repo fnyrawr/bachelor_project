@@ -388,7 +388,7 @@ def shift_list(request):
             q_date_end = Q(end__date__gte=filter_date)
             q_date = Q(q_date_start & q_date_end)
         q = Q(q_keyword & q_date)
-        entries = Shift.objects.filter(q)
+        entries = Shift.objects.filter(q).order_by('department__name')
         timeline = None
         if len(entries) > 0 and filter_date != '':
             contents = draw_timeline(entries, 'shifts')

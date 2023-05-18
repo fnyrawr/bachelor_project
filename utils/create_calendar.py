@@ -17,17 +17,23 @@ def empty_calendar():
     return contents
 
 
-def draw_calendar(center_date=None, objects=None, target=None):
+def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None, target=None):
     # (almost) empty image if no object is given
     if len(objects) == 0 or target is None:
         return empty_calendar()
 
     # prepare rows
-    d_center = str_to_date(center_date)
-    d_min = d_center - timedelta(days=7)
-    d_max = d_center + timedelta(days=6)
+    d_center = center_date
+    if start_date is None:
+        d_min = d_center - timedelta(days=7)
+    else:
+        d_min = start_date
+    if start_date is None:
+        d_max = d_center + timedelta(days=6)
+    else:
+        d_max = end_date
     col_count = len(objects) + 1
-    row_count = 15
+    row_count = (d_max-d_min).days+2
     lst_start = []
     lst_end = []
     lst_start_date = []
@@ -83,10 +89,13 @@ def draw_calendar(center_date=None, objects=None, target=None):
         lst_colheader.append(str(obj.employee))
         lst_text.append(text)
 
-    # constants
-    h_row = 75
-    width = 1500
-    height = h_row*row_count
+    # constants [dimensions: A4 landscape page]
+    h_row = 150
+    width = 2480
+    height = 3508
+    # adjust row height to fit all lines on one page, leaving a small margin at the bottom
+    if row_count * h_row >= height:
+        h_row = height / row_count
     w_col = width / col_count
     mgs = h_row/20
     black = PIL.ImageColor.getrgb('#000000')
@@ -142,7 +151,7 @@ def draw_calendar(center_date=None, objects=None, target=None):
     for i in range(col_count):
         if i > 0:
             img.line((i*w_col, h_row/2, i*w_col, h_row), fill=white, width=1)
-            img.line((i*w_col, h_row, i*w_col, height), fill=grey3, width=1)
+            img.line((i*w_col, h_row, i*w_col, row_count*h_row), fill=grey3, width=1)
     fontcolor = white
     text = 'Date'
     tw, th = img.textsize(str(text), font=font)

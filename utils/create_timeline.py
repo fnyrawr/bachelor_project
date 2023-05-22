@@ -1,4 +1,5 @@
 import math
+from datetime import timedelta
 from io import BytesIO
 
 import PIL.ImageColor
@@ -37,6 +38,9 @@ def draw_timeline(objects, target):
     lst_highlight = []  # 0: normal (blue) | 1: no employee (grey) | 2: highlighted (yellow)
     rows_max = [0.0]
 
+    i = 0
+    start_date = objects[0].start.date()
+    count_days = objects[len(objects)-1].start.date() - start_date + timedelta(days=1)
     for obj in objects:
         # since data structure is different filter target
         if target == 'demand':
@@ -96,22 +100,23 @@ def draw_timeline(objects, target):
             t_max = math.ceil(t_end)
 
         if target == 'shifts_listed':
-            # new row for every shift
-            lst_rows.append(row_count-1)
-            if row_count < len(objects):
+            # new row for every day between first and last shift's day
+            while start_date + timedelta(days=i) < obj.start.date():
+                i += 1
                 row_count += 1
+            lst_rows.append(i)
         else:
             # allocate space in rows
-            i = 0
+            j = 0
             while t_start + 1/60 <= rows_max[i]:
-                i += 1
+                j += 1
                 # new row if no existing row has free space
-                if i >= len(rows_max):
+                if j >= len(rows_max):
                     rows_max.append(0.0)
                     row_count += 1
             # set the allocated row for obj and block this row until the end time
-            rows_max[i] = t_end
-            lst_rows.append(i)
+            rows_max[j] = t_end
+            lst_rows.append(j)
 
     # constants
     desc_col = 0
@@ -182,8 +187,8 @@ def draw_timeline(objects, target):
         if target == 'shifts_listed':
             fontsize = h_row / 4
             font = ImageFont.truetype(font_family, int(fontsize))
-            tw, th = img.textsize(lst_text[i], font=font)
-            img.text((2*mgs, h_center - th/2 - 3*mgs), lst_desc[i],
+            tw, th = img.textsize(lst_desc[i], font=font)
+            img.text((2*mgs, h_center - th/2), lst_desc[i],
                      fill=black, font=font, align='left')
             # saturday and sunday markings
             l_width = 10

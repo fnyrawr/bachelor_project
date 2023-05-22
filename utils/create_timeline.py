@@ -29,18 +29,15 @@ def draw_timeline(objects, target):
     t_min = 24
     t_max = 0
     row_count = 1
-    lst_desc = []
     lst_start = []
     lst_end = []
     lst_rows = []
     lst_text = []
-    lst_weekday = []
     lst_highlight = []  # 0: normal (blue) | 1: no employee (grey) | 2: highlighted (yellow)
     rows_max = [0.0]
 
     i = 0
     start_date = objects[0].start.date()
-    count_days = objects[len(objects)-1].start.date() - start_date + timedelta(days=1)
     for obj in objects:
         # since data structure is different filter target
         if target == 'demand':
@@ -71,11 +68,8 @@ def draw_timeline(objects, target):
             else:
                 lst_highlight.append(0)
         elif target == 'shifts_listed':
-            desc = obj.start.strftime("%A\n%d.%m.%Y\n%H:%M ") + obj.end.strftime("- %H:%M")
-            lst_desc.append(desc)
-            weekday = int(obj.start.weekday())
-            lst_weekday.append(weekday)
-            text = obj.department.name
+            text = obj.start.strftime("%H:%M ") + obj.end.strftime("- %H:%M\n")
+            text += obj.department.name
             if obj.note != '':
                 text += '\n' + obj.note
             lst_text.append(text)
@@ -165,6 +159,25 @@ def draw_timeline(objects, target):
         txt = 'Date\nTime'
         tw, th = img.textsize(txt, font=font)
         img.text((2*mgs, h_row/2-th/2), txt, fill=white, font=font)
+    if target == 'shifts_listed':
+        for i in range(row_count+1):
+            fontsize = h_row / 4
+            font = ImageFont.truetype(font_family, int(fontsize))
+            # extra descriptor column
+            day = start_date + timedelta(days=i)
+            desc = day.strftime("%A\n%d.%m.%Y")
+            tw, th = img.textsize(desc, font=font)
+            img.text((2 * mgs, (i+1)*h_row + h_row/2 - th / 2), desc,
+                     fill=black, font=font, align='left')
+            # saturday and sunday markings
+            weekday = int(day.weekday())
+            l_width = 10
+            if weekday == 5:
+                img.line((desc_col - l_width/2 - 1, (i+1)*h_row, desc_col - l_width/2 - 1, (i+2)*h_row),
+                         fill=blue, width=l_width)
+            if weekday == 6:
+                img.line((desc_col - l_width/2 - 1, (i+1)*h_row, desc_col - l_width/2 - 1, (i+2)*h_row),
+                         fill=amber, width=l_width)
     # vertical
     fontsize = h_row / 3
     font = ImageFont.truetype(font_family, int(fontsize))
@@ -183,21 +196,6 @@ def draw_timeline(objects, target):
     for i in range(len(objects)):
         row = lst_rows[i]
         h_center = (row+1)*h_row + h_row/2
-        # extra descriptor column
-        if target == 'shifts_listed':
-            fontsize = h_row / 4
-            font = ImageFont.truetype(font_family, int(fontsize))
-            tw, th = img.textsize(lst_desc[i], font=font)
-            img.text((2*mgs, h_center - th/2), lst_desc[i],
-                     fill=black, font=font, align='left')
-            # saturday and sunday markings
-            l_width = 10
-            if lst_weekday[i] == 5:
-                img.line((desc_col-l_width/2-1, (row+1)*h_row, desc_col-l_width/2-1, (row+2)*h_row),
-                         fill=blue, width=l_width)
-            if lst_weekday[i] == 6:
-                img.line((desc_col-l_width/2-1, (row+1)*h_row, desc_col-l_width/2-1, (row+2)*h_row),
-                         fill=amber, width=l_width)
         fontsize = h_row / 4
         font = ImageFont.truetype(font_family, int(fontsize))
         start = lst_start[i]-t_min

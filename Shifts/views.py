@@ -277,15 +277,16 @@ def own_shifts(request):
             note = Q(note__icontains=keyword)
             q_keyword = Q(department | note)
         if filter_date != '':
-            q_date_start = Q(start__date__lte=filter_date)
-            q_date_end = Q(end__date__gte=filter_date)
+            fd = datetime.strptime(filter_date, "%Y-%m-%d")
+            wd = fd.weekday()
+            filter_start = fd - timedelta(days=wd)
+            filter_end = fd + timedelta(days=6 - wd)
+            q_date_start = Q(start__date__gte=filter_start)
+            q_date_end = Q(start__date__lte=filter_end)
             q_date = Q(q_date_start & q_date_end)
+
         q = Q(q_keyword & q_date & q_employee)
         entries = Shift.objects.filter(q)
-
-        paginator = Paginator(entries, per_page=10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
 
         # setting not needed attributes none
         recent_shifts = None
@@ -294,6 +295,14 @@ def own_shifts(request):
         shift_count_total = None
         work_hours_total = None
         target_hours = None
+
+        if len(entries) > 0 and keyword == '':
+            contents = draw_timeline(entries, 'shifts_listed')
+            timeline_recent = base64.b64encode(contents).decode()
+
+        paginator = Paginator(entries, per_page=10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
     else:
         page_obj = None

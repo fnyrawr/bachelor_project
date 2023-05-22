@@ -14,7 +14,7 @@
                             <div class="input-field col s6 m4">
                                 <i class="material-icons prefix">event_calendar</i>
                                 <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
-                                <label for="id_filter_date">Filter date</label>
+                                <label for="id_filter_date">Filter week of date</label>
                             </div>
                             <div class="input-field col s6 m4">
                                 <i class="material-icons prefix">search</i>
@@ -74,6 +74,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if timeline_recent != None %}
+                        <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
+                    {% endif %}
                 </div>
             </div>
 

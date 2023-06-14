@@ -202,7 +202,7 @@ Implementation of a staff management software tool as part of my bachelor thesis
 ### Needed
 - [ ] Landing page
   - [ ] Infopage if not logged in
-  - [ ] Restricted access note
+  - [x] Restricted access note
   - [x] Reset password
   - [ ] Admin dashboard [admin]
   - [ ] Planner dashboard [planner] (extending Employee dashboard)
@@ -218,7 +218,9 @@ Implementation of a staff management software tool as part of my bachelor thesis
   - [x] Manage employee general availabilities [admin]
   - [x] Manage employee shift wishes [admin]
   - [x] Manage employee absences [admin]
+    - [x] unmatch employee from shifts in timeframe on approve
   - [x] Manage employee holidays [admin]
+    - [x] unmatch employee from shifts in timeframe on approve
 - [ ] Shifts
   - [x] Manage demand [admin]
   - [x] Manage Shift templates [admin]
@@ -230,10 +232,10 @@ Implementation of a staff management software tool as part of my bachelor thesis
   - [x] Assign employees
     - [x] Filter out already assigned that day
     - [x] Filter out absent/holiday
-    - [ ] Assign helper with AI tools / rule based
+    - [ ] Assign helper rule based
   - [x] shift plan displayed on page
   - [x] create shift plan as PDF
-- [ ] My account
+- [x] My account
   - [x] Overview base data [all users]
   - [x] Overview work hours [all users]
   - [x] Overview absences and holiday [all users]

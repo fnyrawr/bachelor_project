@@ -60,6 +60,60 @@
                             <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4">{{ selected_holiday.note }}</textarea>
                         </div>
                     </div>
+
+                    {% if conflicting_shifts.count > 0 %}
+                        <div class="card-title red-text text-darken-1"><b>Conflicting shifts</b></div>
+                        <h6>On approving this holiday the following shifts will be unassigned (no undo):</h6>
+                        <table class="striped highlight responsive-table">
+                            <thead class="red darken-1 white-text">
+                                <tr>
+                                    <th>Date<br>Time</th>
+                                    <th>Work hours<br>Break</th>
+                                    <th>Qualifications</th>
+                                    <th>Department</th>
+                                    <th>Note</th>
+                                    <th>Edit</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in conflicting_shifts %}
+                                <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
+                                    <td>
+                                        {{ entry.get_date|date:"l" }}<br>
+                                        <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
+                                        <b>{{ entry.get_start_time|date:"H:i" }} - {{ entry.get_end_time|date:"H:i" }}</b>
+                                    </td>
+                                    <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
+                                    <td>
+                                        {% for qualification in entry.get_qualifications %}
+                                            <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                                <b>{{ qualification.qualification.name }}</b>
+                                            </span><br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if entry.employee != None and entry.employee.department != entry.department %}
+                                            <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
+                                                <b>{{ entry.department }}</b>
+                                            </span>
+                                        {% else %}
+                                            {{ entry.department }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if entry.employee != None and entry.employee.department != entry.department %}
+                                            <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
+                                                <b>{{ entry.employee.department }}</b>
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entry.note }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table><br><br>
+                    {% endif %}
+
                     <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">edit</i>Edit holiday</button>
                     <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
                 </div>

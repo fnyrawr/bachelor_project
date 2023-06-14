@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
+from Shifts.models import Shift, ShiftQualifications
 from Users.models import User
 from utils.create_calendar import draw_calendar
 from .models import Holiday
@@ -52,6 +53,16 @@ def edit_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
     selected_holiday = Holiday.objects.get(id=holiday_id)
 
+    # filter conflicting shifts
+    q_employee = Q(employee=selected_holiday.employee)
+    q_date_start = Q(start__gte=selected_holiday.start_date)
+    q_date_end = Q(start__lte=selected_holiday.end_date)
+    conflicting_shifts = Shift.objects.filter(Q(q_employee & q_date_start & q_date_end))
+    for shift in conflicting_shifts:
+        qualifications = ShiftQualifications.objects.filter(shift_id=shift.id).order_by(
+            'qualification__name')
+        shift.qualifications = qualifications
+
     if request.method == "POST":
         form = HolidayForm(request.POST)
         data = form.data
@@ -62,6 +73,21 @@ def edit_holiday(request, **kwargs):
             status=data['status'],
             note=data['note']
         )
+
+        # unassign employee from conflicting shifts
+        selected_holiday = Holiday.objects.get(id=holiday_id)
+        if selected_holiday.status == 3:
+            q_employee = Q(employee=selected_holiday.employee)
+            q_date_start = Q(start__gte=selected_holiday.start_date)
+            q_date_end = Q(start__lte=selected_holiday.end_date)
+            emp_name = selected_holiday.employee.first_name + ' ' + selected_holiday.employee.last_name
+            Shift.objects.filter(Q(q_employee & q_date_start & q_date_end)).update(
+                employee_id=None,
+                highlight=True,
+                note=emp_name + ' on holiday'
+            )
+            messages.info(request, "Unassigned employee from conflicting shifts.")
+
         messages.success(request, "Holiday has been successfully updated.")
         return redirect('holidays')
     # GET request
@@ -71,7 +97,8 @@ def edit_holiday(request, **kwargs):
         context = {
             'form': form,
             'selected_holiday': selected_holiday,
-            'employees': employees
+            'employees': employees,
+            'conflicting_shifts': conflicting_shifts
         }
         return render(request, 'holidays/edit_holiday.html', context)
 

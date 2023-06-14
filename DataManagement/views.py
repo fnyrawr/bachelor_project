@@ -232,18 +232,18 @@ def import_absences(request):
         if form.is_valid():
             data = request.FILES['file_upload']
             df = pd.read_excel(data)
+            df = df.fillna('')
             for index, row in df.iterrows():
                 username = row['Username']
                 start_date = row['Start Date']
                 end_date = row['End Date']
                 reason = row['Reason']
                 status = row['Status']
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
+
                 employee = User.objects.get(username__iexact=username)
                 absence = Absence.objects.filter(employee=employee, start_date=start_date, end_date=end_date)
+
                 if not absence:
                     absence = Absence(
                         employee=employee,
@@ -274,15 +274,13 @@ def import_holidays(request):
         if form.is_valid():
             data = request.FILES['file_upload']
             df = pd.read_excel(data)
+            df = df.fillna('')
             for index, row in df.iterrows():
                 username = row['Username']
                 start_date = row['Start Date']
                 end_date = row['End Date']
                 status = row['Status']
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
                 employee = User.objects.get(username__iexact=username)
                 holiday = Holiday.objects.filter(employee=employee, start_date=start_date, end_date=end_date)
                 if not holiday:
@@ -330,16 +328,14 @@ def import_demand(request):
         if form.is_valid():
             data = request.FILES['file_upload']
             df = pd.read_excel(data)
+            df = df.fillna('')
             for index, row in df.iterrows():
                 department = Department.objects.get(name__iexact=row['Department'])
                 weekday = get_weekday(row['Weekday'])
                 start_time = row['Start']
                 end_time = row['End']
                 staff_count = row['Staff count']
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
                 demand = Demand.objects.filter(department=department, weekday=weekday,
                                                start_time=start_time, end_time=end_time)
                 if not demand:
@@ -373,6 +369,7 @@ def import_availabilities(request):
             data = request.FILES['file_upload']
             df = pd.read_excel(data)
             df['Tendency'] = df['Tendency'].fillna(0)
+            df['Note'] = df['Note'].fillna('')
             for index, row in df.iterrows():
                 user = User.objects.get(username__iexact=row['Username'])
                 weekday = get_weekday(row['Weekday'])
@@ -392,10 +389,7 @@ def import_availabilities(request):
                     tendency = row['Tendency']
                 else:
                     tendency = 0
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
                 availability = Availability.objects.filter(employee=user, weekday=weekday)
                 if not availability:
                     availability = Availability(
@@ -435,6 +429,7 @@ def import_wishes(request):
             data = request.FILES['file_upload']
             df = pd.read_excel(data)
             df['Tendency'] = df['Tendency'].fillna(0)
+            df['Note'] = df['Note'].fillna('')
             for index, row in df.iterrows():
                 user = User.objects.get(username__iexact=row['Username'])
                 date = row['Date']
@@ -452,10 +447,7 @@ def import_wishes(request):
                     end_time = row['End']
                 if row['Tendency'] != 0:
                     tendency = row['Tendency']
-                if row['Note'] is numpy.nan:
-                    note = ''
-                else:
-                    note = row['Note']
+                note = row['Note']
                 wish = Wish.objects.filter(employee=user, date=date)
                 if not wish:
                     wish = Wish(

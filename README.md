@@ -255,4 +255,4 @@ Implementation of a staff management software tool as part of my bachelor thesis
   - [x] Importer for General availabilities
   - [x] Importer for Shift wishes
   - [x] Importer for Shifts
-  - [ ] Exporting data
+  - [ ] Exporting data `WIP`

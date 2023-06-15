@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import numpy
 from django.shortcuts import render, redirect
 import pandas as pd
+from pandas.io.formats import excel
 
 from Absences.models import Absence
 from Availabilities.models import Availability
@@ -609,7 +610,7 @@ def import_shifts(request):
                     end = date + ' ' + end_time
                 else:
                     end = (datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)) \
-                                           .strftime('%Y-%m-%d') + ' ' + end_time
+                              .strftime('%Y-%m-%d') + ' ' + end_time
                 break_duration = row['Break']
                 if row['Username'] is numpy.nan:
                     employee = None
@@ -660,3 +661,182 @@ def import_shifts(request):
             'form': form
         }
         return render(request, 'datamanagement/import_shifts.html', context)
+
+
+def download_exports(request):
+    export_file = "Exports.xlsx"
+    excel.ExcelFormatter.header_style = None
+
+    # Qualifications
+    qualifications = pd.DataFrame.from_records(Qualification.objects.all().values())
+    qualifications.rename(columns={
+        "id": "ID",
+        "name": "Name",
+        "description": "Description",
+        "is_important": "Important"
+    },
+        inplace=True)
+    qualifications = qualifications.set_index("ID").sort_values(by="ID")
+    qualifications["Important"] = qualifications["Important"].map({True: "Yes", False: ""})
+
+    # Departments
+    departments = pd.DataFrame.from_records(Department.objects.all().values())
+    departments.rename(columns={
+        "id": "ID",
+        "name": "Name",
+        "description": "Description"
+    },
+        inplace=True)
+    departments = departments.set_index("ID").sort_values(by="ID")
+
+    departments_qualifications = pd.DataFrame.from_records(DepartmentQualifications.objects
+                                                           .values('id', 'department__name', 'qualification__name'))
+    departments_qualifications.rename(columns={
+        "id": "ID",
+        "department__name": "Department",
+        "qualification__name": "Qualification"
+    },
+        inplace=True)
+    departments_qualifications = departments_qualifications.set_index("ID").sort_values(by="ID")
+
+    # Users
+    users = pd.DataFrame.from_records(User.objects.all()
+                                      .values('id',
+                                              'first_name',
+                                              'last_name',
+                                              'email',
+                                              'username',
+                                              'staff_id',
+                                              'is_external',
+                                              'department__name',
+                                              'address',
+                                              'zip_city',
+                                              'telephone_home',
+                                              'telephone_mobile',
+                                              'start_contract',
+                                              'end_contract',
+                                              'is_verified',
+                                              'role',
+                                              'is_active',
+                                              'work_hours',
+                                              'holiday_count'))
+    users.rename(columns={
+        "id": "ID",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "E-Mail",
+        "username": "Username",
+        "staff_id": "Staff ID",
+        "is_external": "External",
+        "department__name": "Department",
+        "address": "Address",
+        "zip_city": "Zip city",
+        "telephone_home": "Telephone home",
+        "telephone_mobile": "Telephone mobile",
+        "start_contract": "Start contract",
+        "end_contract": "End contract",
+        "is_verified": "Verified",
+        "role": "Role",
+        "is_active": "Active",
+        "work_hours": "Work hours",
+        "holiday_count": "Holiday"
+    },
+        inplace=True)
+    users = users.set_index("ID").sort_values(by="ID")
+    users["External"] = users["External"].map({True: "Yes", False: ""})
+    users["Verified"] = users["Verified"].map({True: "Yes", False: ""})
+    users["Role"] = users["Role"].map({"A": "Admin", "P": "Planner", "E": "Employee"})
+    users["Active"] = users["Active"].map({True: "Yes", False: ""})
+
+    emp_qualifications = pd.DataFrame.from_records(EmployeesQualifications.objects
+                                                   .values('id', 'employee__username', 'qualification__name'))
+    emp_qualifications.rename(columns={
+        "id": "ID",
+        "employee__username": "Username",
+        "qualification__name": "Qualification"
+    },
+        inplace=True)
+    emp_qualifications = emp_qualifications.set_index("ID").sort_values(by="ID")
+
+    # Absences
+    absences = pd.DataFrame.from_records(Absence.objects
+                                         .values('id',
+                                                 'employee__username',
+                                                 'start_date',
+                                                 'end_date',
+                                                 'reason',
+                                                 'status',
+                                                 'note'))
+    absences.rename(columns={
+        "id": "ID",
+        "employee__username": "Username",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "reason": "Reason",
+        "status": "Status",
+        "note": "Note"
+    },
+        inplace=True)
+    absences = absences.set_index("ID").sort_values(by="ID")
+
+    # Holidays
+    holidays = pd.DataFrame.from_records(Holiday.objects
+                                         .values('id',
+                                                 'employee__username',
+                                                 'start_date',
+                                                 'end_date',
+                                                 'status',
+                                                 'note'))
+    holidays.rename(columns={
+        "id": "ID",
+        "employee__username": "Username",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "status": "Status",
+        "note": "Note"
+    },
+        inplace=True)
+    holidays = holidays.set_index("ID").sort_values(by="ID")
+
+    # Demand
+    demand = pd.DataFrame.from_records(Demand.objects
+                                       .values('id',
+                                               'department__name',
+                                               'weekday',
+                                               'start_time',
+                                               'end_time',
+                                               'staff_count',
+                                               'note'))
+    demand.rename(columns={
+        "id": "ID",
+        "department__name": "Department",
+        "weekday": "Weekday",
+        "start_time": "Start",
+        "end_time": "End",
+        "staff_count": "Staff count",
+        "note": "Note"
+        },
+        inplace=True)
+    demand = demand.set_index("ID").sort_values(by="ID")
+    demand["Weekday"] = demand["Weekday"].map({1: "Monday",
+                                               2: "Tuesday",
+                                               3: "Wednesday",
+                                               4: "Thursday",
+                                               5: "Friday",
+                                               6: "Saturday",
+                                               7: "Sunday"})
+    demand["Start"] = demand["Start"].astype(str).str[:5]
+    demand["End"] = demand["End"].astype(str).str[:5]
+
+    # write to .xlsx
+    with pd.ExcelWriter(export_file) as writer:
+        qualifications.to_excel(writer, sheet_name="Qualifications")
+        departments.to_excel(writer, sheet_name="Departments")
+        departments_qualifications.to_excel(writer, sheet_name="DepartmentQualifications")
+        users.to_excel(writer, sheet_name="Users")
+        emp_qualifications.to_excel(writer, sheet_name="EmployeesQualifications")
+        absences.to_excel(writer, sheet_name="Absences")
+        holidays.to_excel(writer, sheet_name="Holidays")
+        demand.to_excel(writer, sheet_name="Demand")
+
+    return render(request, 'datamanagement/download_exports.html')

@@ -7,15 +7,18 @@ Implementation of a staff management software tool as part of my bachelor thesis
 > .venv\scripts\activate
 2) install requirements (dependencies)
 > pip install -r requirements.txt
-3) prepare database
+3) generate a secret key (length=30, full charset)
+4) create secret_key.py file in Settings folder and insert
+> key = '`generated secret key`'
+5prepare database
 > python manage.py makemigrations  
 > python manage.py migrate
-4) create a superuser for administration
+6) create a superuser for administration
 > python manage.py createsuperuser
 
 `name, mail and password are required`
 
-5) name the superuser and grant admin rights
+7) name the superuser and grant admin rights
 > python manage.py shell  
 > from Users.models import User  
 > user = User.objects.get(username='`superuser_name`')  
@@ -26,10 +29,10 @@ Implementation of a staff management software tool as part of my bachelor thesis
 
 `close the shell with CTRL+Z + return`
 
-6) run the server
+8) run the server
 > python manage.py runserver
 
-7) login, then import or create data
+9) login, then import or create data
 
 ## Author
 | Name           | Github  | E-Mail               |
@@ -243,7 +246,7 @@ Implementation of a staff management software tool as part of my bachelor thesis
   - [x] Change password [all users]
   - [x] Manage general availabilities [all users]
   - [x] Manage shift wishes [all users]
-- [ ] Data management
+- [x] Data management
   - [x] Importer for Qualifications
   - [x] Importer for Departments
   - [x] Importer for Users
@@ -255,4 +258,4 @@ Implementation of a staff management software tool as part of my bachelor thesis
   - [x] Importer for General availabilities
   - [x] Importer for Shift wishes
   - [x] Importer for Shifts
-  - [ ] Exporting data `WIP`
+  - [x] Exporting data

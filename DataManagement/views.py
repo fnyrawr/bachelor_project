@@ -674,8 +674,7 @@ def download_exports(request):
         "name": "Name",
         "description": "Description",
         "is_important": "Important"
-    },
-        inplace=True)
+    }, inplace=True)
     qualifications = qualifications.set_index("ID").sort_values(by="ID")
     qualifications["Important"] = qualifications["Important"].map({True: "Yes", False: ""})
 
@@ -685,8 +684,7 @@ def download_exports(request):
         "id": "ID",
         "name": "Name",
         "description": "Description"
-    },
-        inplace=True)
+    }, inplace=True)
     departments = departments.set_index("ID").sort_values(by="ID")
 
     departments_qualifications = pd.DataFrame.from_records(DepartmentQualifications.objects
@@ -695,8 +693,7 @@ def download_exports(request):
         "id": "ID",
         "department__name": "Department",
         "qualification__name": "Qualification"
-    },
-        inplace=True)
+    }, inplace=True)
     departments_qualifications = departments_qualifications.set_index("ID").sort_values(by="ID")
 
     # Users
@@ -740,8 +737,7 @@ def download_exports(request):
         "is_active": "Active",
         "work_hours": "Work hours",
         "holiday_count": "Holiday"
-    },
-        inplace=True)
+    }, inplace=True)
     users = users.set_index("ID").sort_values(by="ID")
     users["External"] = users["External"].map({True: "Yes", False: ""})
     users["Verified"] = users["Verified"].map({True: "Yes", False: ""})
@@ -754,8 +750,7 @@ def download_exports(request):
         "id": "ID",
         "employee__username": "Username",
         "qualification__name": "Qualification"
-    },
-        inplace=True)
+    }, inplace=True)
     emp_qualifications = emp_qualifications.set_index("ID").sort_values(by="ID")
 
     # Absences
@@ -775,8 +770,7 @@ def download_exports(request):
         "reason": "Reason",
         "status": "Status",
         "note": "Note"
-    },
-        inplace=True)
+    }, inplace=True)
     absences = absences.set_index("ID").sort_values(by="ID")
 
     # Holidays
@@ -794,8 +788,7 @@ def download_exports(request):
         "end_date": "End Date",
         "status": "Status",
         "note": "Note"
-    },
-        inplace=True)
+    }, inplace=True)
     holidays = holidays.set_index("ID").sort_values(by="ID")
 
     # Demand
@@ -815,8 +808,7 @@ def download_exports(request):
         "end_time": "End",
         "staff_count": "Staff count",
         "note": "Note"
-        },
-        inplace=True)
+    }, inplace=True)
     demand = demand.set_index("ID").sort_values(by="ID")
     demand["Weekday"] = demand["Weekday"].map({1: "Monday",
                                                2: "Tuesday",
@@ -828,6 +820,140 @@ def download_exports(request):
     demand["Start"] = demand["Start"].astype(str).str[:5]
     demand["End"] = demand["End"].astype(str).str[:5]
 
+    # Availabilities
+    availabilities = pd.DataFrame.from_records(Availability.objects
+                                               .values('id',
+                                                       'employee__username',
+                                                       'weekday',
+                                                       'is_available',
+                                                       'start_time',
+                                                       'end_time',
+                                                       'tendency',
+                                                       'note'))
+    availabilities.rename(columns={
+        "id": "ID",
+        "employee__username": "Username",
+        "weekday": "Weekday",
+        "is_available": "Available",
+        "start_time": "Start",
+        "end_time": "End",
+        "tendency": "Tendency",
+        "note": "Note"
+    }, inplace=True)
+    availabilities = availabilities.set_index("ID").sort_values(by="ID")
+    availabilities["Available"] = availabilities["Available"].map({True: "Yes", False: ""})
+    availabilities["Weekday"] = availabilities["Weekday"].map({1: "Monday",
+                                                               2: "Tuesday",
+                                                               3: "Wednesday",
+                                                               4: "Thursday",
+                                                               5: "Friday",
+                                                               6: "Saturday",
+                                                               7: "Sunday"})
+    availabilities["Start"] = availabilities["Start"].astype(str).str[:5]
+    availabilities["End"] = availabilities["End"].astype(str).str[:5]
+    availabilities["Start"] = availabilities.apply(lambda x: x["Start"] if x["Start"] != "None" else "", axis=1)
+    availabilities["End"] = availabilities.apply(lambda x: x["End"] if x["End"] != "None" else "", axis=1)
+
+    # Wishes
+    wishes = pd.DataFrame.from_records(Wish.objects
+                                       .values('id',
+                                               'employee__username',
+                                               'date',
+                                               'is_available',
+                                               'start_time',
+                                               'end_time',
+                                               'tendency',
+                                               'note'))
+    wishes.rename(columns={
+        "id": "ID",
+        "employee__username": "Username",
+        "date": "Date",
+        "is_available": "Available",
+        "start_time": "Start",
+        "end_time": "End",
+        "tendency": "Tendency",
+        "note": "Note"
+    }, inplace=True)
+    wishes = wishes.set_index("ID").sort_values(by="ID")
+    wishes["Available"] = wishes["Available"].map({True: "Yes", False: ""})
+    wishes["Start"] = wishes["Start"].astype(str).str[:5]
+    wishes["End"] = wishes["End"].astype(str).str[:5]
+    wishes["Start"] = wishes.apply(lambda x: x["Start"] if x["Start"] != "None" else "", axis=1)
+    wishes["End"] = wishes.apply(lambda x: x["End"] if x["End"] != "None" else "", axis=1)
+
+    # ShiftTemplates
+    shift_templates = pd.DataFrame.from_records(ShiftTemplate.objects
+                                                .values('id',
+                                                        'name',
+                                                        'department__name',
+                                                        'start_time',
+                                                        'end_time',
+                                                        'break_duration',
+                                                        'note'))
+    shift_templates.rename(columns={
+        "id": "ID",
+        "name": "Name",
+        "department__name": "Department",
+        "start_time": "Start",
+        "end_time": "End",
+        "break_duration": "Break",
+        "note": "Note"
+    }, inplace=True)
+    shift_templates = shift_templates.set_index("ID").sort_values(by="ID")
+    shift_templates["Start"] = shift_templates["Start"].astype(str).str[:5]
+    shift_templates["End"] = shift_templates["End"].astype(str).str[:5]
+    shift_templates["Break"] = shift_templates["Break"].astype(str).str[:5]
+
+    st_qualifications = pd.DataFrame.from_records(ShiftTemplateQualifications.objects
+                                                  .values('id', 'shift_template__name', 'qualification__name'))
+    st_qualifications.rename(columns={
+        "id": "ID",
+        "shift_template__name": "Shift",
+        "qualification__name": "Qualification"
+    }, inplace=True)
+    st_qualifications = st_qualifications.set_index("ID").sort_values(by="ID")
+
+    # DayTemplates
+    day_templates = pd.DataFrame.from_records(DayTemplate.objects
+                                              .values('id',
+                                                      'name',
+                                                      'description'))
+    day_templates.rename(columns={
+        "id": "ID",
+        "name": "Name",
+        "description": "Description"
+    }, inplace=True)
+    day_templates = day_templates.set_index("ID").sort_values(by="ID")
+
+    day_shift_templates = pd.DataFrame.from_records(DayShiftTemplates.objects
+                                                    .values('id', 'day_template__name', 'shift_template__name'))
+    day_shift_templates.rename(columns={
+        "id": "ID",
+        "day_template__name": "Template",
+        "shift_template__name": "Shift"
+    }, inplace=True)
+    day_shift_templates = day_shift_templates.set_index("ID").sort_values(by="ID")
+
+    # Shifts
+    shifts_df = pd.DataFrame.from_records(Shift.objects.all()
+                                          .values('id',
+                                                  'start',
+                                                  'end',
+                                                  'employee__username',
+                                                  'department__name',
+                                                  'highlight',
+                                                  'note'))
+    shifts = pd.DataFrame()
+    shifts['ID'] = shifts_df['id']
+    shifts['Date'] = shifts_df['start'].astype(str).str[:10]
+    shifts['Start'] = shifts_df['start'].astype(str).str[11:16]
+    shifts['End'] = shifts_df['end'].astype(str).str[11:16]
+    shifts['Username'] = shifts_df['employee__username']
+    shifts['Department'] = shifts_df['department__name']
+    shifts['Highlight'] = shifts_df['highlight'].map({True: "Yes", False: ""})
+    shifts['Note'] = shifts_df['note']
+    shifts = shifts.set_index("ID").sort_values(by="ID")
+
     # write to .xlsx
     with pd.ExcelWriter(export_file) as writer:
         qualifications.to_excel(writer, sheet_name="Qualifications")
@@ -838,5 +964,12 @@ def download_exports(request):
         absences.to_excel(writer, sheet_name="Absences")
         holidays.to_excel(writer, sheet_name="Holidays")
         demand.to_excel(writer, sheet_name="Demand")
+        availabilities.to_excel(writer, sheet_name="Availabilities")
+        wishes.to_excel(writer, sheet_name="Wishes")
+        shift_templates.to_excel(writer, sheet_name="ShiftTemplates")
+        st_qualifications.to_excel(writer, sheet_name="ShiftTemplateQualifications")
+        day_templates.to_excel(writer, sheet_name="DayTemplates")
+        day_shift_templates.to_excel(writer, sheet_name="DayTemplateShifts")
+        shifts.to_excel(writer, sheet_name="Shifts")
 
     return render(request, 'datamanagement/download_exports.html')

@@ -63,13 +63,23 @@
                                     <td>{{ week.start|date:"d.m.Y" }}</td>
                                     <td>{{ week.end|date:"d.m.Y" }}</td>
                                     <td>{{ week.shift_count }} shifts</td>
-                                    <td>{{ week.work_hours }}/{{ employee.work_hours }} hours</td>
+                                    <td>{% if employee.work_hours != None %}
+                                            {{ week.work_hours }}/{{ employee.work_hours }} hours
+                                        {% else %}
+                                            {{ week.work_hours }} hours
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                             <tr class="grey darken-1 white-text">
                                 <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
                                 <td>{{ shift_count_total }} shifts</td>
-                                <td>{{ work_hours_total }}/{{ target_hours }} hours</td>
+                                <td>{% if employee.work_hours != None %}
+                                        {{ work_hours_total }}/{{ target_hours }} hours
+                                    {% else %}
+                                        {{ work_hours_total }} hours
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>

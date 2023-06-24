@@ -197,7 +197,6 @@ def draw_timeline(objects, target):
         else:
             img.text((desc_col+w_center, h_row/2-th/2), str(h), fill=white, font=font)
     # draw objects in timeline
-    print(objects)
     for i in range(len(objects)):
         row = lst_rows[i]
         h_center = (row+1)*h_row + h_row/2

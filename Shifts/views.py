@@ -238,7 +238,10 @@ def work_hours(request):
                 work_hours_total += hours
                 filter_start -= timedelta(days=7)
                 filter_end -= timedelta(days=7)
-            target_hours = count_weeks*employee.work_hours
+            if employee.work_hours is not None:
+                target_hours = count_weeks*employee.work_hours
+            else:
+                target_hours = None
     employees = User.objects.all()
 
     context = {

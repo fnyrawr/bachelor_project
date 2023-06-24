@@ -37,7 +37,10 @@ def draw_timeline(objects, target):
     rows_max = [0.0]
 
     i = 0
-    start_date = objects[0].start.date()
+    start_date = None
+    if target in ['shifts', 'shifts_listed']:
+        start_date = objects[0].start.date()
+
     for obj in objects:
         # since data structure is different filter target
         if target == 'demand':
@@ -108,6 +111,7 @@ def draw_timeline(objects, target):
                 if j >= len(rows_max):
                     rows_max.append(0.0)
                     row_count += 1
+                    break
             # set the allocated row for obj and block this row until the end time
             rows_max[j] = t_end
             lst_rows.append(j)
@@ -193,6 +197,7 @@ def draw_timeline(objects, target):
         else:
             img.text((desc_col+w_center, h_row/2-th/2), str(h), fill=white, font=font)
     # draw objects in timeline
+    print(objects)
     for i in range(len(objects)):
         row = lst_rows[i]
         h_center = (row+1)*h_row + h_row/2

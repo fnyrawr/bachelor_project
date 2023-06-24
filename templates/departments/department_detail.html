@@ -56,9 +56,9 @@
         {% if associated_employees.count > 0 %}
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Associated Employees</b></div>
+                    <div class="card-title"><b>Associated Employees</b></div>
                     <table class="striped highlight responsive-table">
-                        <thead class="light-blue-text text-darken-1">
+                        <thead class="grey darken-1 white-text">
                             <tr>
                                 <th>First Name<br>Last Name</th>
                                 <th>External</th>
@@ -81,7 +81,7 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                            <tr class="grey lighten-3">
+                            <tr class="grey darken-1 white-text">
                                 <td><b>Total</b><br>{{ associated_employees.count }} employees</td>
                                 <td></td>
                                 <td>{% if associated_employees_work_hours > 0 %}{{ associated_employees_work_hours }} hours / week{% endif %}</td>

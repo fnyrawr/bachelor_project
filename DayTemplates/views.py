@@ -74,7 +74,8 @@ def edit_day_template(request, **kwargs):
         return redirect('day_templates')
     # GET request
     else:
-        associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)
+        associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)\
+            .order_by('shift_template__start_time', 'shift_template__end_time', 'shift_template__name')
         for entry in associated_shift_templates:
             qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id)\
                 .order_by('qualification__name')
@@ -157,7 +158,8 @@ def paste_shifts_to_date(request, **kwargs):
 def view_day_template(request, **kwargs):
     day_template_id = kwargs['pk']
     selected_day_template = DayTemplate.objects.get(id=day_template_id)
-    associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)
+    associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)\
+        .order_by('shift_template__start_time', 'shift_template__end_time', 'shift_template__name')
     for entry in associated_shift_templates:
         qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id) \
             .order_by('qualification__name')

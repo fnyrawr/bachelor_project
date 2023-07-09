@@ -33,17 +33,18 @@ def draw_timeline(objects, target):
     lst_end = []
     lst_rows = []
     lst_text = []
+    lst_departments = []
     lst_highlight = []  # 0: normal (blue) | 1: no employee (grey) | 2: highlighted (yellow)
     rows_max = [0.0]
 
     i = 0
     start_date = None
-    if target in ['shifts', 'shifts_listed']:
+    if target in ['shifts', 'shifts_filtered', 'shifts_listed']:
         start_date = objects[0].start.date()
 
     for obj in objects:
         # since data structure is different filter target
-        if target == 'demand':
+        if target in ['demand', 'demand_listed']:
             lst_text.append(str(obj.staff_count))
             lst_highlight.append(0)
             t_start = time_to_dec(obj.start_time)
@@ -53,7 +54,7 @@ def draw_timeline(objects, target):
             t_start = time_to_dec(obj.start_time)
             t_end = time_to_dec(obj.end_time)
             lst_highlight.append(0)
-        elif target == 'shifts':
+        elif target in ['shifts', 'shifts_filtered']:
             if obj.employee:
                 employee = str(obj.employee)
             else:
@@ -115,6 +116,8 @@ def draw_timeline(objects, target):
             # set the allocated row for obj and block this row until the end time
             rows_max[j] = t_end
             lst_rows.append(j)
+            if target == 'demand_listed':
+                lst_departments.append(obj.department.name)
 
     # constants
     desc_col = 0
@@ -122,7 +125,7 @@ def draw_timeline(objects, target):
     width = 1500
     height = h_row*(row_count+1)
     # descriptor column with 20% width
-    if target == 'shifts_listed':
+    if target in ['shifts_filtered', 'shifts_listed', 'demand_listed']:
         desc_col = width*0.2
     w_col = (width-desc_col) / (t_max - t_min)
     mgs = h_row/20
@@ -160,7 +163,12 @@ def draw_timeline(objects, target):
     if desc_col > 0:
         fontsize = h_row / 3.5
         font = ImageFont.truetype(font_family, int(fontsize))
-        txt = 'Date\nTime'
+        if target == 'demand_listed':
+            txt = 'Department'
+        elif target == 'shifts_listed':
+            txt = 'Date\nTime'
+        else:
+            txt = ''
         tw, th = img.textsize(txt, font=font)
         img.text((2*mgs, h_row/2-th/2), txt, fill=white, font=font)
     if target == 'shifts_listed':
@@ -182,6 +190,14 @@ def draw_timeline(objects, target):
             if weekday == 6:
                 img.line((desc_col - l_width/2 - 1, (i+1)*h_row, desc_col - l_width/2 - 1, (i+2)*h_row),
                          fill=amber, width=l_width)
+    elif target == 'demand_listed':
+        for i in range(row_count):
+            fontsize = h_row / 4
+            font = ImageFont.truetype(font_family, int(fontsize))
+            desc = lst_departments[i]
+            tw, th = img.textsize(desc, font=font)
+            img.text((2 * mgs, (i + 1) * h_row + h_row / 2 - th / 2), desc,
+                     fill=black, font=font, align='left')
     # vertical
     fontsize = h_row / 3
     font = ImageFont.truetype(font_family, int(fontsize))

@@ -12,6 +12,7 @@ from django.views.generic import CreateView
 
 from Absences.models import Absence
 from Availabilities.models import Availability
+from Demand.models import Demand
 from Departments.models import Department
 from Holidays.models import Holiday
 from Qualifications.models import Qualification
@@ -377,8 +378,10 @@ def own_shifts(request):
 
 
 def shift_list(request):
-    data = None
     search = False
+    demand = None
+    keyword = None
+    q_date = Q()
 
     if request.method == "POST":
         search = True
@@ -386,8 +389,6 @@ def shift_list(request):
         data = searchForm.data
         filter_date = data['filter_date']
         keyword = data['keyword']
-        q_keyword = Q()
-        q_date = Q()
 
         if keyword != '':
             last_name = Q(employee__last_name__icontains=keyword)
@@ -395,23 +396,50 @@ def shift_list(request):
             department = Q(department__name__icontains=keyword)
             note = Q(note__icontains=keyword)
             q_keyword = Q(last_name | first_name | department | note)
+        else:
+            q_keyword = Q()
         if filter_date != '':
             q_date_start = Q(start__date__lte=filter_date)
             q_date_end = Q(end__date__gte=filter_date)
             q_date = Q(q_date_start & q_date_end)
+        else:
+            q_date = Q()
         q = Q(q_keyword & q_date)
         entries = Shift.objects.filter(q).order_by('department__name')
         timeline = None
         if len(entries) > 0 and filter_date != '':
-            contents = draw_timeline(entries, 'shifts')
+            contents = draw_timeline(entries, 'shifts_filtered')
             timeline = base64.b64encode(contents).decode()
     else:
-        entries = Shift.objects.all()
+        filter_date = datetime.today().strftime('%Y-%m-%d')
+        searchForm = SearchForm()
+        data = searchForm.data
+        data['filter_date'] = filter_date
+        q_date_start = Q(start__date__lte=filter_date)
+        q_date_end = Q(end__date__gte=filter_date)
+        q_date = Q(q_date_start & q_date_end)
+        entries = Shift.objects.filter(q_date).order_by('department__name')
         for entry in entries:
-            qualifications = ShiftQualifications.objects.filter(shift_id=entry.id).order_by(
-                'qualification__name')
+            qualifications = ShiftQualifications.objects.filter(shift_id=entry.id).order_by('qualification__name')
             entry.qualifications = qualifications
         timeline = None
+        if len(entries) > 0:
+            contents = draw_timeline(entries, 'shifts_filtered')
+            timeline = base64.b64encode(contents).decode()
+
+    # get demand for day
+    if filter_date is not None:
+        weekday = datetime.strptime(filter_date, '%Y-%m-%d').weekday()+1
+        if keyword is not None:
+            q_keyword = Q(department__name__icontains=keyword)
+        else:
+            q_keyword = Q()
+        q_weekday = Q(weekday=weekday)
+        q_filter = Q(q_weekday & q_keyword)
+        demand_entries = Demand.objects.filter(q_filter).order_by('department__name', 'start_time', 'end_time')
+        if len(demand_entries) > 0:
+            contents = draw_timeline(demand_entries, 'demand_listed')
+            demand = base64.b64encode(contents).decode()
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')
@@ -423,7 +451,8 @@ def shift_list(request):
         'search': search,
         'form': SearchForm,
         'data': data,
-        'timeline': timeline
+        'timeline': timeline,
+        'demand': demand
     }
     return render(request, 'shifts/shift_list.html', context)
 

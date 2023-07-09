@@ -90,11 +90,20 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% if search and data.filter_date != '' %}
+                {% if timeline %}
                     <br><img class="materialboxed" src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
                 {% endif %}
             </div>
         </div>
+
+        {% if demand %}
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-title"><b>Demand</b> (Employees needed in timeframe per department)</div>
+                    <img class="materialboxed" src='data:image/png;base64,{{ demand }}' style="max-width: 100%">
+                </div>
+            </div>
+        {% endif %}
 
         <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
         <ul class="pagination center">

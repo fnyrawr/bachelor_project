@@ -43,6 +43,8 @@ class ShiftCreationView(CreateView):
         form = self.form_class(data=data)
         if form.is_valid():
             shift = form.save()
+            if 'highlight' in data:
+                Shift.objects.filter(id=shift.id).update(highlight=True)
             messages.success(request, "Shift successfully created.")
             return redirect('shifts')
         else:
@@ -95,6 +97,7 @@ def edit_shift(request, **kwargs):
 
         form = ShiftForm(post_data)
         data = form.data
+        print(data)
         if data['note'] != '':
             note = data['note']
         else:
@@ -124,16 +127,30 @@ def edit_shift(request, **kwargs):
         departments = Department.objects.all()
         employees = User.objects.all()
 
-        # absences and holidays to filter out
+        # filter out employees missing qualifications
+        shift_qualifications = selected_shift.get_qualifications()
+
         for employee in employees:
+            # filter out employees missing qualifications
+            employee_qualifications = employee.get_qualifications()
+            for sq in shift_qualifications:
+                if sq.qualification.is_important:
+                    match = False
+                    for eq in employee_qualifications:
+                        if sq.qualification.id == eq.qualification.id:
+                            match = True
+                    if not match:
+                        employees = employees.exclude(id=employee.id)
+
+            # absences and holidays to filter out
             if Absence.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
                 employees = employees.exclude(id=employee.id)
-        for employee in employees:
             if Holiday.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
                 employees = employees.exclude(id=employee.id)
-
-        # already assigned employees of this day to filter out
-        for employee in employees:
+            # filter out unavailable
+            if Availability.objects.filter(employee=employee, weekday=weekday, is_available=False).exists():
+                employees = employees.exclude(id=employee.id)
+            # already assigned employees of this day to filter out
             if Shift.objects.filter(employee=employee,
                                     start__year=date.year,
                                     start__month=date.month,
@@ -145,10 +162,13 @@ def edit_shift(request, **kwargs):
             employee.available = None
             if Availability.objects.filter(employee=employee, weekday=weekday).exists():
                 employee.available = Availability.objects.get(employee=employee, weekday=weekday)
-        for employee in employees:
             employee.wish = None
             if Wish.objects.filter(employee=employee, date=date).exists():
                 employee.wish = Wish.objects.get(employee=employee, date=date)
+
+        emp_in_department = employees.filter(Q(department__id=selected_shift.department.id))
+        emp_other_department = employees.filter(~Q(department__id=selected_shift.department.id))
+        employees = list(emp_in_department) + list(emp_other_department)
 
         form = ShiftForm()
         context = {

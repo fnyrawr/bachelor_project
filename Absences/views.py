@@ -25,6 +25,21 @@ class AbsenceCreationView(CreateView):
         if form.is_valid():
             absence = form.save()
             messages.success(request, "Absence successfully created.")
+
+            # unassign employee from conflicting shifts
+            selected_absence = absence
+            if selected_absence.status == 3:
+                q_employee = Q(employee=selected_absence.employee)
+                q_date_start = Q(start__gte=selected_absence.start_date)
+                q_date_end = Q(start__lte=selected_absence.end_date)
+                emp_name = selected_absence.employee.first_name + ' ' + selected_absence.employee.last_name
+                Shift.objects.filter(Q(q_employee & q_date_start & q_date_end)).update(
+                    employee_id=None,
+                    highlight=True,
+                    note=emp_name + ' is absent'
+                )
+                messages.info(request, "Unassigned employee from conflicting shifts.")
+
             return redirect('absences')
         else:
             for error in list(form.errors.values()):
@@ -42,6 +57,7 @@ class OwnAbsenceCreationView(CreateView):
         if form.is_valid():
             absence = form.save()
             messages.success(request, "Absence successfully created.")
+
             return redirect('own_absences')
         else:
             for error in list(form.errors.values()):

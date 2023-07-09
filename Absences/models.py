@@ -40,9 +40,11 @@ class Absence(models.Model):
         return duration.days
 
     def __str__(self):
-        return self.employee + ' from ' + str(self.start_date) + ' until ' + str(self.end_date)\
-               + ' because of ' + self.reason
+        return self.employee.first_name + ' ' + self.employee.last_name + ' from ' + str(self.start_date)\
+               + ' until ' + str(self.end_date)\
+               + ' because of ' + self.get_reason_display()
 
     def __repr__(self):
-        return self.employee + ' / ' + str(self.start_date) + ' / ' + str(self.end_date) + ' / ' + self.reason +\
-               ' / ' + self.get_status_display() + ' / ' + self.note
+        return self.employee.first_name + ' ' + self.employee.last_name + ' / ' + str(self.start_date) + ' / '\
+               + str(self.end_date) + ' / ' + self.get_reason_display()\
+               + ' / ' + self.get_status_display() + ' / ' + self.note

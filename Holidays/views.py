@@ -25,6 +25,21 @@ class HolidayCreationView(CreateView):
         if form.is_valid():
             holiday = form.save()
             messages.success(request, "Holiday successfully created.")
+
+            # unassign employee from conflicting shifts
+            selected_holiday = holiday
+            if selected_holiday.status == 3:
+                q_employee = Q(employee=selected_holiday.employee)
+                q_date_start = Q(start__gte=selected_holiday.start_date)
+                q_date_end = Q(start__lte=selected_holiday.end_date)
+                emp_name = selected_holiday.employee.first_name + ' ' + selected_holiday.employee.last_name
+                Shift.objects.filter(Q(q_employee & q_date_start & q_date_end)).update(
+                    employee_id=None,
+                    highlight=True,
+                    note=emp_name + ' on holiday'
+                )
+                messages.info(request, "Unassigned employee from conflicting shifts.")
+
             return redirect('holidays')
         else:
             for error in list(form.errors.values()):

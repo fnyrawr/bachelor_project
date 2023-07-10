@@ -4,7 +4,8 @@ Implementation of a staff management software tool as part of my bachelor thesis
 ### How to make the application run
 1) create a virtual environment
 > python -m venv .venv  
-> .venv\scripts\activate
+> .venv\scripts\activate (Windows)  
+> .venv/script/activate (Linux/Mac/Unix)
 2) install requirements (dependencies)
 > pip install -r requirements.txt
 3) generate a secret key (length=30, full charset)

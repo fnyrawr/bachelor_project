@@ -449,6 +449,8 @@ def import_wishes(request):
                     end_time = row['End']
                 if row['Tendency'] != 0:
                     tendency = row['Tendency']
+                else:
+                    tendency = 0
                 note = row['Note']
                 wish = Wish.objects.filter(employee=user, date=date)
                 if not wish:

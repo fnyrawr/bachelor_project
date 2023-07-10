@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -189,7 +191,12 @@ def availability_list(request):
         q = Q(q_weekday & q_tendency & q_keyword)
         entries = Availability.objects.filter(q)
     else:
-        entries = Availability.objects.all()
+        filter_weekday = datetime.today().weekday()+1
+        searchForm = SearchForm()
+        data = searchForm.data
+        data['filter_weekday'] = filter_weekday
+        q_weekday = Q(weekday__exact=filter_weekday)
+        entries = Availability.objects.filter(q_weekday)
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')

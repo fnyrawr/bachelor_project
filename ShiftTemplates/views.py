@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
-from Departments.models import Department
+from Departments.models import Department, DepartmentQualifications
 from Qualifications.models import Qualification
 from .forms import ShiftTemplateForm
 from .models import ShiftTemplate, ShiftTemplateQualifications
@@ -17,6 +17,11 @@ class ShiftTemplateCreationView(CreateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             shift_template = form.save()
+            # get department qualifications and add them to created shift template
+            dep_qualifications = DepartmentQualifications.objects.filter(department=shift_template.department)
+            for dq in dep_qualifications:
+                sq = ShiftTemplateQualifications(shift_template=shift_template, qualification=dq.qualification)
+                sq.save()
             messages.success(request, "Shift template successfully created.")
             return redirect('shift_templates')
         else:

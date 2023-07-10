@@ -45,9 +45,7 @@
                     <ul id="sidenav" class="sidenav">
                         <li>
                             <div class="user-view">
-                                <div class="background">
-                                    <img src="{% static '/images/Nightsky.png' %}">
-                                </div>
+                                <div class="background black"></div>
                                 {% if user.is_authenticated %}
                                     {% if user.profile_picture %}
                                         <!--<img class="circle" src="{{ user.profile_picture.url }}">-->

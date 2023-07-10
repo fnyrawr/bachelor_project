@@ -26,9 +26,21 @@
         <div id="add-employee-modal" class="modal content-section">
             <div class="modal-content">
                 <h5 class="light-blue-text text-darken-1"><b>Assign Employee to shift</b></h5>
-                <h6 class="light-blue-text text-darken-1"><b>{{ selected_shift.get_start_time|date:"H:i" }} - {{ selected_shift.get_end_time|date:"H:i" }}</b></h6>
+                <h6>
+                    <b>{{ selected_shift.get_date|date:"l, d.m.Y" }}<br>
+                    {{ selected_shift.get_start_time|date:"H:i" }} - {{ selected_shift.get_end_time|date:"H:i" }}<br>
+                    {{ selected_shift.department }}</b>
+                </h6>
+                <span><b>Qualifications:</b></span><br>
+                <div class="left">
+                    {% for entry in associated_qualifications %}
+                    <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                        {{ entry.qualification.name }}
+                    </span>
+                {% endfor %}
+                </div><br><br>
                 <table class="striped highlight responsive-table">
-                    <thead class="light-blue-text text-darken-1">
+                    <thead class="grey darken-1 white-text">
                         <tr>
                             <th>Name</th>
                             <th>Availability<br>Shift wish</th>

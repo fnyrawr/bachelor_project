@@ -13,7 +13,7 @@ from django.views.generic import CreateView
 from Absences.models import Absence
 from Availabilities.models import Availability
 from Demand.models import Demand
-from Departments.models import Department
+from Departments.models import Department, DepartmentQualifications
 from Holidays.models import Holiday
 from Qualifications.models import Qualification
 from Users.models import User
@@ -45,6 +45,11 @@ class ShiftCreationView(CreateView):
             shift = form.save()
             if 'highlight' in data:
                 Shift.objects.filter(id=shift.id).update(highlight=True)
+            # get department qualifications and add them to created shift
+            dep_qualifications = DepartmentQualifications.objects.filter(department=shift.department)
+            for dq in dep_qualifications:
+                sq = ShiftQualifications(shift=shift, qualification=dq.qualification)
+                sq.save()
             messages.success(request, "Shift successfully created.")
             return redirect('shifts')
         else:
@@ -147,15 +152,20 @@ def edit_shift(request, **kwargs):
                 employees = employees.exclude(id=employee.id)
             if Holiday.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
                 employees = employees.exclude(id=employee.id)
-            # filter out unavailable
+            # filter out unavailable without explicit shift wish
             if Availability.objects.filter(employee=employee, weekday=weekday, is_available=False).exists():
-                employees = employees.exclude(id=employee.id)
+                if not Wish.objects.filter(employee=employee, date=date, is_available=True).exists():
+                    employees = employees.exclude(id=employee.id)
             # already assigned employees of this day to filter out
             if Shift.objects.filter(employee=employee,
                                     start__year=date.year,
                                     start__month=date.month,
                                     start__day=date.day).exists():
                 employees = employees.exclude(id=employee.id)
+
+        emp_in_department = employees.filter(Q(department__id=selected_shift.department.id))
+        emp_other_department = employees.filter(~Q(department__id=selected_shift.department.id))
+        employees = list(emp_in_department) + list(emp_other_department)
 
         # get availabilities and wishes for remaining
         for employee in employees:
@@ -165,10 +175,6 @@ def edit_shift(request, **kwargs):
             employee.wish = None
             if Wish.objects.filter(employee=employee, date=date).exists():
                 employee.wish = Wish.objects.get(employee=employee, date=date)
-
-        emp_in_department = employees.filter(Q(department__id=selected_shift.department.id))
-        emp_other_department = employees.filter(~Q(department__id=selected_shift.department.id))
-        employees = list(emp_in_department) + list(emp_other_department)
 
         form = ShiftForm()
         context = {
@@ -401,7 +407,6 @@ def shift_list(request):
     search = False
     demand = None
     keyword = None
-    q_date = Q()
 
     if request.method == "POST":
         search = True

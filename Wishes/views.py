@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -163,7 +165,6 @@ def own_wishes(request):
 
 
 def wish_list(request):
-    data = None
     search = False
 
     if request.method == "POST":
@@ -189,7 +190,12 @@ def wish_list(request):
         q = Q(q_date & q_tendency & q_keyword)
         entries = Wish.objects.filter(q)
     else:
-        entries = Wish.objects.all()
+        filter_date = datetime.today().strftime('%Y-%m-%d')
+        searchForm = SearchForm()
+        data = searchForm.data
+        data['filter_date'] = filter_date
+        q_date = Q(date__exact=filter_date)
+        entries = Wish.objects.filter(q_date)
 
     paginator = Paginator(entries, per_page=10)
     page_number = request.GET.get('page')

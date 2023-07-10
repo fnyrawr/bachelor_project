@@ -40,7 +40,7 @@
             </li>
         </ul>
 
-        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_wish' %}"><i class="material-icons left">add</i>Create wish</a><br><br>
+        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_wish' %}"><i class="material-icons left">add</i>Create wish</a><br><br>{% endif %}
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -53,7 +53,7 @@
                             <th>End</th>
                             <th>Tendency</th>
                             <th>Note</th>
-                            <th>Edit</th>
+                            {% if user.is_admin %}<th>Edit</th>{% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -72,9 +72,9 @@
                             <td>{{ entry.end_time|date:"H:i" }}</td>
                             <td>{{ entry.get_tendency_display }}</td>
                             <td>{{ entry.note }}</td>
-                            <td>
+                            {% if user.is_admin %}<td>
                                 <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_wish' entry.id %}"><i class="material-icons">edit</i></a>
-                            </td>
+                            </td>{% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

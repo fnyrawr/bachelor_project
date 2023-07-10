@@ -144,16 +144,20 @@ def edit_own_holiday(request, **kwargs):
 def delete_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
     selected_holiday = Holiday.objects.get(id=holiday_id)
-    selected_holiday.delete()
-    messages.success(request, "Holiday successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_holiday.delete()
+        messages.success(request, "Holiday successfully deleted.")
     return redirect('holidays')
 
 
 def delete_own_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
     selected_holiday = Holiday.objects.get(id=holiday_id)
-    selected_holiday.delete()
-    messages.success(request, "Holiday successfully deleted.")
+    user = request.user
+    if selected_holiday.employee == user and selected_holiday.status < 3:
+        selected_holiday.delete()
+        messages.success(request, "Holiday successfully deleted.")
     return redirect('own_holidays')
 
 

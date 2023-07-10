@@ -51,13 +51,6 @@ Implementation of a staff management software tool as part of my bachelor thesis
 - Django WebApp for a Staff management system
 > Deadline for bachelor thesis: 2022-07-11
 
-### upcoming next ToDos
-- landing page [toDo]
-- dashboard (Admin/Planner/~~Employee~~) [WIP]
-- ~~export shiftplan as PDF file~~ [done]
-- employee assign helper [toDo]
-- data export [toDo]
-
 ## Database
 ### Employee
 - username
@@ -203,12 +196,10 @@ Implementation of a staff management software tool as part of my bachelor thesis
 
 ## Functions
 ### Needed
-- [ ] Landing page
-  - [ ] Infopage if not logged in
+- [x] Landing page
+  - [x] Infopage if not logged in
   - [x] Restricted access note
   - [x] Reset password
-  - [ ] Admin dashboard [admin]
-  - [ ] Planner dashboard [planner] (extending Employee dashboard)
   - [x] Employee dashboard [employee]
 - [x] Departments
   - [x] Create department [admin]
@@ -224,23 +215,22 @@ Implementation of a staff management software tool as part of my bachelor thesis
     - [x] unmatch employee from shifts in timeframe on approve
   - [x] Manage employee holidays [admin]
     - [x] unmatch employee from shifts in timeframe on approve
-- [ ] Shifts
-  - [x] Manage demand [admin]
-  - [x] Manage Shift templates [admin]
-  - [x] Manage Day templates [admin]
+- [x] Shifts
+  - [x] Manage demand [planner]
+  - [x] Manage Shift templates [planner]
+  - [x] Manage Day templates [planner]
   - [x] Timeline view
   - [x] Create shifts for dates
   - [x] Copy day templates to dates
-  - [ ] Cloning weeks
   - [x] Assign employees
     - [x] Filter out already assigned that day
     - [x] Filter out absent/holiday
-    - [ ] Assign helper rule based
+    - [x] Assign helper rule based
   - [x] shift plan displayed on page
   - [x] create shift plan as PDF
 - [x] My account
   - [x] Overview base data [all users]
-  - [x] Overview work hours [all users]
+  - [x] Overview own work hours [all users]
   - [x] Overview absences and holiday [all users]
   - [x] Manage base data [all users]
   - [x] Change password [all users]

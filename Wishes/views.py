@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -140,26 +140,69 @@ def edit_own_wish(request, **kwargs):
 def delete_wish(request, **kwargs):
     wish_id = kwargs['pk']
     selected_wish = Wish.objects.get(id=wish_id)
-    selected_wish.delete()
-    messages.success(request, "Wish successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_wish.delete()
+        messages.success(request, "Wish successfully deleted.")
     return redirect('wishes')
 
 
 def delete_own_wish(request, **kwargs):
     wish_id = kwargs['pk']
     selected_wish = Wish.objects.get(id=wish_id)
-    selected_wish.delete()
-    messages.success(request, "Wish successfully deleted.")
+    user = request.user
+    if selected_wish.employee == user:
+        selected_wish.delete()
+        messages.success(request, "Wish successfully deleted.")
     return redirect('own_wishes')
 
 
 def own_wishes(request):
-    user = request.user
-    all_entries = None
-    all_entries = Wish.objects.filter(employee=user).order_by('date')
+    search = False
+
+    if request.method == "POST":
+        search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        filter_date = data['filter_date']
+        filter_tendency = data['filter_tendency']
+        keyword = data['keyword']
+        q_date = Q()
+        q_tendency = Q()
+        q_keyword = Q()
+
+        q_user = Q(employee=request.user)
+        if filter_date != '':
+            # filter week around date
+            filter_date = datetime.strptime(filter_date, '%Y-%m-%d')
+            date_min = filter_date - timedelta(days=filter_date.weekday())
+            date_max = filter_date + timedelta(days=6-filter_date.weekday())
+            q_date_min = Q(date__gte=date_min)
+            q_date_max = Q(date__lte=date_max)
+            q_date = Q(q_date_min & q_date_max)
+        if int(filter_tendency) > -1:
+            q_tendency = Q(tendency__exact=filter_tendency)
+        if keyword != '':
+            q_keyword = Q(note__icontains=keyword)
+        q = Q(q_user & q_date & q_tendency & q_keyword)
+        entries = Wish.objects.filter(q)
+    else:
+        # filter last week and future
+        filter_date = datetime.today().strftime('%Y-%m-%d')
+        date_min = datetime.today()-timedelta(days=datetime.today().weekday()+7)
+        searchForm = SearchForm()
+        data = searchForm.data
+        data['filter_date'] = filter_date
+        q_user = Q(employee=request.user)
+        q_date = Q(date__gte=date_min)
+        q = Q(q_user & q_date)
+        entries = Wish.objects.filter(q).order_by('date')
 
     context = {
-        'all_entries': all_entries
+        'all_entries': entries,
+        'form': SearchForm,
+        'search': search,
+        'data': data
     }
     return render(request, 'wishes/own_wishes.html', context)
 

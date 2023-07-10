@@ -4,7 +4,7 @@
 {% block content %}
     {% if user.is_authorized %}
         <h3 class="light-blue-text text-darken-1">Shift templates</h3>
-        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_shift_template' %}"><i class="material-icons left">add</i>Create shift template</a><br><br>{% endif %}
+        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_shift_template' %}"><i class="material-icons left">add</i>Create shift template</a><br><br>
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -16,7 +16,7 @@
                             <th>Work hours<br>Break</th>
                             <th>Department<br>Qualifications</th>
                             <th>Note</th>
-                            {% if user.is_admin %}<th>Edit</th>{% endif %}
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,11 +35,9 @@
                                 {% endfor %}
                             </td>
                             <td>{{ entry.note }}</td>
-                            {% if user.is_admin %}
-                                <td>
-                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift_template' entry.id %}"><i class="material-icons">edit</i></a>
-                                </td>
-                            {% endif %}
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift_template' entry.id %}"><i class="material-icons">edit</i></a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

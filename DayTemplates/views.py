@@ -108,8 +108,10 @@ def edit_day_template(request, **kwargs):
 def delete_day_template(request, **kwargs):
     day_template_id = kwargs['pk']
     selected_day_template = DayTemplate.objects.get(id=day_template_id)
-    selected_day_template.delete()
-    messages.success(request, "Day template successfully deleted.")
+    user = request.user
+    if user.role == 'A' or user.role == 'E':
+        selected_day_template.delete()
+        messages.success(request, "Day template successfully deleted.")
     return redirect('day_templates')
 
 

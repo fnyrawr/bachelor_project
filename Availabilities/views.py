@@ -140,16 +140,20 @@ def edit_own_availability(request, **kwargs):
 def delete_availability(request, **kwargs):
     availability_id = kwargs['pk']
     selected_availability = Availability.objects.get(id=availability_id)
-    selected_availability.delete()
-    messages.success(request, "Availability successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_availability.delete()
+        messages.success(request, "Availability successfully deleted.")
     return redirect('availabilities')
 
 
 def delete_own_availability(request, **kwargs):
     availability_id = kwargs['pk']
     selected_availability = Availability.objects.get(id=availability_id)
-    selected_availability.delete()
-    messages.success(request, "Availability successfully deleted.")
+    user = request.user
+    if selected_availability.employee == user:
+        selected_availability.delete()
+        messages.success(request, "Availability successfully deleted.")
     return redirect('own_availabilities')
 
 

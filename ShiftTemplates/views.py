@@ -97,8 +97,10 @@ def edit_shift_template(request, **kwargs):
 def delete_shift_template(request, **kwargs):
     shift_template_id = kwargs['pk']
     selected_shift_template = ShiftTemplate.objects.get(id=shift_template_id)
-    selected_shift_template.delete()
-    messages.success(request, "Shift template successfully deleted.")
+    user = request.user
+    if user.role == 'A' or user.role == 'E':
+        selected_shift_template.delete()
+        messages.success(request, "Shift template successfully deleted.")
     return redirect('shift_templates')
 
 

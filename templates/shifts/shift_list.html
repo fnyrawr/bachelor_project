@@ -81,11 +81,9 @@
                                 {% endif %}
                             </td>
                             <td>{{ entry.note }}</td>
-                            {% if user.is_admin %}
-                                <td>
-                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift' entry.id %}"><i class="material-icons">edit</i></a>
-                                </td>
-                            {% endif %}
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift' entry.id %}"><i class="material-icons">edit</i></a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

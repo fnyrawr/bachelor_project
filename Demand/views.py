@@ -64,8 +64,10 @@ def edit_demand(request, **kwargs):
 def delete_demand(request, **kwargs):
     demand_id = kwargs['pk']
     selected_demand = Demand.objects.get(id=demand_id)
-    selected_demand.delete()
-    messages.success(request, "Demand successfully deleted.")
+    user = request.user
+    if user.role == 'A' or user.role == 'E':
+        selected_demand.delete()
+        messages.success(request, "Demand successfully deleted.")
     return redirect('demand')
 
 

@@ -80,8 +80,10 @@ def edit_department(request, **kwargs):
 def delete_department(request, **kwargs):
     department_id = kwargs['pk']
     selected_department = Department.objects.get(id=department_id)
-    selected_department.delete()
-    messages.success(request, "Department successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_department.delete()
+        messages.success(request, "Department successfully deleted.")
     return redirect('departments')
 
 

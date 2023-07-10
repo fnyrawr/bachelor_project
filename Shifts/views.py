@@ -206,8 +206,10 @@ def remove_employee(request, **kwargs):
 def delete_shift(request, **kwargs):
     shift_id = kwargs['pk']
     selected_shift = Shift.objects.get(id=shift_id)
-    selected_shift.delete()
-    messages.success(request, "Shift successfully deleted.")
+    user = request.user
+    if user.role == 'A' or user.role == 'E':
+        selected_shift.delete()
+        messages.success(request, "Shift successfully deleted.")
     return redirect('shifts')
 
 

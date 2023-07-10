@@ -70,8 +70,10 @@ def edit_qualification(request, **kwargs):
 def delete_qualification(request, **kwargs):
     qualification_id = kwargs['pk']
     selected_qualification = Qualification.objects.get(id=qualification_id)
-    selected_qualification.delete()
-    messages.success(request, "Qualification successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_qualification.delete()
+        messages.success(request, "Qualification successfully deleted.")
     return redirect('qualifications')
 
 

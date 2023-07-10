@@ -2,7 +2,7 @@
 {% block title %}ShiftManager - {{ selected_day_template.name }} details{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if user.is_authorized %}
         <div id="delete-modal" class="modal content-section red darken-1 white-text">
             <div class="modal-content">
                 <h5><b>Delete {{ selected_day_template }}</b></h5>
@@ -48,9 +48,7 @@
                         </div>
                     </div>
                 </form>
-                {% if user.is_admin %}
-                    <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
-                {% endif %}
+                <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
             </div>
         </div>
         <div class="card">

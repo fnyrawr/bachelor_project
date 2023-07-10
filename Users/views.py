@@ -197,8 +197,10 @@ def change_password(request):
 def delete_user(request, **kwargs):
     user_id = kwargs['pk']
     selected_user = User.objects.get(id=user_id)
-    selected_user.delete()
-    messages.success(request, "User successfully deleted.")
+    user = request.user
+    if user.role == 'A':
+        selected_user.delete()
+        messages.success(request, "User successfully deleted.")
     return redirect('useraccounts')
 
 

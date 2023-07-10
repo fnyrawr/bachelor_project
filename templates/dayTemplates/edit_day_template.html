@@ -2,7 +2,7 @@
 {% block title %}ShiftManager - Edit day template {{ selected_day_template.name }}{% endblock %}
 
 {% block content %}
-    {% if user.is_admin %}
+    {% if user.is_authorized %}
         <div id="delete-modal" class="modal content-section red darken-1 white-text">
             <div class="modal-content">
                 <h5><b>Delete {{ selected_day_template }}</b></h5>

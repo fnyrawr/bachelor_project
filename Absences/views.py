@@ -146,14 +146,15 @@ def edit_own_absence(request, **kwargs):
 def delete_absence(request, **kwargs):
     absence_id = kwargs['pk']
     selected_absence = Absence.objects.get(id=absence_id)
-    selected_absence.delete()
-    messages.success(request, "Absence successfully deleted.")
+    user = request.user
+    if user.role == 'A' or (selected_absence.employee == user and selected_absence.status < 3):
+        selected_absence.delete()
+        messages.success(request, "Absence successfully deleted.")
     return redirect('absences')
 
 
 def own_absences(request):
     user = request.user
-    all_entries = None
     all_entries = Absence.objects.filter(employee=user).order_by('start_date')
 
     context = {

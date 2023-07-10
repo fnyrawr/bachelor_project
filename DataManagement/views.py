@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 import numpy
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 import pandas as pd
 from pandas.io.formats import excel
@@ -664,7 +665,7 @@ def import_shifts(request):
 
 
 def download_exports(request):
-    export_file = "Exports.xlsx"
+    filename = "Exports.xlsx"
     excel.ExcelFormatter.header_style = None
 
     # Qualifications
@@ -955,7 +956,7 @@ def download_exports(request):
     shifts = shifts.set_index("ID").sort_values(by="ID")
 
     # write to .xlsx
-    with pd.ExcelWriter(export_file) as writer:
+    with pd.ExcelWriter(filename) as writer:
         qualifications.to_excel(writer, sheet_name="Qualifications")
         departments.to_excel(writer, sheet_name="Departments")
         departments_qualifications.to_excel(writer, sheet_name="DepartmentQualifications")
@@ -972,4 +973,8 @@ def download_exports(request):
         day_shift_templates.to_excel(writer, sheet_name="DayTemplateShifts")
         shifts.to_excel(writer, sheet_name="Shifts")
 
-    return render(request, 'datamanagement/download_exports.html')
+    with open(filename, 'rb') as file:
+        response = HttpResponse(file.read(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=/media/generated/' + filename
+    return response

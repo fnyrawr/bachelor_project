@@ -14,7 +14,7 @@
                             <th>Description</th>
                             <th>Assigned shifts</th>
                             <th>View</th>
-                            {% if user.is_admin %}<th>Edit</th>{% endif %}
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,11 +26,9 @@
                             <td>
                                 <a class="waves-effect waves-light btn amber darken-1" href="{% url 'view_day_template' entry.id %}"><i class="material-icons">search</i></a>
                             </td>
-                            {% if user.is_admin %}
-                                <td>
-                                    <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_day_template' entry.id %}"><i class="material-icons">edit</i></a>
-                                </td>
-                            {% endif %}
+                            <td>
+                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_day_template' entry.id %}"><i class="material-icons">edit</i></a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

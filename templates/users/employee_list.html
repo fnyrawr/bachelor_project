@@ -2,7 +2,7 @@
 {% block title %}ShiftManager - Employees{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if user.is_authorized %}
         <h3 class="light-blue-text text-darken-1">Employees</h3>
         <ul class="collapsible">
             <li {% if search %}class="active"{% endif %}>

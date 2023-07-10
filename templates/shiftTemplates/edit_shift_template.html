@@ -2,7 +2,7 @@
 {% block title %}ShiftManager - Edit shift template {{ selected_shift_template.name }}{% endblock %}
 
 {% block content %}
-    {% if user.is_admin %}
+    {% if user.is_authorized %}
         <div id="delete-modal" class="modal content-section red darken-1 white-text">
             <div class="modal-content">
                 <h5><b>Delete {{ selected_shift_template }}</b></h5>

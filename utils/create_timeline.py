@@ -169,8 +169,7 @@ def draw_timeline(objects, target):
             txt = 'Date\nTime'
         else:
             txt = ''
-        tw, th = img.textsize(txt, font=font)
-        img.text((2*mgs, h_row/2-th/2), txt, fill=white, font=font)
+        img.text((2*mgs, h_row/2), txt, fill=white, font=font, anchor='lm')
     if target == 'shifts_listed':
         for i in range(row_count+1):
             fontsize = h_row / 4
@@ -178,9 +177,8 @@ def draw_timeline(objects, target):
             # extra descriptor column
             day = start_date + timedelta(days=i)
             desc = day.strftime("%A\n%d.%m.%Y")
-            tw, th = img.textsize(desc, font=font)
-            img.text((2 * mgs, (i+1)*h_row + h_row/2 - th / 2), desc,
-                     fill=black, font=font, align='left')
+            img.text((2 * mgs, (i+1)*h_row + h_row/2), desc,
+                     fill=black, font=font, align='left', anchor='lm')
             # saturday and sunday markings
             weekday = int(day.weekday())
             l_width = 10
@@ -195,23 +193,20 @@ def draw_timeline(objects, target):
             fontsize = h_row / 4
             font = ImageFont.truetype(font_family, int(fontsize))
             desc = lst_departments[i]
-            tw, th = img.textsize(desc, font=font)
-            img.text((2 * mgs, (i + 1) * h_row + h_row / 2 - th / 2), desc,
-                     fill=black, font=font, align='left')
+            img.text((2 * mgs, (i+1) * h_row + h_row/2), desc,
+                     fill=black, font=font, align='left', anchor='lm')
     # vertical
-    fontsize = h_row / 3
+    fontsize = h_row/3
     font = ImageFont.truetype(font_family, int(fontsize))
     for i in range(t_max - t_min):
         h = t_min+i if t_min+i < 24 else t_min+i-24
-        tw, th = img.textsize(str(h), font=font)
-        w_center = i*w_col - tw/2
         if i > 0 or desc_col > 0:
             img.line((desc_col+i*w_col, 3*h_row/4, desc_col+i*w_col, h_row), fill=white, width=1)
             img.line((desc_col+i*w_col, h_row, desc_col+i*w_col, height), fill=grey3, width=1)
         if i == 0 and desc_col == 0:
-            img.text((desc_col+mgs, h_row/2-th/2), str(h), fill=white, font=font)
+            img.text((desc_col+3*mgs, h_row/2), str(h), fill=white, font=font, anchor='mm')
         else:
-            img.text((desc_col+w_center, h_row/2-th/2), str(h), fill=white, font=font)
+            img.text((desc_col+i*w_col, h_row/2), str(h), fill=white, font=font, anchor='mm')
     # draw objects in timeline
     for i in range(len(objects)):
         row = lst_rows[i]
@@ -220,12 +215,12 @@ def draw_timeline(objects, target):
         font = ImageFont.truetype(font_family, int(fontsize))
         start = lst_start[i]-t_min
         end = lst_end[i]-t_min
-        tw, th = img.textsize(lst_text[i], font=font)
+        #tw, th = img.textsize(lst_text[i], font=font)
         # make font smaller if text is bigger than row
-        while th > h_row-4*mgs:
-            fontsize -= 1
-            font = ImageFont.truetype(font_family, int(fontsize))
-            tw, th = img.textsize(lst_text[i], font=font)
+        #while th > h_row-4*mgs:
+        #    fontsize -= 1
+        #    font = ImageFont.truetype(font_family, int(fontsize))
+        #    tw, th = img.textsize(lst_text[i], font=font)
         w_center = start + (end-start)/2
         if lst_highlight[i] == 1:
             fillcolor = lightblue
@@ -238,8 +233,8 @@ def draw_timeline(objects, target):
             textcolor = white
         img.rounded_rectangle((start*w_col+desc_col+mgs, (row+1)*h_row+mgs, end*w_col+desc_col-mgs, (row+2)*h_row-mgs),
                               radius=mgs, fill=fillcolor, outline=fillcolor)
-        img.text((w_center*w_col+desc_col-tw/2, h_center-th/2-mgs/2), lst_text[i],
-                 fill=textcolor, font=font, align='center')
+        img.text((w_center*w_col+desc_col, h_center-mgs/2), lst_text[i],
+                 fill=textcolor, font=font, align='center', anchor='mm')
 
     # save image and return it
     with BytesIO() as output:

@@ -79,9 +79,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
     # horizontal
     fontcolor = white
     title = (objects[0][0]).strftime("Week %W") + '\n' + department.name
-    tw, th = img.textsize(title, font=font)
-    img.text((2*mgs, h_row / 2 - th / 2), title, fill=fontcolor, font=font,
-             align='left')
+    img.text((2*mgs, h_row/2), title, fill=fontcolor, font=font, anchor='lm')
 
     for i in range(col_count):
         if i > 0:
@@ -91,8 +89,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
             # print out dates
             d = objects[i-1][0]
             d_str = d.strftime("%A") + '\n' + d.strftime("%d. %B %Y")
-            tw, th = img.textsize(str(d_str), font=font)
-            img.text((i*w_col + w_col/2 - tw/2, h_row/2 - th/2), str(d_str), fill=fontcolor, font=font, align='center')
+            img.multiline_text((i * w_col + w_col/2, h_row/2), str(d_str), font=font, fill=fillcolor, align='center', anchor='mm')
 
     # draw employee names
     for i in range(len(objects[0])):
@@ -102,8 +99,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
             if text == 'None':
                 fontcolor = grey4
                 text = 'unassigned'
-            tw, th = img.textsize(text, font=font)
-            img.text((2*mgs, i*h_row + h_row/2 - th/2), text, fill=fontcolor, font=font, align='left')
+            img.text((2*mgs, i*h_row + h_row/2), text, fill=fontcolor, font=font, align='left', anchor='lm')
 
     # draw shifts
     for i in range(len(objects)):
@@ -120,9 +116,8 @@ def draw_shiftplan(objects=None, department=None, target=None):
                 if entry.etype in ['Absent', 'Holiday']:
                     fontcolor = grey3
                     text = entry.etype
-                    tw, th = img.textsize(text, font=font)
-                    img.text(((i+1)*w_col + w_col/2 - tw/2, j*h_row + h_row/2 - th/2),
-                             text, fill=fontcolor, font=font, align='center')
+                    img.text(((i+1)*w_col + w_col/2, j*h_row + h_row/2),
+                             text, fill=fontcolor, font=font, align='center', anchor='mm')
                     if entry.etype == 'Absent':
                         img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
                                  fill=amber, width=hl_width)
@@ -160,17 +155,15 @@ def draw_shiftplan(objects=None, department=None, target=None):
 
                     # print time
                     time = entry.shift.start.strftime("%H:%M") + ' - ' + entry.shift.end.strftime("%H:%M")
-                    tw, th = img.textsize(time, font=font)
-                    img.text(((i+1)*w_col + w_col/2 - tw/2, j*h_row + 2*mgs),
-                             time, fill=fontcolor, font=font, align='center')
+                    img.text(((i+1)*w_col + w_col/2, j*h_row + 2*mgs),
+                             time, fill=fontcolor, font=font, align='center', anchor='ma')
 
                     if not other_department:
                         # print hours and break
                         fontcolor = black
                         hrs = '{0:g}'.format(time_to_dec(entry.shift.get_work_hours())) + ' hours'
-                        tw, th = img.textsize(hrs, font=font)
-                        img.text(((i+1)*w_col + 2*mgs, j*h_row + h_row/2 - th/2),
-                                 hrs, fill=fontcolor, font=font, align='left')
+                        img.text(((i+1)*w_col + 2*mgs, j*h_row + h_row/2),
+                                 hrs, fill=fontcolor, font=font, align='left', anchor='lm')
                         fontcolor = grey4
                         brk_min = int(time_to_dec(entry.shift.break_duration)*60)
                         if 0 < brk_min < 60:
@@ -181,24 +174,21 @@ def draw_shiftplan(objects=None, department=None, target=None):
                             brk = '{0:g}'.format(brk_min/60) + ' hours'
                         else:
                             brk = 'no break'
-                        tw, th = img.textsize(brk, font=font)
-                        img.text(((i+2)*w_col - 2*mgs - tw, j*h_row + h_row/2 - th/2),
-                                 brk, fill=fontcolor, font=font, align='right')
+                        img.text(((i+2)*w_col - 2*mgs, j*h_row + h_row/2),
+                                 brk, fill=fontcolor, font=font, align='right', anchor='rm')
 
                         # print note
                         fontsize = h_row / 5
                         font = ImageFont.truetype(font_family, int(fontsize))
                         fontcolor = black
                         note = entry.shift.note
-                        tw, th = img.textsize(note, font=font)
-                        img.text(((i+1)*w_col + w_col/2 - tw/2, (j+1) * h_row - 2*mgs - th),
-                                 note, fill=fontcolor, font=font, align='center')
+                        img.text(((i+1)*w_col + w_col/2, (j+1) * h_row - 2*mgs),
+                                 note, fill=fontcolor, font=font, align='center', anchor='md')
                     else:
                         # employee has shift in other department
                         dep = str(entry.shift.department)
-                        tw, th = img.textsize(dep, font=font)
-                        img.text(((i+1)*w_col + w_col/2 - tw/2, j*h_row + h_row/2 - th/2),
-                                 dep, fill=fontcolor, font=font, align='left')
+                        img.text(((i+1)*w_col + w_col/2, j*h_row + h_row/2),
+                                 dep, fill=fontcolor, font=font, align='left', anchor='ma')
                         img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
                                  fill=grey4, width=hl_width)
 
@@ -213,9 +203,8 @@ def draw_shiftplan(objects=None, department=None, target=None):
                            str(objects[1][i].employee.work_hours) + ' hours'
                 else:
                     text = '{0:g}'.format(objects[1][i].employee.week_work_hours) + ' hours'
-                tw, th = img.textsize(text, font=font)
-                img.text((w_col - tw - 2*mgs, (i+1)*h_row - th - 2*mgs), text,
-                         fill=fontcolor, font=font)
+                img.text((w_col - 2*mgs, (i+1)*h_row - 2*mgs), text,
+                         fill=fontcolor, font=font, anchor='rd')
 
     # add generation date at the bottom
     fontcolor = grey3
@@ -223,9 +212,8 @@ def draw_shiftplan(objects=None, department=None, target=None):
     font = ImageFont.truetype(font_family, int(fontsize))
     text = 'Shiftplan ' + department.name + (objects[0][0]).strftime(" - Week %W") + '\ngenerated at ' +\
            datetime.now().strftime("%d.%m.%Y %H:%M")
-    tw, th = img.textsize(text, font=font)
-    img.text((width-tw-2*mgs, height-th-2*mgs), text,
-             fill=fontcolor, font=font, align='right')
+    img.text((width-2*mgs, height-2*mgs), text,
+             fill=fontcolor, font=font, align='right', anchor='rd')
 
     if target == 'pdf':
         # bitmap.save(filename, format="PDF")

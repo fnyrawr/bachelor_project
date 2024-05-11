@@ -22,6 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='base.html'), name='base'),
@@ -47,6 +48,7 @@ urlpatterns = [
     path("absences/", include("Absences.urls")),
     path("holidays/", include("Holidays.urls")),
     path("datamanagement/", include("DataManagement.urls")),
+    path('api-auth/', include('rest_framework.urls'))
 ]
 
 if settings.DEBUG:

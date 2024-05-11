@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'Absences.apps.AbsencesConfig',
     'Holidays.apps.HolidaysConfig',
     'DataManagement.apps.DatamanagementConfig',
+    'rest_framework',
+    'rest_framework_api_key',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +115,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
+
+API_KEY_CUSTOM_HEADER = 'HTTP_X_API_KEY'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

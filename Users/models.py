@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
+from rest_framework import serializers, viewsets, permissions
+from rest_framework_api_key.permissions import HasAPIKey
+
 from Departments.models import Department
 from Qualifications.models import Qualification
 
@@ -71,3 +74,18 @@ class EmployeesQualifications(models.Model):
 
     def __repr__(self):
         return self.employee.username + ' / ' + self.qualification.name
+
+
+# Serializers define the API representation.
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'staff_id', 'last_name', 'first_name', 'email', 'is_superuser', 'role', 'is_staff',
+                  'is_active', 'date_joined', 'last_login']
+
+
+# ViewSets define the view behavior.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('staff_id')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser | HasAPIKey]

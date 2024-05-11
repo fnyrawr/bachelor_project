@@ -5,13 +5,18 @@ from django.contrib.auth import (
 )
 from django.core.paginator import Paginator
 from django.db.models import CharField, Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import permissions, status
+from rest_framework_api_key.permissions import HasAPIKey
+
 from Departments.models import Department
 from Qualifications.models import Qualification
-from .models import User, EmployeesQualifications
+from .models import User, EmployeesQualifications, UserSerializer
 from .forms import CustomUserForm, SetPasswordFormImpl, SearchForm
 
 
@@ -271,3 +276,48 @@ def employee_list(request):
         'data': data
     }
     return render(request, 'users/employee_list.html', context)
+
+
+# ENDPOINT VIEWS
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.IsAdminUser | HasAPIKey,))
+def get_users(request):
+    if request.method == 'GET':
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            for attr, err in serializer.errors.items():
+                if 'exists' in err[0]:
+                    return Response(serializer.errors, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((permissions.IsAdminUser | HasAPIKey,))
+def get_user_by_username(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404
+
+    if request.method == 'GET':
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        user.delete()
+        return Response({'message': 'user successfully deleted'}, status=status.HTTP_200_OK)

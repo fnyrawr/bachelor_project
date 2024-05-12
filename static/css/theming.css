@@ -2,6 +2,7 @@ body {
   background-color: white
 }
 
+/*
 .fab-top-left {
   position: fixed;
   left: 23px;
@@ -9,6 +10,7 @@ body {
   right: auto;
   bottom: auto;
 }
+ */
 
 input {
   border-bottom: #BDBDBD !important;

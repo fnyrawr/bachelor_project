@@ -11,12 +11,12 @@
                     <form method="POST" action="{% url 'useraccounts' %}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="input-field col s12 m6">
+                            <div class="s12 m6 input-field">
                                 <i class="material-icons prefix">search</i>
-                                <input id="id_keyword" type="search" required name="keyword" {% if search %}value="{{ data.keyword }}"{% endif %}>
+                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %} placeholder=" ">
                                 <label for="id_keyword">Keyword</label>
                             </div>
-                        </div>
+                        </div><br>
                         <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
                         {% if search %}
                             <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'employees' %}"><i class="material-icons left">clear</i>Clear</a>
@@ -26,7 +26,7 @@
             </li>
         </ul>
 
-        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_user' %}"><i class="material-icons left">person_add</i>Create user</a><br><br>
+        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_user' %}"><i class="material-icons left">person_add</i>Create user</a><br><br><br>
         <div class="card">
             <div class="card-content">
                 <table class="striped highlight responsive-table">
@@ -98,7 +98,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div><br>
 
         <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
         <ul class="pagination center">

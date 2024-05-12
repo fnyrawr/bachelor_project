@@ -24,119 +24,113 @@
         </div>
 
         <h3 class="light-blue-text text-darken-1">Edit {{ selected_user }}</h3>
-        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'useraccounts' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br>
+        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'useraccounts' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br><br>
         <form method="POST" action="{% url 'edit_user' selected_user.id %}">
             {% csrf_token %}
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1">Base data</div>
-                    <div class="row">
-                        <div class="input-field col s6">
+                    <div class="card-title light-blue-text text-darken-1"><b>Base data</b></div>
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">person</i>
-                            <label for="id_username">Username</label>
-                            <input type="text" name="username" autofocus value="{{ selected_user.username }}" autocapitalize="none" maxlength="15" required id="id_username" class="grey-text text-darken-4">
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <input type="text" name="username" autofocus value="{{ selected_user.username }}" autocapitalize="none" maxlength="15" required id="id_username" class="grey-text text-darken-4" placeholder=" ">
+                            <label for="id_username">*Username</label>
                         </div>
-                        <div class="input-field col s6">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">mail</i>
-                            <label for="id_email">E-Mail</label>
-                            <input type="email" name="email" value="{{ selected_user.email }}" autocapitalize="none" maxlength="150" required id="id_email" class="grey-text text-darken-4">
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <input type="email" name="email" value="{{ selected_user.email }}" autocapitalize="none" maxlength="150" required id="id_email" class="grey-text text-darken-4" placeholder=" ">
+                            <label for="id_email">*E-Mail</label>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
+                    </div><br>
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">label</i>
-                            <label for="id_first_name">First name</label>
-                            <input type="text" name="first_name" value="{{ selected_user.first_name }}" autocapitalize="none" maxlength="50" required id="id_first_name" class="grey-text text-darken-4">
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <input type="text" name="first_name" value="{{ selected_user.first_name }}" autocapitalize="none" maxlength="50" required id="id_first_name" class="grey-text text-darken-4" placeholder=" ">
+                            <label for="id_first_name">*First name</label>
                         </div>
-                        <div class="input-field col s6">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">label</i>
-                            <label for="id_last_name">Last name</label>
-                            <input type="text" name="last_name" value="{{ selected_user.last_name }}" autocapitalize="none" maxlength="50" required id="id_last_name" class="grey-text text-darken-4">
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <input type="text" name="last_name" value="{{ selected_user.last_name }}" autocapitalize="none" maxlength="50" required id="id_last_name" class="grey-text text-darken-4" placeholder=" ">
+                            <label for="id_last_name">*Last name</label>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
+                    </div><br>
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">phone</i>
+                            <input type="text" name="telephone_home" value="{{ selected_user.telephone_home }}" autocapitalize="none" maxlength="20" id="id_telephone_home" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_telephone_home">Telephone home</label>
-                            <input type="text" name="telephone_home" value="{{ selected_user.telephone_home }}" autocapitalize="none" maxlength="20" id="id_telephone_home" class="grey-text text-darken-4">
                         </div>
-                        <div class="input-field col s6">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">stay_current_portrait</i>
+                            <input type="text" name="telephone_mobile" value="{{ selected_user.telephone_mobile }}" autocapitalize="none" maxlength="20" id="id_telephone_mobile" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_telephone_mobile">Telephone mobile</label>
-                            <input type="text" name="telephone_mobile" value="{{ selected_user.telephone_mobile }}" autocapitalize="none" maxlength="20" id="id_telephone_mobile" class="grey-text text-darken-4">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
+                    </div><br>
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">house</i>
+                            <input type="text" name="address" value="{{ selected_user.address }}" autocapitalize="none" maxlength="50" id="id_address" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_address">Address</label>
-                            <input type="text" name="address" value="{{ selected_user.address }}" autocapitalize="none" maxlength="50" id="id_address" class="grey-text text-darken-4">
                         </div>
-                        <div class="input-field col s6">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">apartment</i>
+                            <input type="text" name="zip_city" value="{{ selected_user.zip_city }}" autocapitalize="none" maxlength="50" id="id_zip_city" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_zip_city">Zip City</label>
-                            <input type="text" name="zip_city" value="{{ selected_user.zip_city }}" autocapitalize="none" maxlength="50" id="id_zip_city" class="grey-text text-darken-4">
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><br>
             <div class="card">
                 <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1">Contract details</div>
-                    <div class="row">
-                        <div class="input-field col s4">
+                    <div class="card-title light-blue-text text-darken-1"><b>Contract details</b></div>
+                    <div class="row" style="gap: 1em">
+                        <div class="s4 input-field">
                             <i class="material-icons prefix">local_offer</i>
                             <select name="role">
                                 <option value="A" {% if selected_user.role == 'A' %}selected{% endif %}>Admin</option>
                                 <option value="P" {% if selected_user.role == 'P' %}selected{% endif %}>Planner</option>
                                 <option value="E" {% if selected_user.role == 'E' %}selected{% endif %}>Employee</option>
                             </select>
-                            <label>Role</label>
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <label>*Role</label>
                         </div>
-                        <div class="input-field col s2">
+                        <div class="s2 input-field">
                             <i class="material-icons prefix">tag</i>
-                            <label for="id_staff_id">Staff ID</label>
-                            <input type="text" name="staff_id" value="{{ selected_user.staff_id }}" autocapitalize="none" maxlength="15" required id="id_staff_id" class="grey-text text-darken-4">
-                            <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            <input type="text" name="staff_id" value="{{ selected_user.staff_id }}" autocapitalize="none" maxlength="15" required id="id_staff_id" class="grey-text text-darken-4" placeholder=" ">
+                            <label for="id_staff_id">*Staff ID</label>
                         </div>
-                        <div class="input-field col s2">
+                        <div class="s2 input-field">
                             <label>
                                 <input type="checkbox" {% if selected_user.is_external == True %}checked="checked"{% endif %} name="is_external" />
                                 <span>External</span>
                             </label>
                         </div>
-                        <div class="input-field col s2">
+                        <div class="s2 input-field">
                             <label>
                                 <input type="checkbox" {% if selected_user.is_active == True %}checked="checked"{% endif %} name="is_active" />
                                 <span>Active</span>
                             </label>
                         </div>
-                        <div class="input-field col s2">
+                        <div class="s2 input-field">
                             <label>
                                 <input type="checkbox" {% if selected_user.is_verified == True %}checked="checked"{% endif %} name="is_verified" />
                                 <span>Verified</span>
                             </label>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
+                    </div><br>
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">event_calendar</i>
-                            <input id="id_start_contract" name="start_contract" type="text" class="datepicker" value="{{ selected_user.start_contract|date:"Y-m-d" }}">
+                            <input id="id_start_contract" name="start_contract" type="text" class="datepicker" value="{{ selected_user.start_contract|date:"Y-m-d" }}" placeholder=" ">
                             <label for="id_start_contract">Start contract</label>
                         </div>
-                        <div class="input-field col s6">
+                        <div class="s6 input-field">
                             <i class="material-icons prefix">event_calendar</i>
-                            <input id="id_end_contract" name="end_contract" type="text" class="datepicker" value="{{ selected_user.end_contract|date:"Y-m-d" }}">
+                            <input id="id_end_contract" name="end_contract" type="text" class="datepicker" value="{{ selected_user.end_contract|date:"Y-m-d" }}" placeholder=" ">
                             <label for="id_end_contract">End contract</label>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s4">
+                    </div><br>
+                    <div class="row" style="gap: 1em">
+                        <div class="s4 input-field">
                             <i class="material-icons prefix">local_offer</i>
                             <select name="department">
                                 {% for department in departments %}
@@ -145,19 +139,20 @@
                             </select>
                             <label>Department</label>
                         </div>
-                        <div class="input-field col s4">
+                        <div class="s4 input-field">
                             <i class="material-icons prefix">schedule</i>
+                            <input type="number" name="work_hours" value="{{ selected_user.work_hours }}" autocapitalize="none" maxlength="50" id="id_work_hours" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_work_hours">Work hours (hours / week)</label>
-                            <input type="number" name="work_hours" value="{{ selected_user.work_hours }}" autocapitalize="none" maxlength="50" id="id_work_hours" class="grey-text text-darken-4">
                         </div>
-                        <div class="input-field col s4">
+                        <div class="s4 input-field">
                             <i class="material-icons prefix">flight_takeoff</i>
+                            <input type="number" name="holiday_count" value="{{ selected_user.holiday_count }}" autocapitalize="none" maxlength="50" id="id_holiday_count" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_holiday_count">Holiday (days / year)</label>
-                            <input type="number" name="holiday_count" value="{{ selected_user.holiday_count }}" autocapitalize="none" maxlength="50" id="id_holiday_count" class="grey-text text-darken-4">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s12">
+                    </div><br>
+                    <div class="card-title light-blue-text text-darken-1"><b>Qualifications</b></div>
+                    <div class="row" style="gap: 1em">
+                        <div class="s10 input-field">
                             <i class="material-icons prefix">tag</i>
                             <div class="chips chips-initial">
                                 {% for entry in associated_qualifications %}
@@ -169,7 +164,7 @@
                             <span class="helper-text grey-text text-lighten-1">Qualifications</span>
                         </div>
                         <a data-target="add-qualification-modal" class="modal-trigger waves-effect waves-light btn light-blue darken-1 right"><i class="material-icons left">add</i>Add qualification</a>
-                    </div>
+                    </div><br>
                     <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">edit</i>Update user</button>
                     <a class="modal-trigger waves-effect waves-light btn-flat red-text text-darken-1" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
                 </div>

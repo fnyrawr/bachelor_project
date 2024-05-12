@@ -10,18 +10,19 @@
                 <div class="collapsible-body grey lighten-5">
                     <form method="POST" action="{% url 'own_shifts' %}">
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="input-field col s6 m4">
+                        <div class="row" style="gap: 1em">
+                            <div class="s6 m4 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
+                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker" placeholder=" ">
                                 <label for="id_filter_date">Filter week of date</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s6 m4 input-field">
                                 <i class="material-icons prefix">search</i>
-                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %}>
+                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %} placeholder=" ">
                                 <label for="id_keyword">Keyword</label>
                             </div>
                         </div>
+                        <br>
                         <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search own shifts</button>
                         {% if search %}
                             <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'own_shifts' %}"><i class="material-icons left">clear</i>Clear</a>
@@ -80,7 +81,7 @@
                 </div>
             </div>
 
-            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            <br><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
             <ul class="pagination center">
                 {% if page_obj.has_previous %}
                     <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
@@ -150,7 +151,7 @@
                         <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_upcoming }}' style="max-width: 100%">
                     {% endif %}
                 </div>
-            </div>
+            </div><br>
 
             <div class="card">
                 <div class="card-content">
@@ -199,7 +200,7 @@
                         <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
                     {% endif %}
                 </div>
-            </div>
+            </div><br>
 
             <div class="card">
                 <div class="card-content">

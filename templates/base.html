@@ -10,9 +10,11 @@
       <!--Import Google Icon Font-->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--JQuery-->
-      <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
       <!--Import materialize.css-->
       <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}"  media="screen,projection"/>
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     {% block css %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/theming.css' %}">
     {% endblock %}
@@ -136,7 +138,7 @@
                     {% block contextmenu %}
                     {% endblock %}
                     {% if user.is_authenticated %}
-                        <li><a class="dropdown-trigger" href="#!" data-target="userwidget">{{ user }}<i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a class="dropdown-trigger" href="#" data-target="userwidget">{{ user }}<i class="material-icons right">arrow_drop_down</i></a></li>
                     {% else %}
                         <li><a data-target="login-modal" class="modal-trigger">Login<i class="material-icons left">login</i></a></li>
                     {% endif %}

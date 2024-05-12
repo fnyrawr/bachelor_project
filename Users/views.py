@@ -5,7 +5,7 @@ from django.contrib.auth import (
 )
 from django.core.paginator import Paginator
 from django.db.models import CharField, Q
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -276,6 +276,19 @@ def employee_list(request):
         'data': data
     }
     return render(request, 'users/employee_list.html', context)
+
+
+# HTMX
+def check_username(request):
+    username = request.POST.get('username')
+    if len(username) == 0:
+        return HttpResponse('<span class="supporting-text" id="username-error"></span>')
+    if 0 < len(username) < 2:
+        return HttpResponse('<span class="supporting-text amber darken-1 white-text" id="username-error">Username has to be at least 2 characters</span>')
+    if User.objects.filter(username=username).exists():
+        return HttpResponse('<span class="supporting-text red darken-1 white-text" id="username-error">Username already exists</span>')
+    else:
+        return HttpResponse('<span class="supporting-text light-green darken-1 white-text" id="username-error">Username is free</span>')
 
 
 # ENDPOINT VIEWS

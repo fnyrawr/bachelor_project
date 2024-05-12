@@ -13,8 +13,9 @@
                     <div class="row" style="gap: 1em">
                         <div class="s6 input-field">
                             <i class="material-icons prefix">person</i>
-                            <input type="text" name="username" autofocus autocapitalize="none" maxlength="15" required id="id_username" class="grey-text text-darken-4" placeholder=" ">
+                            <input type="text" name="username" autofocus autocapitalize="none" maxlength="15" required id="id_username" class="grey-text text-darken-4" placeholder=" " hx-post="check_username/" hx-trigger="keyup delay:250ms" hx-target="#username-error" hx-swap="morph">
                             <label for="id_username">*Username</label>
+                            <span class="supporting-text" id="username-error"></span>
                         </div>
                         <div class="s6 input-field">
                             <i class="material-icons prefix">mail</i>

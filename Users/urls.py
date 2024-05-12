@@ -15,6 +15,8 @@ urlpatterns = [
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification, name='add_employee_qualification'),
     path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,
          name='remove_employee_qualification'),
+    # HTMX
+    path('create/check_username/', views.check_username, name='check_username'),
     # REST Endpoints
     path('', views.get_users, name='get_users'),
     path('<str:username>', views.get_user_by_username, name='get_user_by_username'),

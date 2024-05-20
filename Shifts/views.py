@@ -623,3 +623,49 @@ def shiftplan(request, **kwargs):
         'timeline': timeline,
     }
     return render(request, 'shifts/shiftplan.html', context)
+
+
+# HTMX
+def search_own_shifts(request):
+    clear = request.GET.get('clear')
+    if clear:
+        return HttpResponse('<div id="search-results"></div>')
+    filter_date = request.POST.get('filter_date')
+    keyword = request.POST.get('keyword')
+    q_keyword = Q()
+    q_date = Q()
+    q_employee = Q(employee=request.user)
+
+    if keyword is not None and keyword != '':
+        department = Q(department__name__icontains=keyword)
+        note = Q(note__icontains=keyword)
+        q_keyword = Q(department | note)
+    if filter_date is not None and filter_date != '':
+        fd = datetime.strptime(filter_date, "%Y-%m-%d")
+        wd = fd.weekday()
+        filter_start = fd - timedelta(days=wd)
+        filter_end = fd + timedelta(days=6 - wd)
+        q_date_start = Q(start__date__gte=filter_start)
+        q_date_end = Q(start__date__lte=filter_end)
+        q_date = Q(q_date_start & q_date_end)
+
+    q = Q(q_keyword & q_date & q_employee)
+    entries = Shift.objects.filter(q)
+
+    timeline_recent = None
+    if len(entries) > 0 and filter_date != '' and keyword == '':
+        contents = draw_timeline(entries, 'shifts_listed')
+        timeline_recent = base64.b64encode(contents).decode()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'count_entries': entries.count(),
+        'page_obj': page_obj,
+        'form': SearchForm,
+        'entries': entries.count(),
+        'timeline_recent': timeline_recent
+    }
+    return HttpResponse(render(request, 'shifts/fragments/own_shifts_search.html', context))

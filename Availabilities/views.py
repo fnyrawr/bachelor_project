@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -30,13 +31,13 @@ class AvailabilityCreationView(CreateView):
         else:
             for error in list(form.errors.values()):
                 messages.add_message(request, messages.ERROR, error)
-        return render(request, self.template_name, {'form': form})
+        return HttpResponse(render(request, self.template_name, {'form': form}))
 
 
 class OwnAvailabilityCreationView(CreateView):
     model = Availability
     form_class = AvailabilityForm
-    template_name = 'availabilities/add_own_availability.html'
+    template_name = 'availabilities/fragments/add_own_availability.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -134,7 +135,7 @@ def edit_own_availability(request, **kwargs):
             'form': form,
             'selected_availability': selected_availability
         }
-        return render(request, 'availabilities/edit_own_availability.html', context)
+        return HttpResponse(render(request, 'availabilities/fragments/edit_own_availability.html', context))
 
 
 def delete_availability(request, **kwargs):

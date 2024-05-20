@@ -3,13 +3,20 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">Edit base data</h3>
-        <a class="waves-effect waves-light btn amber darken-1 right" href="{% url 'base' %}"><i class="material-icons left">keyboard_backspace</i>Back</a><br><br><br>
+        <h3 class="main-color-text">Edit base data</h3>
         <form method="POST" action="{% url 'edit_basedata' %}">
             {% csrf_token %}
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Base data</b></div>
+            <div class="card card-color">
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a class="active" href="#base-data">Base data</a></li>
+                            <li class="tab col s3"><a href="#contract-details">Contract details</a></li>
+                            <li class="tab col s3"><a href="#qualifications">Qualifications</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="base-data" class="card-content">
                     <div class="row" style="gap: 1em">
                         <div class="s6 input-field">
                             <i class="material-icons prefix">person</i>
@@ -22,7 +29,7 @@
                             <input type="email" name="email" value="{{ user.email }}" autocapitalize="none" maxlength="150" required id="id_email" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_email">*E-Mail</label>
                         </div>
-                    </div><br>
+                    </div>
                     <div class="row" style="gap: 1em">
                         <div class="s6 input-field">
                             <i class="material-icons prefix">label</i>
@@ -60,13 +67,9 @@
                             <input type="text" name="zip_city" value="{{ user.zip_city }}" autocapitalize="none" maxlength="50" id="id_zip_city" class="grey-text text-darken-4" placeholder=" ">
                             <label for="id_zip_city">Zip City</label>
                         </div>
-                    </div><br>
-                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">update</i>Update data</button>
+                    </div>
                 </div>
-            </div><br>
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-title light-blue-text text-darken-1"><b>Contract details</b></div>
+                <div id='contract-details' class="card-content">
                     <div class="row" style="gap: 1em">
                         <div class="s4 input-field">
                             <i class="material-icons prefix">local_offer</i>
@@ -112,24 +115,23 @@
                             <label for="id_end_contract">End contract</label>
                             <span class="helper-text grey-text text-lighten-1">can't be changed</span>
                         </div>
-                    </div><br>
-                    <div class="card-title light-blue-text text-darken-1"><b>Qualifications</b></div>
-                    <div class="row" style="gap: 1em">
-                        <div class="s12 input-field">
-                            <i class="material-icons prefix">tag</i>
-                            <div class="chips chips-initial">
-                                {% for entry in associated_qualifications %}
-                                    <a class="chip amber darken-1 white-text z-depth-1">
-                                        {{ entry.qualification.name }}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                            <span class="helper-text grey-text text-lighten-1">Qualifications</span>
-                        </div>
                     </div>
+                </div>
+                <div id='qualifications' class="card-content">
+                    <div class="row" style="gap: 1em">
+                        {% for entry in associated_qualifications %}
+                            <a class="chip amber darken-1 white-text z-depth-1">
+                                {{ entry.qualification.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-content">
+                    <button type="submit" class="waves-effect waves-light btn main-color"><i class="material-icons left">update</i>Update data</button>
                 </div>
             </div>
         </form>
+        <br><a class="waves-effect waves-light btn accent-color right" href="{% url 'base' %}"><i class="material-icons left">keyboard_backspace</i>Back</a>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

@@ -3,12 +3,18 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">My general availabilities</h3>
-        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'add_own_availability' %}"><i class="material-icons left">add</i>Create availability</a><br><br>
-        <div class="card">
+        <div id="add-availability-modal" class="modal">
+            <div id="add-availability-modal-content"></div>
+        </div>
+        <div id="edit-availability-modal" class="modal">
+            <div id="edit-availability-modal-content"></div>
+        </div>
+        <h3 class="main-color-text">My general availabilities</h3>
+        <a class="modal-trigger btn main-color white-text right" data-target="add-availability-modal" hx-get="{% url 'add_own_availability' %}" hx-target="#add-availability-modal-content" hx-swap="morph"><i class="material-icons left">add</i>Add availability</a><br><br><br>
+        <div class="card card-color">
             <div class="card-content">
-                <table class="striped highlight responsive-table">
-                    <thead class="grey darken-1 white-text">
+                <table id='my-availabilities' class="striped highlight responsive-table">
+                    <thead class="header-color white-text">
                         <tr>
                             <th>Weekday</th>
                             <th>Available</th>
@@ -32,10 +38,10 @@
                             </td>
                             <td>{{ entry.start_time|date:"H:i" }}</td>
                             <td>{{ entry.end_time|date:"H:i" }}</td>
-                            <td>{{ entry.get_tendency_display }}</td>
+                            <td><span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption=""><b>{{ entry.get_tendency_display }}</b></span></td>
                             <td>{{ entry.note }}</td>
                             <td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_own_availability' entry.id %}"><i class="material-icons">edit</i></a>
+                                <a class="modal-trigger waves-effect waves-light btn amber darken-1" data-target="edit-availability-modal" hx-get="{% url 'edit_own_availability' entry.id %}" hx-target="#edit-availability-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -17,4 +17,6 @@ urlpatterns = [
          name='add_shift_qualification'),
     path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,
          name='remove_shift_qualification'),
+    # HTMX
+    path('search_own_shifts/', views.search_own_shifts, name='search_own_shifts'),
 ]

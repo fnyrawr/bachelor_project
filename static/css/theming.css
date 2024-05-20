@@ -1,3 +1,34 @@
+:root {
+  --main-color: #039BE5;
+  --accent-color: #FFB300;
+  --accent-color-lighten: #FFE082;
+  --header-color: #424242;
+}
+
+.main-color {
+  background-color: var(--main-color) !important;
+}
+
+.main-color-text {
+  color: var(--main-color) !important;
+}
+
+.accent-color {
+  background-color: var(--accent-color) !important;
+}
+
+.accent-color-text {
+  color: var(--accent-color) !important;
+}
+
+.card-color {
+  background-color: white !important;
+}
+
+.header-color {
+  background-color: var(--header-color) !important;
+}
+
 body {
   background-color: white
 }
@@ -12,31 +43,55 @@ body {
 }
  */
 
+.tabs {
+  background-color: var(--header-color);
+}
+
+.tabs .tab a {
+  color: #EEEEEE !important;
+}
+
+.tabs .tab a.active {
+  color:white !important;
+  font-weight: bold;
+}
+
+.tabs .indicator {
+  background-color: var(--accent-color) !important;
+}
+
+.tabs .tab a:hover{
+  background-color: #EFEFEF;
+  color: var(--header-color) !important;
+  font-weight: bold;
+}
+
 input {
-  border-bottom: #BDBDBD !important;
-  box-shadow: 0 1px 0 0 #BDBDBD !important;
+  border-bottom: white !important;
+  box-shadow: 0 1px 0 0 #212121 !important;
+  background-color: white !important;
 }
 
 input:focus {
-  border-bottom: 1px solid #039BE5 !important;
-  box-shadow: 0 1px 0 0 #039BE5 !important;
+  border-bottom: 1px solid var(--main-color) !important;
+  box-shadow: 0 1px 0 0 var(--main-color) !important;
 }
 
 .input-field .prefix {
-  color: #BDBDBD !important;
+  color: #212121 !important;
 }
 
 .input-field .prefix.active {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 textarea:focus {
-  border-bottom: 1px solid #039BE5 !important;
-  box-shadow: 0 1px 0 0 #039BE5 !important;
+  border-bottom: 1px solid var(--main-color) !important;
+  box-shadow: 0 1px 0 0 var(--main-color) !important;
 }
 
 label.active {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 .select-dropdown li.disabled, .select-dropdown li.disabled > span {
@@ -48,15 +103,15 @@ label.active {
 }
 
 .dropdown-content li>a, .dropdown-content li>span {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 .select-content li>span {
-  color: #FFB300 !important;
+  color: var(--accent-color) !important;
 }
 
 .select-content li>a {
-  color: #FFB300 !important;
+  color: var(--accent-color) !important;
 }
 
 .select-wrapper input.select-dropdown {
@@ -72,52 +127,50 @@ label.active {
 }
 
 .datepicker-date-display {
-  background-color: #039BE5 !important;
+  background-color: var(--main-color) !important;
 }
 
 .datepicker-cancel, .datepicker-clear, .datepicker-today, .datepicker-done {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 .datepicker-table td.is-today {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 .datepicker-table td.is-selected {
-  background-color: #039BE5 !important;
+  background-color: var(--main-color) !important;
   color: white !important;
 }
 
 .timepicker-digital-display {
-  background-color: #039BE5 !important;
+  background-color: var(--main-color) !important;
 }
 
 .timepicker-cancel, .timepicker-clear, .timepicker-close, .timepicker-done {
-  color: #039BE5 !important;
+  color: var(--main-color) !important;
 }
 
 .timepicker-tick:hover {
-    background-color: #FFE082;
+    background-color: var(--accent-color-lighten);
 }
 
 .timepicker-canvas line {
-    stroke: #FFB300 !important;
+    stroke: var(--accent-color) !important;
 }
 
 .timepicker-canvas-bg,
 .timepicker-canvas-bearing {
-    fill: #FFB300 !important;
+    fill: var(--accent-color) !important;
 }
 
-.collapsible-header, .collapsible-body, .collapsible, ul.collapsible>li
-{
+.collapsible-header, .collapsible-body, .collapsible, ul.collapsible>li {
   border: 0px !important;
   border-bottom: 0px !important;
   box-shadow: none !important;
 }
 
-.collection.with-header .collection-header, .collection .collection-item, .collection
-{
+.collection.with-header .collection-header, .collection .collection-item, .collection {
   border: 0px !important;
   border-bottom: 0px !important;
   box-shadow: none !important;
@@ -130,7 +183,7 @@ label.active {
   text-overflow: ellipsis;
 }
 
-.responsive-img{
+.responsive-img {
     width: 100%;
     height: auto;
 }
@@ -150,6 +203,6 @@ main {
 }
 
 [type="checkbox"]:checked + span:not(.lever)::before {
-  border-right: 2px solid #039BE5;
-  border-bottom: 2px solid #039BE5;
+  border-right: 2px solid var(--main-color);
+  border-bottom: 2px solid var(--main-color);
 }

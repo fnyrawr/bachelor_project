@@ -3,123 +3,34 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">Dashboard</h3>
-        <ul class="collapsible">
-            <li {% if search %}class="active"{% endif %}>
-                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search own shifts</div>
-                <div class="collapsible-body grey lighten-5">
-                    <form method="POST" action="{% url 'own_shifts' %}">
-                        {% csrf_token %}
-                        <div class="row" style="gap: 1em">
-                            <div class="s6 m4 input-field">
-                                <i class="material-icons prefix">event_calendar</i>
-                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker" placeholder=" ">
-                                <label for="id_filter_date">Filter week of date</label>
-                            </div>
-                            <div class="s6 m4 input-field">
-                                <i class="material-icons prefix">search</i>
-                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %} placeholder=" ">
-                                <label for="id_keyword">Keyword</label>
-                            </div>
-                        </div>
-                        <br>
-                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search own shifts</button>
-                        {% if search %}
-                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'own_shifts' %}"><i class="material-icons left">clear</i>Clear</a>
-                        {% endif %}
-                    </form>
-                </div>
-            </li>
-        </ul>
-
-        {% if search and data != None %}
-            <div class="card">
-                <div class="card-content">
-                    <table class="striped highlight responsive-table">
-                        <thead class="grey darken-1 white-text">
-                            <tr>
-                                <th>Date</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Work hours<br>Break</th>
-                                <th>Department<br>Qualifications</th>
-                                <th>Note</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for entry in page_obj %}
-                            <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
-                                <td>
-                                    {{ entry.get_date|date:"l" }}<br>
-                                    <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
-                                </td>
-                                <td><b>{{ entry.get_start_time|date:"H:i" }}</b></td>
-                                <td><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
-                                <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
-                                <td>
-                                    {% if entry.employee != None and entry.employee.department != entry.department %}
-                                        <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
-                                            <b>{{ entry.department }}</b>
-                                        </span>
-                                    {% else %}
-                                        {{ entry.department }}
-                                    {% endif %}<br>
-                                    {% for qualification in entry.get_qualifications %}
-                                        <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
-                                            <b>{{ qualification.qualification.name }}</b>
-                                        </span>
-                                    {% endfor %}
-                                </td>
-                                <td>{{ entry.note }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if timeline_recent != None %}
-                        <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
-                    {% endif %}
+        <h3 class="main-color-text">Dashboard</h3>
+        <div class="card card-color">
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3"><a class="active" href="#upcoming">Upcoming Shifts</a></li>
+                        <li class="tab col s3"><a href="#recent">Recent Shifts</a></li>
+                        <li class="tab col s3"><a href="#shift-search">Search Shifts</a></li>
+                        <li class="tab col s3"><a href="#workhours">Overview work hours</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <br><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
-            <ul class="pagination center">
-                {% if page_obj.has_previous %}
-                    <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
-                {% else %}
-                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
-                {% endif %}
-                {% for page in page_obj.paginator.page_range %}
-                    {% if page == page_obj.number %}
-                        <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
-                    {% else %}
-                        <li class="waves-effect"><a href="?page={{ page }}">{{ page }}</a></li>
-                    {% endif %}
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
-                {% else %}
-                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
-                {% endif %}
-            </ul>
-        {% endif %}
-
-        {% if search == False and data == None %}
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-title"><b>Upcoming shifts</b><br>now - {{ upcoming_shifts.filter_end|date:"l, d.m.Y" }}</div>
+            <div id="upcoming" class="card-content">
+                <div class="card-title"><b>Upcoming shits</b><br>now - {{ upcoming_shifts.filter_end|date:"l, d.m.Y" }}</div>
+                {% if upcoming_shifts.count > 0 %}
                     <table class="striped highlight responsive-table">
-                        <thead class="grey darken-1 white-text">
-                            <tr>
-                                <th>Date</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Work hours<br>Break</th>
-                                <th>Department<br>Qualifications</th>
-                                <th>Note</th>
-                            </tr>
+                        <thead class="header-color white-text">
+                        <tr>
+                            <th>Date</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Work hours<br>Break</th>
+                            <th>Department<br>Qualifications</th>
+                            <th>Note</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for entry in upcoming_shifts %}
+                        {% for entry in upcoming_shifts %}
                             <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
                                 <td>
                                     {{ entry.get_date|date:"l" }}<br>
@@ -144,31 +55,33 @@
                                 </td>
                                 <td>{{ entry.note }}</td>
                             </tr>
-                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                     {% if timeline_upcoming != None %}
                         <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_upcoming }}' style="max-width: 100%">
                     {% endif %}
-                </div>
-            </div><br>
+                {% else %}
+                    <h6><i class="material-icons accent-color-text left">info</i>No upcoming shifts</h6>
+                {% endif %}
+            </div>
 
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-title"><b>Recent shifts</b><br>{{ recent_shifts.filter_start|date:"l, d.m.Y" }} - now</div>
+            <div id="recent" class="card-content">
+                <div class="card-title"><b>Recent shifts</b><br>{{ recent_shifts.filter_start|date:"l, d.m.Y" }} - now</div>
+                {% if recent_shifts.count > 0 %}
                     <table class="striped highlight responsive-table">
-                        <thead class="grey darken-1 white-text">
-                            <tr>
-                                <th>Date</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Work hours<br>Break</th>
-                                <th>Department<br>Qualifications</th>
-                                <th>Note</th>
-                            </tr>
+                        <thead class="header-color white-text">
+                        <tr>
+                            <th>Date</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Work hours<br>Break</th>
+                            <th>Department<br>Qualifications</th>
+                            <th>Note</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for entry in recent_shifts %}
+                        {% for entry in recent_shifts %}
                             <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
                                 <td>
                                     {{ entry.get_date|date:"l" }}<br>
@@ -193,56 +106,78 @@
                                 </td>
                                 <td>{{ entry.note }}</td>
                             </tr>
-                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                     {% if timeline_recent != None %}
                         <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
                     {% endif %}
-                </div>
-            </div><br>
-
-            <div class="card">
-                <div class="card-content">
-                    <div class="card-title"><b>Overview work hours</b></div>
-                    <table class="striped highlight responsive-table">
-                        <thead class="grey darken-1 white-text">
-                            <tr>
-                                <th>Calendar week</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Shift count</th>
-                                <th>Work hours</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for week in weeks %}
-                                <tr>
-                                    <td><b>{{ week.name }}</b></td>
-                                    <td>{{ week.start|date:"d.m.Y" }}</td>
-                                    <td>{{ week.end|date:"d.m.Y" }}</td>
-                                    <td>{{ week.shift_count }} shifts</td>
-                                    {% if user.work_hours %}
-                                    <td>{{ week.work_hours|floatformat:"g" }}/{{ user.work_hours|floatformat:"g" }} hours</td>
-                                    {% else %}
-                                    <td>{{ week.work_hours|floatformat:"g" }} hours</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                            <tr class="grey darken-1 white-text">
-                                <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
-                                <td>{{ shift_count_total }} shifts</td>
-                                {% if target_hours > 0 %}
-                                <td>{{ work_hours_total|floatformat:"g" }}/{{ target_hours }} hours</td>
-                                {% else %}
-                                <td>{{ work_hours_total|floatformat:"g" }} hours</td>
-                                {% endif %}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                {% else %}
+                    <h6><i class="material-icons accent-color-text left">info</i>No recent shifts</h6>
+                {% endif %}
             </div>
-        {% endif %}
+
+            <div id="shift-search" class="card-content">
+                <form hx-post="{% url 'search_own_shifts' %}" hx-target="#search-results" hx-swap="morph">
+                    {% csrf_token %}
+                    <div class="row" style="gap: 1em">
+                        <div class="s6 m4 input-field">
+                            <i class="material-icons prefix">event_calendar</i>
+                            <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker" placeholder=" ">
+                            <label for="id_filter_date">Filter week of date</label>
+                        </div>
+                        <div class="s6 m4 input-field">
+                            <i class="material-icons prefix">search</i>
+                            <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %} placeholder=" ">
+                            <label for="id_keyword">Keyword</label>
+                        </div>
+                    </div>
+                    <br>
+                    <button type="submit" class="waves-effect waves-light btn main-color" id="search_own_btn"><i class="material-icons left">search</i>Search</button>
+                    <a class="waves-effect waves-light btn-flat red-text text-darken-1" hx-get="{% url 'search_own_shifts' %}?clear=true" hx-target="#search-results" hx-swap="morph"><i class="material-icons left">clear</i>Clear Results</a>
+                </form>
+                <div id="search-results"></div>
+            </div>
+
+            <div id="workhours" class="card-content">
+                <div class="card-title"><b>Overview work hours</b></div>
+                <table class="striped highlight responsive-table">
+                    <thead class="header-color white-text">
+                    <tr>
+                        <th>Calendar week</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Shift count</th>
+                        <th>Work hours</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for week in weeks %}
+                        <tr>
+                            <td><b>{{ week.name }}</b></td>
+                            <td>{{ week.start|date:"d.m.Y" }}</td>
+                            <td>{{ week.end|date:"d.m.Y" }}</td>
+                            <td>{% if week.shift_count > 0 %}{{ week.shift_count }} shifts{% else %}none{% endif %}</td>
+                            {% if user.work_hours %}
+                                <td>{{ week.work_hours|floatformat:"g" }}/{{ user.work_hours|floatformat:"g" }} hours</td>
+                            {% else %}
+                                <td>{{ week.work_hours|floatformat:"g" }} hours</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr class="accent-color">
+                        <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
+                        <td><b>{{ shift_count_total }} shifts</b></td>
+                        {% if target_hours > 0 %}
+                            <td><b>{{ work_hours_total|floatformat:"g" }}/{{ target_hours }} hours</b></td>
+                        {% else %}
+                            <td><b>{{ work_hours_total|floatformat:"g" }} hours</b></td>
+                        {% endif %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

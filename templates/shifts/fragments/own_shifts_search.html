@@ -1,0 +1,67 @@
+<div id="search-results">
+    <br><table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+            <tr>
+                <th>Date</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Work hours<br>Break</th>
+                <th>Department<br>Qualifications</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entry in page_obj %}
+            <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
+                <td>
+                    {{ entry.get_date|date:"l" }}<br>
+                    <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
+                </td>
+                <td><b>{{ entry.get_start_time|date:"H:i" }}</b></td>
+                <td><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
+                <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
+                <td>
+                    {% if entry.employee != None and entry.employee.department != entry.department %}
+                        <span class="new badge red darken-1 z-depth-1" data-badge-caption="">
+                            <b>{{ entry.department }}</b>
+                        </span>
+                    {% else %}
+                        {{ entry.department }}
+                    {% endif %}<br>
+                    {% for qualification in entry.get_qualifications %}
+                        <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                            <b>{{ qualification.qualification.name }}</b>
+                        </span>
+                    {% endfor %}
+                </td>
+                <td>{{ entry.note }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if timeline_recent != None %}
+        <br><img class="materialboxed" src='data:image/png;base64,{{ timeline_recent }}' style="max-width: 100%">
+    {% endif %}
+
+    <br><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-get="{% url 'search_own_shifts' %}?page={{ page_obj.previous_page_number }}" hx-target="#search-results" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-get="{% url 'search_own_shifts' %}?page={{ page }}" hx-target="#search-results" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-get="{% url 'search_own_shifts' %}?page={{ page_obj.next_page_number }}" hx-target="#search-results" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

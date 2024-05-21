@@ -106,7 +106,6 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
-    grey4 = PIL.ImageColor.getrgb('#757575')
     font_family = "arial.ttf"
 
     # init
@@ -123,7 +122,7 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
     # vertical
     for i in range(row_count):
         if i == 0:
-            fillcolor = grey4
+            fillcolor = grey3
         elif i % 2 == 0:
             fillcolor = grey2
         else:

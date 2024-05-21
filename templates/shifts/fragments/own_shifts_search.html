@@ -53,7 +53,7 @@
         {% endif %}
         {% for page in page_obj.paginator.page_range %}
             {% if page == page_obj.number %}
-                <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
             {% else %}
                 <li class="waves-effect"><a hx-get="{% url 'search_own_shifts' %}?page={{ page }}" hx-target="#search-results" hx-swap="morph">{{ page }}</a></li>
             {% endif %}

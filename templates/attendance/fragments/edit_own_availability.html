@@ -1,0 +1,81 @@
+<div id="edit-modal-content">
+    <script>
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+
+        var modal_elems = document.querySelector('#delete-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+
+    <div id="delete-modal" class="modal content-section card-color">
+        <div class="modal-content">
+            <h5><b class="warning-color-text">Delete availability</b></h5>
+            <p>Are you sure you really want to delete this entry?</p>
+        </div>
+        <div class="modal-footer header-color">
+            <a class="modal-close waves-effect waves-light btn-flat white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">close</i>Abort and close</a>
+            <a class="waves-effect waves-light btn warning-color white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();" hx-get="{% url 'delete_own_availability' selected_availability.id %}" hx-target="#own-availabilities-list" hx-swap="morph"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+        </div>
+    </div>
+
+    <form hx-post="{% url 'edit_own_availability' selected_availability.id %}" hx-target="#own-availabilities-list" hx-swap="morph">
+        <div class="modal-content card-color">
+            {% csrf_token %}
+            <h5 class="header-color-text"><b>Edit availability</b></h5>
+            <input type="hidden" name="employee" value="{{ selected_availability.employee.id }}">
+            <input type="hidden" name="weekday" value="{{ selected_availability.weekday }}">
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input type="text" autocapitalize="none" maxlength="25" disabled value="{{ selected_availability.get_weekday_display }}" id="id_weekday" class="grey-text text-lighten-1" placeholder=" ">
+                    <label for="id_weekday">*Weekday</label>
+                </div>
+                <div class="s2 input-field">
+                    <label>
+                        <input type="checkbox" {% if selected_availability.is_available %}checked="checked"{% endif %} name="is_available" />
+                        <span>*Available</span>
+                    </label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_start_time" name="start_time" value="{{ selected_availability.start_time|date:"H:i" }}" type="time" class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_start_time">Start</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_end_time" name="end_time" value="{{ selected_availability.end_time|date:"H:i" }}" type="time" class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_end_time">End</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <select name="tendency" placeholder=" ">
+                        {% for tendency in form.tendency %}
+                            <option value="{{ tendency.data.value }}" {% if selected_availability.tendency == tendency.data.value %}selected{% endif %}>{{ tendency.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Tendency</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" ">{{ selected_availability.note }}</textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div><br><br><br>
+        </div>
+        <div class="modal-footer header-color">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update availability</button>
+            <a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
+        </div>
+    </form>
+</div>

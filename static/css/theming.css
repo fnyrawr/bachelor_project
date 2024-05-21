@@ -1,36 +1,58 @@
 :root {
-  --main-color: #039BE5;
+  --header-color: #424242;
   --accent-color: #FFB300;
   --accent-color-lighten: #FFE082;
-  --header-color: #424242;
+  --accent-color-2: #7CB342;
+  --accent-color-2-lighten: #9CCC65;
+  --warning-color: #B71C1C;
 }
 
-.main-color {
-  background-color: var(--main-color) !important;
-}
-
-.main-color-text {
-  color: var(--main-color) !important;
-}
-
-.accent-color {
-  background-color: var(--accent-color) !important;
-}
-
-.accent-color-text {
-  color: var(--accent-color) !important;
-}
-
-.card-color {
-  background-color: white !important;
+body {
+  background-color: #FFFFFF;
 }
 
 .header-color {
   background-color: var(--header-color) !important;
 }
 
-body {
-  background-color: white
+.header-color-text {
+  color: var(--header-color) !important;
+}
+
+.accent-color-2 {
+  background-color: var(--accent-color-2) !important;
+}
+
+.accent-color-2-lighten {
+  background-color: var(--accent-color-2-lighten) !important;
+}
+
+.accent-color-2-text {
+  color: var(--accent-color-2) !important;
+}
+
+.accent-color {
+  background-color: var(--accent-color) !important;
+}
+
+.accent-color-lighten {
+  background-color: var(--accent-color-lighten) !important;
+}
+
+.accent-color-text {
+  color: var(--accent-color) !important;
+}
+
+.warning-color {
+  background-color: var(--warning-color) !important;
+}
+
+.warning-color-text {
+  color: var(--warning-color) !important;
+}
+
+.card-color {
+  background-color: white !important;
 }
 
 /*
@@ -73,8 +95,8 @@ input {
 }
 
 input:focus {
-  border-bottom: 1px solid var(--main-color) !important;
-  box-shadow: 0 1px 0 0 var(--main-color) !important;
+  border-bottom: 1px solid var(--accent-color) !important;
+  box-shadow: 0 1px 0 0 var(--accent-color) !important;
 }
 
 .input-field .prefix {
@@ -82,20 +104,20 @@ input:focus {
 }
 
 .input-field .prefix.active {
-  color: var(--main-color) !important;
+  color: var(--accent-color) !important;
 }
 
 textarea:focus {
-  border-bottom: 1px solid var(--main-color) !important;
-  box-shadow: 0 1px 0 0 var(--main-color) !important;
+  border-bottom: 1px solid var(--accent-color) !important;
+  box-shadow: 0 1px 0 0 var(--accent-color) !important;
 }
 
 label.active {
-  color: var(--main-color) !important;
+  color: var(--accent-color) !important;
 }
 
 .select-dropdown li.disabled, .select-dropdown li.disabled > span {
-  color: #BDBDBD !important;
+  color: #AAAAAA !important;
 }
 
 .dropdown-content li>a {
@@ -103,11 +125,16 @@ label.active {
 }
 
 .dropdown-content li>a, .dropdown-content li>span {
-  color: var(--main-color) !important;
+  color: var(--header-color) !important;
+}
+
+.dropdown-content {
+  max-height: 150px;
+  overflow: scroll;
 }
 
 .select-content li>span {
-  color: var(--accent-color) !important;
+  color: var(--header-color) !important;
 }
 
 .select-content li>a {
@@ -115,11 +142,15 @@ label.active {
 }
 
 .select-wrapper input.select-dropdown {
-  color: #BDBDBD !important;
+  color: var(--header-color) !important;
 }
 
 .select-dropdown li.optgroup>span {
-  color: #BDBDBD !important;
+  color: #FFFFFF !important;
+}
+
+.input-field textarea {
+  background-color: #FFFFFF;
 }
 
 .navbar-material .nav-wrapper .brand-logo img {
@@ -127,28 +158,28 @@ label.active {
 }
 
 .datepicker-date-display {
-  background-color: var(--main-color) !important;
+  background-color: var(--accent-color-2) !important;
 }
 
 .datepicker-cancel, .datepicker-clear, .datepicker-today, .datepicker-done {
-  color: var(--main-color) !important;
+  color: var(--accent-color-2) !important;
 }
 
 .datepicker-table td.is-today {
-  color: var(--main-color) !important;
+  color: var(--accent-color-2) !important;
 }
 
 .datepicker-table td.is-selected {
-  background-color: var(--main-color) !important;
+  background-color: var(--accent-color-2) !important;
   color: white !important;
 }
 
 .timepicker-digital-display {
-  background-color: var(--main-color) !important;
+  background-color: var(--accent-color-2) !important;
 }
 
 .timepicker-cancel, .timepicker-clear, .timepicker-close, .timepicker-done {
-  color: var(--main-color) !important;
+  color: var(--accent-color-2) !important;
 }
 
 .timepicker-tick:hover {
@@ -203,6 +234,6 @@ main {
 }
 
 [type="checkbox"]:checked + span:not(.lever)::before {
-  border-right: 2px solid var(--main-color);
-  border-bottom: 2px solid var(--main-color);
+  border-right: 2px solid var(--accent-color-2);
+  border-bottom: 2px solid var(--accent-color-2);
 }

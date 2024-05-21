@@ -13,8 +13,9 @@ urlpatterns = [
     path('employees/', views.employee_list, name='employees'),
     # EmployeesQualifications
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification, name='add_employee_qualification'),
-    path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,
-         name='remove_employee_qualification'),
+    path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification, name='remove_employee_qualification'),
+    # Attendance
+    path('attendance/', views.attendance, name='attendance'),
     # HTMX
     path('create/check_username/', views.check_username, name='check_username'),
     # REST Endpoints

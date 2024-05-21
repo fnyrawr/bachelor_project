@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -36,7 +37,7 @@ class WishCreationView(CreateView):
 class OwnWishCreationView(CreateView):
     model = Wish
     form_class = WishForm
-    template_name = 'wishes/add_own_wish.html'
+    template_name = 'attendance/fragments/add_own_wish.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -134,7 +135,7 @@ def edit_own_wish(request, **kwargs):
             'form': form,
             'selected_wish': selected_wish
         }
-        return render(request, 'wishes/edit_own_wish.html', context)
+        return HttpResponse(render(request, 'attendance/fragments/edit_own_wish.html', context))
 
 
 def delete_wish(request, **kwargs):
@@ -165,14 +166,12 @@ def own_wishes(request):
         searchForm = SearchForm(request.POST)
         data = searchForm.data
         filter_date = data['filter_date']
-        filter_tendency = data['filter_tendency']
         keyword = data['keyword']
         q_date = Q()
-        q_tendency = Q()
         q_keyword = Q()
 
         q_user = Q(employee=request.user)
-        if filter_date != '':
+        if filter_date is not None and filter_date != '':
             # filter week around date
             filter_date = datetime.strptime(filter_date, '%Y-%m-%d')
             date_min = filter_date - timedelta(days=filter_date.weekday())
@@ -180,11 +179,9 @@ def own_wishes(request):
             q_date_min = Q(date__gte=date_min)
             q_date_max = Q(date__lte=date_max)
             q_date = Q(q_date_min & q_date_max)
-        if int(filter_tendency) > -1:
-            q_tendency = Q(tendency__exact=filter_tendency)
-        if keyword != '':
+        if keyword is not None and keyword != '':
             q_keyword = Q(note__icontains=keyword)
-        q = Q(q_user & q_date & q_tendency & q_keyword)
+        q = Q(q_user & Q(q_date & q_keyword))
         entries = Wish.objects.filter(q)
     else:
         # filter last week and future
@@ -197,6 +194,8 @@ def own_wishes(request):
         q_date = Q(date__gte=date_min)
         q = Q(q_user & q_date)
         entries = Wish.objects.filter(q).order_by('date')
+        if entries.count() == 0:
+            return HttpResponse('<h6><i class="material-icons accent-color-text left">info</i>No shift wishes set for last week and in the future</h6>')
 
     context = {
         'all_entries': entries,
@@ -204,7 +203,9 @@ def own_wishes(request):
         'search': search,
         'data': data
     }
-    return render(request, 'wishes/own_wishes.html', context)
+    if entries.count() == 0:
+        return HttpResponse('<h6><i class="material-icons accent-color-text left">info</i>No shift wishes matching your filters</h6>')
+    return HttpResponse(render(request, 'attendance/fragments/own_wishes.html', context))
 
 
 def wish_list(request):

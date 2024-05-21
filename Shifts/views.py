@@ -627,9 +627,6 @@ def shiftplan(request, **kwargs):
 
 # HTMX
 def search_own_shifts(request):
-    clear = request.GET.get('clear')
-    if clear:
-        return HttpResponse('<div id="search-results"></div>')
     filter_date = request.POST.get('filter_date')
     keyword = request.POST.get('keyword')
     q_keyword = Q()
@@ -668,4 +665,7 @@ def search_own_shifts(request):
         'entries': entries.count(),
         'timeline_recent': timeline_recent
     }
+
+    if entries.count() == 0:
+        return HttpResponse('<h6><i class="material-icons accent-color-text left">info</i>No shifts matching your search</h6>')
     return HttpResponse(render(request, 'shifts/fragments/own_shifts_search.html', context))

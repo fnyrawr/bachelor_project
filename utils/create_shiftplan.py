@@ -43,7 +43,6 @@ def draw_shiftplan(objects=None, department=None, target=None):
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
-    grey4 = PIL.ImageColor.getrgb('#757575')
 
     l_width = 15
     hl_width = int(l_width/2)
@@ -97,7 +96,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
             fontcolor = black
             text = str(objects[1][i].employee)
             if text == 'None':
-                fontcolor = grey4
+                fontcolor = grey3
                 text = 'unassigned'
             img.text((2*mgs, i*h_row + h_row/2), text, fill=fontcolor, font=font, align='left', anchor='lm')
 
@@ -130,7 +129,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
                         img.rectangle(((i+1)*w_col+1, j*h_row+1, (i+2)*w_col-1, j*h_row + h_row/3 + mgs), fill=amber)
                         # mark shifts with grey lines above
                         img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
-                                 fill=grey4, width=hl_width)
+                                 fill=grey3, width=hl_width)
 
                     # define if employee's shift is in the displayed department
                     if entry.shift.employee:
@@ -142,7 +141,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
                             fontcolor = black
                         else:
                             other_department = True
-                            fontcolor = grey4
+                            fontcolor = grey3
                     else:
                         other_department = False
                         fontcolor = black
@@ -164,7 +163,7 @@ def draw_shiftplan(objects=None, department=None, target=None):
                         hrs = '{0:g}'.format(time_to_dec(entry.shift.get_work_hours())) + ' hours'
                         img.text(((i+1)*w_col + 2*mgs, j*h_row + h_row/2),
                                  hrs, fill=fontcolor, font=font, align='left', anchor='lm')
-                        fontcolor = grey4
+                        fontcolor = grey3
                         brk_min = int(time_to_dec(entry.shift.break_duration)*60)
                         if 0 < brk_min < 60:
                             brk = str(brk_min) + ' min'
@@ -190,14 +189,14 @@ def draw_shiftplan(objects=None, department=None, target=None):
                         img.text(((i+1)*w_col + w_col/2, j*h_row + h_row/2),
                                  dep, fill=fontcolor, font=font, align='left', anchor='ma')
                         img.line(((i+1)*w_col+1, j*h_row+hl_width/2, (i+2)*w_col-1, j*h_row+hl_width/2),
-                                 fill=grey4, width=hl_width)
+                                 fill=grey3, width=hl_width)
 
         # draw work hours
         fontsize = h_row / 5
         font = ImageFont.truetype(font_family, int(fontsize))
         for i in range(len(objects[0])):
             if i > 0 and objects[1][i].employee:
-                fontcolor = grey4
+                fontcolor = grey3
                 if objects[1][i].employee.work_hours:
                     text = '{0:g}'.format(objects[1][i].employee.week_work_hours) + '/' +\
                            str(objects[1][i].employee.work_hours) + ' hours'

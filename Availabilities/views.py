@@ -37,7 +37,7 @@ class AvailabilityCreationView(CreateView):
 class OwnAvailabilityCreationView(CreateView):
     model = Availability
     form_class = AvailabilityForm
-    template_name = 'availabilities/fragments/add_own_availability.html'
+    template_name = 'attendance/fragments/add_own_availability.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -135,7 +135,7 @@ def edit_own_availability(request, **kwargs):
             'form': form,
             'selected_availability': selected_availability
         }
-        return HttpResponse(render(request, 'availabilities/fragments/edit_own_availability.html', context))
+        return HttpResponse(render(request, 'attendance/fragments/edit_own_availability.html', context))
 
 
 def delete_availability(request, **kwargs):
@@ -160,13 +160,14 @@ def delete_own_availability(request, **kwargs):
 
 def own_availabilities(request):
     user = request.user
-    all_entries = None
     all_entries = Availability.objects.filter(employee=user).order_by('weekday')
 
     context = {
         'all_entries': all_entries
     }
-    return render(request, 'availabilities/own_availabilities.html', context)
+    if all_entries.count() == 0:
+        return HttpResponse('<h6><i class="material-icons accent-color-text left">info</i>No availabilities set</h6>')
+    return HttpResponse(render(request, 'attendance/fragments/own_availabilities.html', context))
 
 
 def availability_list(request):

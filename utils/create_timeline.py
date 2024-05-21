@@ -137,7 +137,6 @@ def draw_timeline(objects, target):
     grey1 = PIL.ImageColor.getrgb('#FAFAFA')
     grey2 = PIL.ImageColor.getrgb('#EEEEEE')
     grey3 = PIL.ImageColor.getrgb('#424242')
-    grey4 = PIL.ImageColor.getrgb('#757575')
     font_family = "arial.ttf"
 
     # init
@@ -154,7 +153,7 @@ def draw_timeline(objects, target):
     # horizontal
     for i in range(row_count+1):
         if i == 0:
-            fillcolor = grey4
+            fillcolor = grey3
         elif i % 2 == 0:
             fillcolor = grey2
         else:

@@ -278,6 +278,10 @@ def employee_list(request):
     return render(request, 'users/employee_list.html', context)
 
 
+def attendance(request):
+    return render(request, 'attendance/attendance.html')
+
+
 # HTMX
 def check_username(request):
     username = request.POST.get('username')

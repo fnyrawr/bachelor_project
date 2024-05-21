@@ -42,13 +42,16 @@
         </ul>
 
         <nav>
-            <div class="nav-wrapper main-color">
+            <div class="nav-wrapper header-color">
                 <a data-target="sidenav" class="sidenav-trigger show-on-large btn waves-effect waves-light accent-color"><i class="material-icons">menu</i></a>
-                <a href="#" class="brand-logo">ShiftManager</a>
+                <a href="#" class="brand-logo accent-color-text">ShiftManager</a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     {% block contextmenu %}
                     {% endblock %}
                     {% if user.is_authenticated %}
+                        <li><a href="{% url 'own_shifts' %}"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+                        <li><a href="{% url 'attendance' %}"><i class="material-icons left">event</i>Attendance</a></li>
+                        <li><a href="{% url 'edit_basedata' %}"><i class="material-icons left">person</i>Account</a></li>
                         <li><a class="dropdown-trigger" href="#" data-target="userwidget">{{ user }}<i class="material-icons right">arrow_drop_down</i></a></li>
                     {% else %}
                         <li><a data-target="login-modal" class="modal-trigger">Login<i class="material-icons left">login</i></a></li>
@@ -91,11 +94,11 @@
                                 <div class="collapsible-header"><i class="material-icons accent-color-text">settings</i>General Management</div>
                                 <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                     <ul>
-                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'useraccounts' %}"><i class="material-icons main-color-text">group</i>Useraccounts</a></li>{% endif %}
-                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'qualifications' %}"><i class="material-icons main-color-text">label</i>Qualifications</a></li>{% endif %}
-                                        <li><a class="waves-effect waves-light" href="{% url 'departments' %}"><i class="material-icons main-color-text">view_list</i>Departments</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'demand' %}"><i class="material-icons main-color-text">date_range</i>Personnel demand</a></li>
-                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'datamanagement' %}"><i class="material-icons main-color-text">cloud</i>Data management</a></li>{% endif %}
+                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'useraccounts' %}"><i class="material-icons accent-color-2-text">group</i>Useraccounts</a></li>{% endif %}
+                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'qualifications' %}"><i class="material-icons accent-color-2-text">label</i>Qualifications</a></li>{% endif %}
+                                        <li><a class="waves-effect waves-light" href="{% url 'departments' %}"><i class="material-icons accent-color-2-text">view_list</i>Departments</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'demand' %}"><i class="material-icons accent-color-2-text">date_range</i>Personnel demand</a></li>
+                                        {% if user.is_admin %}<li><a class="waves-effect waves-light" href="{% url 'datamanagement' %}"><i class="material-icons accent-color-2-text">cloud</i>Data management</a></li>{% endif %}
                                     </ul>
                                 </div>
                             </li>
@@ -103,9 +106,9 @@
                                 <div class="collapsible-header"><i class="material-icons accent-color-text">group</i>Employee Management</div>
                                 <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                     <ul>
-                                        <li><a class="waves-effect waves-light" href="{% url 'employees' %}"><i class="material-icons main-color-text">view_list</i>Employees</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'absences' %}"><i class="material-icons main-color-text">event_busy</i>Absences</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'holidays' %}"><i class="material-icons main-color-text">flight_takeoff</i>Holidays</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'employees' %}"><i class="material-icons accent-color-2-text">view_list</i>Employees</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'absences' %}"><i class="material-icons accent-color-2-text">event_busy</i>Absences</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'holidays' %}"><i class="material-icons accent-color-2-text">flight_takeoff</i>Holidays</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -113,13 +116,13 @@
                                 <div class="collapsible-header"><i class="material-icons accent-color-text">event</i>Shift Management</div>
                                 <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                     <ul>
-                                        <li><a class="waves-effect waves-light" href="{% url 'shifts' %}"><i class="material-icons main-color-text">view_list</i>Shifts</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'shiftplan' %}"><i class="material-icons main-color-text">event_note</i>Shiftplan</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'work_hours' %}"><i class="material-icons main-color-text">event</i>Work hours</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'availabilities' %}"><i class="material-icons main-color-text">event_available</i>Availabilities</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'wishes' %}"><i class="material-icons main-color-text">event_note</i>Wishes</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons main-color-text">event</i>Shift templates</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'day_templates' %}"><i class="material-icons main-color-text">event</i>Day templates</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'shifts' %}"><i class="material-icons accent-color-2-text">view_list</i>Shifts</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'shiftplan' %}"><i class="material-icons accent-color-2-text">event_note</i>Shiftplan</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'work_hours' %}"><i class="material-icons accent-color-2-text">event</i>Work hours</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'availabilities' %}"><i class="material-icons accent-color-2-text">event_available</i>Availabilities</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'wishes' %}"><i class="material-icons accent-color-2-text">event_note</i>Wishes</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'shift_templates' %}"><i class="material-icons accent-color-2-text">event</i>Shift templates</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'day_templates' %}"><i class="material-icons accent-color-2-text">event</i>Day templates</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -128,8 +131,8 @@
                                 <div class="collapsible-header"><i class="material-icons accent-color-text">group</i>Employee Management</div>
                                 <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                     <ul>
-                                        <li><a class="waves-effect waves-light" href="{% url 'own_availabilities' %}"><i class="material-icons main-color-text">event_available</i>Availabilities</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'own_wishes' %}"><i class="material-icons main-color-text">event_note</i>Wishes</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'own_availabilities' %}"><i class="material-icons accent-color-2-text">event_available</i>Availabilities</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'own_wishes' %}"><i class="material-icons accent-color-2-text">event_note</i>Wishes</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -137,14 +140,14 @@
                                 <div class="collapsible-header"><i class="material-icons accent-color-text">event</i>Shift Management</div>
                                 <div class="collapsible-body grey lighten-4 grey-text text-darken-4">
                                     <ul>
-                                        <li><a class="waves-effect waves-light" href="{% url 'shiftplan' %}"><i class="material-icons main-color-text">event_note</i>Shiftplan</a></li>
-                                        <li><a class="waves-effect waves-light" href="{% url 'own_absences' %}"><i class="material-icons main-color-text">event_busy</i>Absences</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'shiftplan' %}"><i class="material-icons accent-color-2-text">event_note</i>Shiftplan</a></li>
+                                        <li><a class="waves-effect waves-light" href="{% url 'own_absences' %}"><i class="material-icons accent-color-2-text">event_busy</i>Absences</a></li>
                                         <li><a class="waves-effect waves-light" href="{% url 'own_holidays' %}"><i class="material-icons main-color-text">flight_takeoff</i>Holidays</a></li>
                                     </ul>
                                 </div>
                             </li>
                         {% else %}
-                            <li><a data-target="login-modal" class="modal-trigger waves-effect waves-light"><i class="material-icons main-color-text">info</i>Not logged in</a></li>
+                            <li><a data-target="login-modal" class="modal-trigger waves-effect waves-light"><i class="material-icons accent-color-text">info</i>Not logged in</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -152,33 +155,15 @@
         {% endblock %}
 
         <div class="container">
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'error' %}
-                        <div class="card card-content red darken-1 white-text">
-                            <div class="container">{{ message }}</div>
-                        </div>
-                    {% endif %}
-                    {% if message.tags == 'success' %}
-                        <div class="card card-content light-green darken-4 white-text">
-                            <div class="container">{{ message }}</div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-
             {% block content %}
                 <div id="pagecontent">
-                    <h1 class="main-color-text">Welcome</h1>
-                    <div class="row">
-                        <div class="col s12 m8">
-                            <div class="card main-color">
-                                <div class="card-content white-text">
-                                    <p>This application is a working prototype of a shift planning Web-Application</p>
-                                    <p>Developed by Florian Kate as a project of the Bachelor Thesis in Media Informatics</p>
-                                    <p>Please log in to start</p>
-                                </div>
-                            </div>
+                    <br><br><br>
+                    <div class="card">
+                        <div class="card-content header-color">
+                            <div class="card-title"><b class="accent-color-text">Welcome</b></div>
+                        </div>
+                        <div class="card-content card-color">
+                            Please log in to start
                         </div>
                     </div>
                 </div>

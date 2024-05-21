@@ -1,0 +1,60 @@
+<div id="add-availability">
+    <script>
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+    </script>
+    <form hx-post="{% url 'add_own_availability' %}" hx-target="#own-availabilities-list" hx-swap="morph">
+        <div class="modal-content card-color">
+            {% csrf_token %}
+            <h5 class="header-color-text"><b>Add availability</b></h5>
+            <input type="hidden" name="employee" value="{{ user.id }}">
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    {{ form.weekday }}
+                    <label>*Weekday</label>
+                </div>
+                <div class="s2 input-field">
+                    <label>
+                        <input type="checkbox" checked="checked" name="is_available" />
+                        <span>*Available</span>
+                    </label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_start_time" name="start_time" type="time" class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_start_time">Start</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_end_time" name="end_time" type="time" class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_end_time">End</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    {{ form.tendency }}
+                    <label>*Tendency</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" "></textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div><br><br><br>
+        </div>
+        <div class="modal-footer header-color">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">add</i>Create availability</button>
+        </div>
+    </form>
+</div>

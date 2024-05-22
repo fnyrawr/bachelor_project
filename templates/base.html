@@ -23,23 +23,6 @@
 <body>
     <main>
         {% include 'registration/login.html' %}
-        {% include 'users/change_password.html' %}
-
-        <ul id="userwidget" class="dropdown-content">
-            <li><a href="{% url 'own_shifts' %}">Dashboard</a></li>
-            <li><a href="{% url 'own_availabilities' %}">My general availabilities</a></li>
-            <li><a href="{% url 'own_wishes' %}">My shift wishes</a></li>
-            <li class="divider"></li>
-            <li><a href="{% url 'own_absences' %}">My absences</a></li>
-            <li><a href="{% url 'own_holidays' %}">My holidays</a></li>
-            <li class="divider"></li>
-            <li><a href="{% url 'edit_basedata' %}">My base data</a></li>
-            <li><a data-target="change-password-modal" class="modal-trigger waves-effect waves-light">Change password</a></li>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <li><button type="submit" class="btn amber darken-1 white-text">Logout</button></li>
-            </form>
-        </ul>
 
         <nav>
             <div class="nav-wrapper header-color">
@@ -51,8 +34,13 @@
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'own_shifts' %}"><i class="material-icons left">dashboard</i>Dashboard</a></li>
                         <li><a href="{% url 'attendance' %}"><i class="material-icons left">event</i>Attendance</a></li>
-                        <li><a href="{% url 'edit_basedata' %}"><i class="material-icons left">person</i>Account</a></li>
-                        <li><a class="dropdown-trigger" href="#" data-target="userwidget">{{ user }}<i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="{% url 'my_account' %}"><i class="material-icons left">person</i>Account</a></li>
+                        <li class="accent-color">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="btn-flat accent-color">Logout</button>
+                            </form>
+                        </li>
                     {% else %}
                         <li><a data-target="login-modal" class="modal-trigger">Login<i class="material-icons left">login</i></a></li>
                     {% endif %}
@@ -154,7 +142,7 @@
             </ul>
         {% endblock %}
 
-        <div class="container">
+        <div id="wholepage" class="container">
             {% block content %}
                 <div id="pagecontent">
                     <br><br><br>

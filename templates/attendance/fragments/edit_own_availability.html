@@ -71,9 +71,9 @@
                     <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" ">{{ selected_availability.note }}</textarea>
                     <label for="id_note">Note</label>
                 </div>
-            </div><br><br><br>
+            </div>
         </div>
-        <div class="modal-footer header-color">
+        <div class="modal-footer header-color" style="margin-top: 10%">
             <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update availability</button>
             <a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
         </div>

@@ -13,7 +13,7 @@
         <tbody>
         {% for entry in page_obj %}
             <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
-                <td>
+                <td {% if entry.get_date.weekday == 5 %}class="marker-saturday"{% elif entry.get_date.weekday == 6 %}class="marker-sunday"{% endif %}>
                     {{ entry.get_date|date:"l" }}<br>
                     <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
                 </td>

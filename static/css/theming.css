@@ -5,6 +5,8 @@
   --accent-color-2: #7CB342;
   --accent-color-2-lighten: #9CCC65;
   --warning-color: #B71C1C;
+  --marker-saturday: #039BE5;
+  --marker-sunday: #FFB300;
 }
 
 body {
@@ -51,6 +53,14 @@ body {
   color: var(--warning-color) !important;
 }
 
+.marker-saturday {
+  border-right: 10px solid var(--marker-saturday);
+}
+
+.marker-sunday {
+  border-right: 10px solid var(--marker-sunday);
+}
+
 .card-color {
   background-color: white !important;
 }
@@ -65,6 +75,17 @@ body {
 }
  */
 
+nav {
+  background-color: var(--header-color);
+  color: white;
+}
+
+.nav-wrapper ul li a:hover {
+  background-color: #EFEFEF !important;
+  color: var(--header-color) !important;
+  font-weight: bold;
+}
+
 .tabs {
   background-color: var(--header-color);
 }
@@ -74,7 +95,7 @@ body {
 }
 
 .tabs .tab a.active {
-  color:white !important;
+  color: white !important;
   font-weight: bold;
 }
 

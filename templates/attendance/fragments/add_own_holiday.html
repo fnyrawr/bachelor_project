@@ -1,0 +1,47 @@
+<div id="add-holiday">
+    <script>
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+    </script>
+    <form hx-post="{% url 'add_own_holiday' %}" hx-target="#own-holidays-list" hx-swap="morph">
+        {% csrf_token %}
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Add holiday</b></h5>
+            <input type="hidden" name="employee" value="{{ user.id }}">
+            <input type="hidden" name="status" value="0">
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_start_date" name="start_date" type="text" class="datepicker grey-text text-darken-4" placeholder=" ">
+                    <label for="id_start_date">*Start date</label>
+                    <!-- set today as default date -->
+                    <script>$("#id_start_date").attr("value", new Date().toISOString().slice(0, 10))</script>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_end_date" name="end_date" type="text" class="datepicker grey-text text-darken-4" placeholder=" ">
+                    <label for="id_end_date">*End date</label>
+                    <!-- set today as default date -->
+                    <script>$("#id_end_date").attr("value", new Date().toISOString().slice(0, 10))</script>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" "></textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 15%">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">send</i>Submit holiday</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,70 @@
+<div id="edit-modal-content">
+    <script>
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+
+        var modal_elems = document.querySelector('#delete-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+
+    <div id="delete-modal" class="modal content-section card-color">
+        <div class="modal-content">
+            <h5><b class="warning-color-text">Delete absence</b></h5>
+            <p>Are you sure you really want to delete this entry?</p>
+        </div>
+        <div class="modal-footer header-color">
+            <a class="modal-close waves-effect waves-light btn-flat white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">close</i>Abort and close</a>
+            <a class="waves-effect waves-light btn warning-color white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();" hx-get="{% url 'delete_absence' selected_absence.id %}?own=True" hx-target="#own-absences-list" hx-swap="morph"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+        </div>
+    </div>
+
+    <form hx-post="{% url 'edit_own_absence' selected_absence.id %}" hx-target="#own-absences-list" hx-swap="morph">
+        {% csrf_token %}
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Edit absence</b></h5>
+            <input type="hidden" name="employee" value="{{ selected_absence.employee.id }}">
+            <input type="hidden" name="status" value="0">
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_start_date" name="start_date" type="text" {% if not can_update %} disabled {% endif %} class="datepicker grey-text text-darken-4" value="{{ selected_absence.start_date|date:"Y-m-d" }}" placeholder=" ">
+                    <label for="id_start_date">*Start date</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_end_date" name="end_date" type="text" {% if not can_update %} disabled {% endif %} class="datepicker grey-text text-darken-4" value="{{ selected_absence.end_date|date:"Y-m-d" }}" placeholder=" ">
+                    <label for="id_end_date">*End date</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field" placeholder=" ">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <select name="reason" {% if not can_update %} disabled {% endif %}>
+                        {% for reason in form.reason %}
+                            <option value="{{ reason.data.value }}" {% if selected_absence.reason == reason.data.value %}selected{% endif %}>{{ reason.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Reason</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" ">{{ selected_absence.note }}</textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 10%">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update absence</button>
+            {% if can_update %}<a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>{% endif %}
+        </div>
+    </form>
+</div>

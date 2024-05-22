@@ -55,7 +55,7 @@ class UserCreationView(CreateView):
         })
 
 
-def edit_basedata(request):
+def my_account(request):
     user_id = request.user.id
     user = User.objects.get(id=user_id)
 
@@ -81,7 +81,7 @@ def edit_basedata(request):
             'user': user,
             'associated_qualifications': associated_qualifications
         }
-        return render(request, 'users/edit_basedata.html', context)
+        return render(request, 'users/my_account.html', context)
 
 
 def edit_user(request, **kwargs):
@@ -184,6 +184,7 @@ def remove_qualification(request, **kwargs):
 
 def change_password(request):
     user = request.user
+    errors = None
 
     if request.method == 'POST':
         form = SetPasswordFormImpl(user, request.POST)
@@ -194,9 +195,10 @@ def change_password(request):
         else:
             for error in list(form.errors.values()):
                 messages.add_message(request, messages.ERROR, error)
+            errors = list(form.errors.values())
     # GET request
     form = SetPasswordFormImpl(user)
-    return render(request, 'users/change_password.html', {'form': form})
+    return HttpResponse(render(request, 'users/change_password.html', {'form': form, 'errors': errors}))
 
 
 def delete_user(request, **kwargs):

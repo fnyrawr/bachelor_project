@@ -1,0 +1,38 @@
+<div id="own-holidays-list">
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Note</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entry in all_entries %}
+            <tr>
+                <td>{{ entry.start_date|date:"l" }}<br><b>{{ entry.start_date }}</b></td>
+                <td>{{ entry.end_date|date:"l" }}<br><b>{{ entry.end_date }}</b></td>
+                <td>{{ entry.get_duration }} days</td>
+                <td>
+                    {% if entry.status == 0 %}
+                        <i class="material-icons left grey-text text-darken-1">mail</i>{{ entry.get_status_display }}
+                    {% elif entry.status == 1 %}
+                        <i class="material-icons left grey-text text-darken-1">drafts</i>{{ entry.get_status_display }}
+                    {% elif entry.status == 2 %}
+                        <i class="material-icons left red-text text-darken-1">close</i>{{ entry.get_status_display }}
+                    {% else %}
+                        <i class="material-icons left light-green-text text-darken-1">done</i>{{ entry.get_status_display }}
+                    {% endif %}
+                </td>
+                <td>{{ entry.note }}</td>
+                <td>
+                    <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_own_holiday' entry.id %}" hx-target="#edit-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

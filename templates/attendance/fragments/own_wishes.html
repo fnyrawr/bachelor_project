@@ -3,7 +3,7 @@
         <thead class="header-color white-text">
         <tr>
             <th>Date</th>
-            <th>Available</th>
+            <th class="center">Available</th>
             <th>Start</th>
             <th>End</th>
             <th>Tendency</th>
@@ -14,8 +14,10 @@
         <tbody>
         {% for entry in all_entries %}
             <tr>
-                <td>{{ entry.date|date:"l" }}<br>{{ entry.date }}</td>
-                <td>
+                <td {% if entry.date.weekday == 5 %}class="marker-saturday"{% elif entry.date.weekday == 6 %}class="marker-sunday"{% endif %}>
+                    {{ entry.date|date:"l" }}<br><b>{{ entry.date }}</b>
+                </td>
+                <td class="center">
                     {% if entry.is_available %}
                         <i class="material-icons light-green-text text-darken-1">done</i>
                     {% else %}
@@ -27,7 +29,7 @@
                 <td>{{ entry.get_tendency_display }}</td>
                 <td>{{ entry.note }}</td>
                 <td>
-                    <a class="modal-trigger waves-effect waves-light btn amber darken-1" data-target="edit-modal" hx-get="{% url 'edit_own_wish' entry.id %}" hx-target="#edit-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                    <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_own_wish' entry.id %}" hx-target="#edit-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
                 </td>
             </tr>
         {% endfor %}

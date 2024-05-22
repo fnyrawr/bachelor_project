@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -50,7 +51,7 @@ class HolidayCreationView(CreateView):
 class OwnHolidayCreationView(CreateView):
     model = Holiday
     form_class = HolidayForm
-    template_name = 'holidays/add_own_holiday.html'
+    template_name = 'attendance/fragments/add_own_holiday.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -120,45 +121,55 @@ def edit_holiday(request, **kwargs):
 
 def edit_own_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
+    user = request.user
     selected_holiday = Holiday.objects.get(id=holiday_id)
 
     if request.method == "POST":
         form = HolidayForm(request.POST)
         data = form.data
-        Holiday.objects.filter(id=holiday_id).update(
-            status=data['status'],
-            note=data['note']
-        )
-        messages.success(request, "Holiday has been successfully updated.")
+        if selected_holiday.employee == user and selected_holiday.start_date > datetime.now().date() and selected_holiday.status < 3:
+            Holiday.objects.filter(id=holiday_id).update(
+                start_date=data['start_date'],
+                end_date=data['end_date'],
+                status=data['status'],
+                note=data['note']
+            )
+            messages.success(request, "Holiday has been successfully updated.")
+        elif selected_holiday.employee == user:
+            Holiday.objects.filter(id=holiday_id).update(
+                status=data['status'],
+                note=data['note']
+            )
+            messages.success(request, "Holiday has been successfully updated.")
+        else:
+            messages.error(request, "Not permitted to update this absence.")
         return redirect('own_holidays')
     # GET request
     else:
         form = HolidayForm()
+        if selected_holiday.employee == user and selected_holiday.start_date < datetime.now().date() and selected_holiday.status < 3:
+            can_update = False
+        else:
+            can_update = True
         context = {
             'form': form,
-            'selected_holiday': selected_holiday
+            'selected_holiday': selected_holiday,
+            'can_update': can_update
         }
-        return render(request, 'holidays/edit_own_holiday.html', context)
+        return render(request, 'attendance/fragments/edit_own_holiday.html', context)
 
 
 def delete_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
+    own = request.GET['own']
     selected_holiday = Holiday.objects.get(id=holiday_id)
     user = request.user
-    if user.role == 'A':
+    if user.role == 'A' or (selected_holiday.employee == user and selected_holiday.start_date < datetime.now().date() and selected_holiday.status < 3):
         selected_holiday.delete()
         messages.success(request, "Holiday successfully deleted.")
+    if own:
+        return redirect('own_holidays')
     return redirect('holidays')
-
-
-def delete_own_holiday(request, **kwargs):
-    holiday_id = kwargs['pk']
-    selected_holiday = Holiday.objects.get(id=holiday_id)
-    user = request.user
-    if selected_holiday.employee == user and selected_holiday.status < 3:
-        selected_holiday.delete()
-        messages.success(request, "Holiday successfully deleted.")
-    return redirect('own_holidays')
 
 
 def own_holidays(request):
@@ -169,7 +180,7 @@ def own_holidays(request):
     context = {
         'all_entries': all_entries
     }
-    return render(request, 'holidays/own_holidays.html', context)
+    return HttpResponse(render(request, 'attendance/fragments/own_holidays.html', context))
 
 
 def holiday_list(request):

@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
@@ -50,7 +51,7 @@ class AbsenceCreationView(CreateView):
 class OwnAbsenceCreationView(CreateView):
     model = Absence
     form_class = AbsenceForm
-    template_name = 'absences/add_own_absence.html'
+    template_name = 'attendance/fragments/add_own_absence.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -122,34 +123,55 @@ def edit_absence(request, **kwargs):
 
 def edit_own_absence(request, **kwargs):
     absence_id = kwargs['pk']
+    user = request.user
     selected_absence = Absence.objects.get(id=absence_id)
 
     if request.method == "POST":
         form = AbsenceForm(request.POST)
         data = form.data
-        Absence.objects.filter(id=absence_id).update(
-            status=data['status'],
-            note=data['note']
-        )
-        messages.success(request, "Absence has been successfully updated.")
+        if selected_absence.employee == user and selected_absence.start_date > datetime.now().date() and selected_absence.status < 3:
+            Absence.objects.filter(id=absence_id).update(
+                start_date=data['start_date'],
+                end_date=data['end_date'],
+                reason=data['reason'],
+                status=data['status'],
+                note=data['note']
+            )
+            messages.success(request, "Absence has been successfully updated.")
+        elif selected_absence.employee == user:
+            Absence.objects.filter(id=absence_id).update(
+                status=data['status'],
+                note=data['note']
+            )
+            messages.success(request, "Absence has been successfully updated.")
+        else:
+            messages.error(request, "Not permitted to update this absence.")
         return redirect('own_absences')
     # GET request
     else:
         form = AbsenceForm()
+        if selected_absence.employee == user and selected_absence.start_date < datetime.now().date() and selected_absence.status < 3:
+            can_update = False
+        else:
+            can_update = True
         context = {
             'form': form,
-            'selected_absence': selected_absence
+            'selected_absence': selected_absence,
+            'can_update': can_update
         }
-        return render(request, 'absences/edit_own_absence.html', context)
+        return render(request, 'attendance/fragments/edit_own_absence.html', context)
 
 
 def delete_absence(request, **kwargs):
     absence_id = kwargs['pk']
+    own = request.GET['own']
     selected_absence = Absence.objects.get(id=absence_id)
     user = request.user
-    if user.role == 'A' or (selected_absence.employee == user and selected_absence.status < 3):
+    if user.role == 'A' or (selected_absence.employee == user and selected_absence.start_date < datetime.now().date() and selected_absence.status < 3):
         selected_absence.delete()
         messages.success(request, "Absence successfully deleted.")
+    if own:
+        return redirect('own_absences')
     return redirect('absences')
 
 
@@ -160,7 +182,7 @@ def own_absences(request):
     context = {
         'all_entries': all_entries
     }
-    return render(request, 'absences/own_absences.html', context)
+    return HttpResponse(render(request, 'attendance/fragments/own_absences.html', context))
 
 
 def absence_list(request):

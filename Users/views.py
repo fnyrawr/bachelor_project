@@ -39,7 +39,7 @@ class CustomLoginView(LoginView):
 class UserCreationView(CreateView):
     model = User
     form_class = CustomUserForm
-    template_name = 'users/create_user.html'
+    template_name = 'users/fragments/create_user.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -154,7 +154,7 @@ def edit_user(request, **kwargs):
             'non_associated_qualifications': non_associated_qualifications,
             'associated_qualifications': associated_qualifications
         }
-        return render(request, 'users/edit_user.html', context)
+        return render(request, 'users/fragments/edit_user.html', context)
 
 
 def add_qualification(request, **kwargs):
@@ -240,7 +240,9 @@ def user_list(request):
         'form': SearchForm,
         'data': data
     }
-    return render(request, 'users/user_list.html', context)
+    if request.method == "POST":
+        return HttpResponse(render(request, 'users/fragments/user_table.html', context))
+    return HttpResponse(render(request, 'users/user_list.html', context))
 
 
 def employee_list(request):
@@ -275,7 +277,8 @@ def employee_list(request):
         'entries': entries.count(),
         'search': search,
         'form': SearchForm,
-        'data': data
+        'data': data,
+        'page': page_number
     }
     return render(request, 'users/employee_list.html', context)
 

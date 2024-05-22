@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var dropdown_elems = document.querySelectorAll('.dropdown-trigger');
     var dropdown_instances = M.Dropdown.init(dropdown_elems);
     /* Tabs */
-    var tabs = document.querySelectorAll('.tabs')
+    var tabs = document.querySelectorAll('.tabs');
     for (var i = 0; i < tabs.length; i++){
     	M.Tabs.init(tabs[i]);
-    }
+    };
     /* Form elements */
     var form_elems = document.querySelectorAll('input#input_text, textarea#textarea2');
     var form_instances = M.CharacterCounter.init(form_elems);

@@ -182,6 +182,8 @@ def own_absences(request):
     context = {
         'all_entries': all_entries
     }
+    if all_entries.count() == 0:
+        return HttpResponse('<h6><i class="material-icons accent-color-text left">info</i>No absences created yet</h6>')
     return HttpResponse(render(request, 'attendance/fragments/own_absences.html', context))
 
 

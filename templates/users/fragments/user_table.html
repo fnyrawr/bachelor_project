@@ -1,0 +1,94 @@
+<div id="user-content" class="card-content card-color">
+    <br>
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+            <tr>
+                <th>Last Name<br>First Name</th>
+                <th>Username<br>E-Mail</th>
+                <th>Staff ID<br>External</th>
+                <th>Address<br>Zip City</th>
+                <th>Telephone home<br>Telephone mobile</th>
+                <th>Start contract<br>End contract</th>
+                <th>Verified<br>Role</th>
+                <th>Active<br>Last login (UTC)</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in page_obj %}
+                <tr>
+                    <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
+                    <td>
+                        <span class="new badge grey darken-1 white-text z-depth-1" style="margin-bottom: 1%" data-badge-caption="">
+                            <b>{{ entry.username }}</b>
+                        </span>
+                        <br>{{ entry.email }}
+                    </td>
+                    <td>
+                        {{ entry.staff_id }}<br>
+                        {% if entry.is_external %}
+                            <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>External</b>
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.address }}<br>{{ entry.zip_city }}</td>
+                    <td>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
+                    <td>{{ entry.start_contract|date:"d.m.Y" }}<br>{{ entry.end_contract|date:"d.m.Y" }}</td>
+                    <td>
+                        {% if entry.is_verified %}
+                            <i class="material-icons light-green-text text-darken-1">done</i>
+                        {% else %}
+                            <i class="material-icons red-text text-darken-1">close</i>
+                        {% endif %}<br>
+                        {% if entry.role == 'A' %}
+                            <span class="new badge light-blue darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>Admin</b>
+                            </span>
+                        {% elif entry.role == 'P' %}
+                            <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                <b>Planner</b>
+                            </span>
+                        {% else %}
+                            <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>Employee</b>
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if entry.is_active %}
+                            <i class="material-icons light-green-text text-darken-1">done</i>
+                        {% else %}
+                            <i class="material-icons red-text text-darken-1">close</i>
+                        {% endif %}
+                        <br>{{ entry.last_login|date:"d.m.Y H:i" }}
+                    </td>
+                    <td>
+                        <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="user-content" hx-get="{% url 'edit_user' entry.id %}" hx-target="#user-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table><br>
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-post="{% url 'useraccounts' %}?page={{ page_obj.previous_page_number }}" hx-target="#user-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-post="{% url 'useraccounts' %}?page={{ page }}" hx-target="#user-table" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-post="{% url 'useraccounts' %}?page={{ page_obj.next_page_number }}" hx-target="#user-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

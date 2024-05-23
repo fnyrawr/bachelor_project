@@ -622,6 +622,8 @@ def shiftplan(request, **kwargs):
         'entries': all_entries,
         'timeline': timeline,
     }
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'shifts/fragments/shiftplan-display.html', context))
     return render(request, 'shifts/shiftplan.html', context)
 
 

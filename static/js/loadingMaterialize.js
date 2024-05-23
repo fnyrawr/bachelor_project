@@ -33,4 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /* Material Box */
     var mbox_elems = document.querySelectorAll('.materialboxed');
     var mbox_instances = M.Materialbox.init(mbox_elems);
+    /* Tooltips */
+    var elems = document.querySelectorAll('.tooltipped');
+    var instances = M.Tooltip.init(elems);
 });

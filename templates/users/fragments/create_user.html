@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}ShiftManager - Useraccounts{% endblock %}
+{% block title %}ShiftManager - Create user{% endblock %}
 
 {% block content %}
     <br><br><br>
     <div id="create-user" class="card card-content card-color">
-        <form hx-post="{% url 'create_user' %}" hx-target="#users-list" hx-swap="morph">
+        <form method="POST" action="{% url 'create_user' %}">
             {% csrf_token %}
             <div class="card-color">
                 <div class="row">

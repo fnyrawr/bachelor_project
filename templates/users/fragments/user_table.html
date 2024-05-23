@@ -64,7 +64,7 @@
                         <br>{{ entry.last_login|date:"d.m.Y H:i" }}
                     </td>
                     <td>
-                        <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="user-content" hx-get="{% url 'edit_user' entry.id %}" hx-target="#user-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                        <a class="modal-trigger waves-effect waves-light btn accent-color" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a>
                     </td>
                 {% endfor %}
             </tr>

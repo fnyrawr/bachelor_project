@@ -3,47 +3,42 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h3 class="light-blue-text text-darken-1">Shiftplan</h3>
-        <ul class="collapsible">
-            <li class="active">
-                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
-                <div class="collapsible-body grey lighten-5">
-                    <form method="POST" action="{% url 'shiftplan' %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="input-field col s6 m4">
+        <br><br><br>
+        <div id="shiftplan-content">
+            <form method="POST" target="_blank">
+                {% csrf_token %}
+                <div class="card card-color">
+                    <div class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s4 card-title"><b class="accent-color-text"><i class="material-icons left">event_note</i>Shiftplan</b></div>
+                            <div class="s4 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
+                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4" placeholder=" " hx-post="{% url 'shiftplan' %}" hx-trigger="change" hx-target="#shiftplan-display" hx-swap="morph">
                                 <label for="id_filter_date">Filter date (default: today)</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s4 input-field">
                                 <i class="material-icons prefix">local_offer</i>
-                                <select name="department">
+                                <select name="department" hx-post="{% url 'shiftplan' %}" hx-trigger="change" hx-target="#shiftplan-display" hx-swap="morph">
                                     {% for entry in departments %}
                                         <option value="{{ entry.id }}" {% if entry.id == department.id %}selected{% endif %}>{{ entry }}</option>
                                     {% endfor %}
                                 </select>
                                 <label>Department</label>
-                                <span class="helper-text grey-text text-lighten-1" data-error="wrong" data-success="right">required</span>
+                            </div><br>
+                        </div>
+                        <div id="loader" hx-post="{% url 'shiftplan' %}" hx-trigger="load once" hx-target="#shiftplan-display" hx-swap="morph"></div>
+                        <button type="submit" name="create_pdf" class="btn-floating accent-color white-text tooltipped right" action="{% url 'shiftplan' %}" style="margin-left: 1%" data-position="bottom" data-tooltip="Download shiftplan"><i class="material-icons left">download</i></button>
+                    </div>
+                    <div class="card-content card-color">
+                        <div id="shiftplan-display">
+                            <div class="progress">
+                                <div class="indeterminate"></div>
                             </div>
                         </div>
-                        <button type="submit" name="create_preview" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Create preview</button>
-                        <button type="submit" name="create_pdf" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">download</i>Create PDF</button>
-                        {% if search %}
-                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'shiftplan' %}"><i class="material-icons left">clear</i>Clear</a>
-                        {% endif %}
-                    </form>
+                    </div>
                 </div>
-            </li>
-        </ul>
-
-        {% if search == True and data != None %}
-            <div class="card">
-                <div class="card-content">
-                    <img class="materialboxed" src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
-                </div>
-            </div>
-        {% endif %}
+            </form>
+        </div>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

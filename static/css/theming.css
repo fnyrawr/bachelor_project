@@ -61,6 +61,18 @@ body {
   border-right: 10px solid var(--marker-sunday);
 }
 
+.marker-regular-bottom {
+  border-bottom: 10px solid var(--header-color);
+}
+
+.marker-saturday-bottom {
+  border-bottom: 10px solid var(--marker-saturday);
+}
+
+.marker-sunday-bottom {
+  border-bottom: 10px solid var(--marker-sunday);
+}
+
 .card-color {
   background-color: white !important;
 }

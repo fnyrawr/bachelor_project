@@ -24,7 +24,7 @@
 
             <div id="own-availabilities">
                 <div class="card-content header-color">
-                    <div class="card-title"><b class="accent-color-text">Availabilities</b></div>
+                    <div class="card-title accent-color-text"><i class="material-icons left">event_available</i><b>Availabilities</b></div>
                     <a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'add_own_availability' %}" hx-target="#add-modal-content" hx-swap="morph"><i class="material-icons left">add</i></a>
                 </div><br>
                 <div id="own-availabilities-list" class="card-content card-color"></div><br>
@@ -35,7 +35,7 @@
                     <form hx-post="{% url 'own_wishes' %}" hx-target="#own-wishes-list" hx-swap="morph">
                         {% csrf_token %}
                         <div class="row" style="gap: 1em">
-                            <div class="s4 card-title"><b class="accent-color-text">Shift wishes</b></div>
+                            <div class="s4 card-title accent-color-text"><i class="material-icons left">event_note</i><b>Shift wishes</b></div>
                             <div class="s4 m4 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
                                 <input id="id_filter_date" name="filter_date" type="text" class="datepicker" placeholder=" " hx-post="{% url 'own_wishes' %}" hx-trigger="click, change" hx-target="#own-wishes-list" hx-swap="morph">
@@ -55,7 +55,7 @@
 
             <div id="own-absences">
                 <div class="card-content header-color">
-                    <div class="card-title"><b class="accent-color-text">Absences</b></div>
+                    <div class="card-title accent-color-text"><i class="material-icons left">event_busy</i><b>Absences</b></div>
                     <a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'add_own_absence' %}" hx-target="#add-modal-content" hx-swap="morph"><i class="material-icons left">add</i></a>
                 </div><br>
                 <div id="own-absences-list" class="card-content card-color"></div><br>
@@ -63,7 +63,7 @@
 
             <div id="own-holidays">
                 <div class="card-content header-color">
-                    <div class="card-title"><b class="accent-color-text">Holidays</b></div>
+                    <div class="card-title accent-color-text"><i class="material-icons left">flight_takeoff</i><b>Holidays</b></div>
                     <a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'add_own_holiday' %}" hx-target="#add-modal-content" hx-swap="morph"><i class="material-icons left">add</i>Add availability</a>
                 </div><br>
                 <div id="own-holidays-list" class="card-content card-color"></div><br>

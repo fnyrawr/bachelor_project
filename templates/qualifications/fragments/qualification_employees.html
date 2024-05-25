@@ -1,0 +1,29 @@
+<div id="details-modal">
+    <div class="modal-content card-color">
+        <h5 class="header-color-text"><b>Associated Employees ({{ associated_employees.count }})</b></h5>
+        <table class="striped highlight responsive-table">
+            <thead class="header-color white-text">
+            <tr>
+                <th style="width: 40%">First Name<br>Last Name</th>
+                <th style="width: 40%">Department</th>
+                <th style="width: 10%">External</th>
+                <th style="width: 10%">Edit Employee</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entry in associated_employees %}
+                <tr>
+                    <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
+                    <td>
+                        {{ entry.employee.department }}
+                    </td>
+                    <td>{% if entry.employee.is_external == True %}<i class="material-icons light-green-text text-darken-1">done</i>{% endif %}</td>
+                    <td>
+                        <a class="waves-effect waves-light btn accent-color" href="{% url 'edit_user' entry.employee.id %}" target="_blank"><i class="material-icons">edit</i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

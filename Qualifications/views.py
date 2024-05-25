@@ -1,17 +1,19 @@
 from django.contrib import messages
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Departments.models import DepartmentQualifications
 from Users.models import EmployeesQualifications
 from .models import Qualification
-from .forms import QualificationForm
+from .forms import QualificationForm, SearchForm
 
 
 class QualificationCreationView(CreateView):
     model = Qualification
     form_class = QualificationForm
-    template_name = 'qualifications/create_qualification.html'
+    template_name = 'qualifications/fragments/create_qualification.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -25,21 +27,32 @@ class QualificationCreationView(CreateView):
         return render(request, self.template_name, {'form': form})
 
 
-def view_qualification(request, **kwargs):
+def view_qualification_departments(request, **kwargs):
     qualification_id = kwargs['pk']
     selected_qualification = Qualification.objects.get(id=qualification_id)
 
     associated_departments = DepartmentQualifications.objects.filter(qualification=qualification_id)\
         .order_by('department__name')
+
+    context = {
+        'selected_qualification': selected_qualification,
+        'associated_departments': associated_departments
+    }
+    return HttpResponse(render(request, 'qualifications/fragments/qualification_departments.html', context))
+
+
+def view_qualification_employees(request, **kwargs):
+    qualification_id = kwargs['pk']
+    selected_qualification = Qualification.objects.get(id=qualification_id)
+
     associated_employees = EmployeesQualifications.objects.filter(qualification=qualification_id)\
         .order_by('employee__department__name', 'employee__last_name', 'employee__first_name')
 
     context = {
         'selected_qualification': selected_qualification,
-        'associated_departments': associated_departments,
-        'associated_employees': associated_employees,
+        'associated_employees': associated_employees
     }
-    return render(request, 'qualifications/qualification_detail.html', context)
+    return HttpResponse(render(request, 'qualifications/fragments/qualification_employees.html', context))
 
 
 def edit_qualification(request, **kwargs):
@@ -64,7 +77,7 @@ def edit_qualification(request, **kwargs):
     else:
         form = QualificationForm()
         context = {'form': form, 'selected_qualification': selected_qualification}
-        return render(request, 'qualifications/edit_qualification.html', context)
+        return HttpResponse(render(request, 'qualifications/fragments/edit_qualification.html', context))
 
 
 def delete_qualification(request, **kwargs):
@@ -78,21 +91,26 @@ def delete_qualification(request, **kwargs):
 
 
 def qualification_list(request):
-    all_entries = None
-    entries_found = None
-    search = False
-
     if request.method == "POST":
-        search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        keyword = data['keyword']
+        q_name = Q(name__icontains=keyword)
+        q_description = Q(description__icontains=keyword)
+        q = Q(q_name | q_description)
+        entries = Qualification.objects.filter(q)
     else:
-        all_entries = Qualification.objects.order_by('name')
-        for entry in all_entries:
-            departments = DepartmentQualifications.objects.filter(qualification_id=entry.id).order_by(
-                'department__name')
-            entry.departments = departments
-            employees = EmployeesQualifications.objects.filter(qualification_id=entry.id).order_by(
-                'employee__last_name', 'employee__first_name')
-            entry.employees = employees
+        entries = Qualification.objects.order_by('name')
 
-    context = {'all_entries': all_entries}
-    return render(request, 'qualifications/qualification_list.html', context)
+    for entry in entries:
+        departments = DepartmentQualifications.objects.filter(qualification_id=entry.id).order_by(
+            'department__name')
+        entry.departments = departments
+        employees = EmployeesQualifications.objects.filter(qualification_id=entry.id).order_by(
+            'employee__last_name', 'employee__first_name')
+        entry.employees = employees
+
+    context = {'entries': entries}
+    if request.method == "POST":
+        return HttpResponse(render(request, 'qualifications/fragments/qualifications_table.html', context))
+    return HttpResponse(render(request, 'qualifications/qualification_list.html', context))

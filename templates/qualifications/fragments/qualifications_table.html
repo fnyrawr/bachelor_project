@@ -1,0 +1,43 @@
+<div id="qualifications-table" class="card-content card-color">
+    <br>
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Important</th>
+            <th>Associated Departments</th>
+            <th>Associated Employees</th>
+            {% if user.is_admin %}
+                <th>Edit</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for entry in entries %}
+            <tr>
+                <td><b>{{ entry.name }}</b></td>
+                <td>{{ entry.description }}</td>
+                <td>
+                    {% if entry.is_important %}
+                        <i class="material-icons light-green-text text-darken-1">done</i>
+                    {% else %}
+                        <i class="material-icons red-text text-darken-1">close</i>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if entry.departments.count > 0 %}<a class="modal-trigger waves-effect waves-light btn grey darken-1" data-target="details-modal" hx-get="{% url 'view_qualification_departments' entry.id %}" hx-target="#details-modal" hx-swap="morph"><b>{{ entry.departments.count }}</b></a>{% endif %}
+                </td>
+                <td>
+                    {% if entry.employees.count > 0 %}<a class="modal-trigger waves-effect waves-light btn grey darken-1" data-target="details-modal" hx-get="{% url 'view_qualification_employees' entry.id %}" hx-target="#details-modal" hx-swap="morph"><b>{{ entry.employees.count }}</b></a>{% endif %}
+                </td>
+                {% if user.is_admin %}
+                    <td>
+                        <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_qualification' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

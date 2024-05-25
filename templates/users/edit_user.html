@@ -40,7 +40,7 @@
 
         <br><br><br>
         <div id="edit-user" class="card card-content card-color">
-            <form method="POST" action="{% url 'create_user' %}">
+            <form method="POST" action="{% url 'edit_user' selected_user.id %}">
                 {% csrf_token %}
                 <div class="card-color">
                     <div class="row">

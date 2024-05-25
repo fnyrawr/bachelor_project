@@ -42,7 +42,7 @@ class CustomLoginView(LoginView):
 class UserCreationView(CreateView):
     model = User
     form_class = CustomUserForm
-    template_name = 'users/fragments/create_user.html'
+    template_name = 'users/create_user.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -155,7 +155,7 @@ def edit_user(request, **kwargs):
             'departments': departments,
             'qualifications': qualifications
         }
-        return render(request, 'users/fragments/edit_user.html', context)
+        return render(request, 'users/edit_user.html', context)
 
 
 def get_user_qualifications(request, **kwargs):
@@ -295,10 +295,8 @@ def delete_user(request, **kwargs):
 
 def user_list(request):
     data = None
-    search = False
 
     if request.method == "POST":
-        search = True
         searchForm = SearchForm(request.POST)
         data = searchForm.data
         keyword = data['keyword']
@@ -318,7 +316,6 @@ def user_list(request):
     context = {
         'page_obj': page_obj,
         'entries': entries.count(),
-        'search': search,
         'form': SearchForm,
         'data': data
     }

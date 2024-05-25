@@ -6,6 +6,7 @@ urlpatterns = [
     path('list/', views.department_list, name='departments'),
     path('create/', views.DepartmentCreationView.as_view(), name='create_department'),
     path('show/<int:pk>', views.view_department, name='view_department'),
+    path('show/<int:pk>/qualifications', views.get_qualifications, name='department_qualifications'),
     path('edit/<int:pk>', views.edit_department, name='edit_department'),
     path('delete/<int:pk>', views.delete_department, name='delete_department'),
     # DepartmentsQualifications

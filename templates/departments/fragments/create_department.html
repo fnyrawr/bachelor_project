@@ -1,19 +1,13 @@
 <div id="add-modal">
-    <form hx-post="{% url 'create_qualification' %}" hx-target="#qualification-table" hx-swap="morph">
+    <form hx-post="{% url 'create_department' %}" hx-target="#department-table" hx-swap="morph">
         <div class="modal-content card-color">
-            <h5 class="header-color-text"><b>Create Qualification</b></h5>
+            <h5 class="header-color-text"><b>Create Department</b></h5>
             {% csrf_token %}
             <div class="row" style="gap: 1em">
                 <div class="s4 input-field">
                     <i class="material-icons prefix">label</i>
                     <input type="text" name="name" autofocus autocapitalize="none" maxlength="25" required id="id_name" placeholder=" ">
                     <label for="id_name">*Name</label>
-                </div>
-                <div class="s2 input-field">
-                    <label>
-                        <input type="checkbox" checked="checked" name="is_important" />
-                        <span>Important</span>
-                    </label>
                 </div>
             </div><br>
             <div class="row" style="gap: 1em">
@@ -25,7 +19,7 @@
             </div>
         </div>
         <div class="modal-footer header-color" style="margin-top: 10%">
-            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">add</i>Create Qualification</button>
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">add</i>Create qualification</button>
         </div>
     </form>
 </div>

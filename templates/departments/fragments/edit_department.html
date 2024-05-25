@@ -1,0 +1,46 @@
+<div id="edit-modal-content">
+    <script>
+        var modal_elems = document.querySelector('#delete-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+
+    <div id="delete-modal" class="modal content-section card-color">
+        <div class="modal-content">
+            <h5><b class="warning-color-text">Delete {{ selected_department }}</b></h5>
+            <p>Are you sure you really want to delete {{ selected_department }}? All assigned data will be gone forever and may cause corrupted past data. It is not advised to remove a department if data is associated to it.</p>
+        </div>
+        <div class="modal-footer header-color">
+            <a class="modal-close waves-effect waves-light btn-flat white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">close</i>Abort and close</a>
+            <a class="waves-effect waves-light btn warning-color white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();" hx-get="{% url 'delete_department' selected_department.id %}" hx-target="#department-table" hx-swap="morph"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+        </div>
+    </div>
+
+    <form hx-post="{% url 'edit_department' selected_department.id %}" hx-target="#department-table" hx-swap="morph">
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Edit {{ selected_department }}</b></h5>
+            {% csrf_token %}
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">label</i>
+                    <input type="text" name="name" autofocus autocapitalize="none" maxlength="25" required id="id_name" value="{{ selected_department.name }}" placeholder=" ">
+                    <label for="id_name">*Name</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">local_offer</i>
+                    <textarea name="description" autocapitalize="none" id="id_description" class="materialize-textarea" placeholder=" ">{{ selected_department.description }}</textarea>
+                    <label for="id_description">Description</label>
+                </div>
+            </div><br>
+            <h5><b class="header-color-text">Required Qualifications</b></h5>
+            <div id="loader" hx-get="{% url 'department_qualifications' selected_department.id %}" hx-trigger="load once" hx-target="#department-qualifications" hx-swap="morph"></div>
+            <br><div id="department-qualifications"></div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 10%">
+            {% if user.is_admin %}<a class="modal-trigger btn-flat accent-color-text" data-target="add-qualification-modal"><i class="material-icons left">add</i>Add Qualification</a>{% endif %}
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update Department</button>
+            <a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
+        </div>
+    </form>
+</div>

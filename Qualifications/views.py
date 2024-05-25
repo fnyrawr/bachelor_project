@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -110,7 +111,13 @@ def qualification_list(request):
             'employee__last_name', 'employee__first_name')
         entry.employees = employees
 
-    context = {'entries': entries}
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'page_obj': page_obj,
+        'entries': entries
+    }
     if request.method == "POST":
-        return HttpResponse(render(request, 'qualifications/fragments/qualifications_table.html', context))
+        return HttpResponse(render(request, 'qualifications/fragments/qualification_table.html', context))
     return HttpResponse(render(request, 'qualifications/qualification_list.html', context))

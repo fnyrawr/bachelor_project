@@ -1,16 +1,19 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Qualifications.models import Qualification
 from .models import Department, DepartmentQualifications
-from .forms import DepartmentForm
+from .forms import DepartmentForm, SearchForm
 
 
 class DepartmentCreationView(CreateView):
     model = Department
     form_class = DepartmentForm
-    template_name = 'departments/create_department.html'
+    template_name = 'departments/fragments/create_department.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -30,7 +33,6 @@ def view_department(request, **kwargs):
 
     # import User class only here to prevent circular dependencies
     from Users.models import User, EmployeesQualifications
-    associated_qualifications = DepartmentQualifications.objects.filter(department=selected_department)
     associated_employees = User.objects.filter(department=selected_department)
     work_hours = 0
     for entry in associated_employees:
@@ -41,12 +43,10 @@ def view_department(request, **kwargs):
             work_hours += entry.work_hours
 
     context = {
-        'selected_department': selected_department,
-        'associated_qualifications': associated_qualifications,
         'associated_employees': associated_employees,
         'associated_employees_work_hours': work_hours,
     }
-    return render(request, 'departments/department_detail.html', context)
+    return HttpResponse(render(request, 'departments/fragments/department_detail.html', context))
 
 
 def edit_department(request, **kwargs):
@@ -74,7 +74,7 @@ def edit_department(request, **kwargs):
             'non_associated_qualifications': non_associated_qualifications,
             'associated_qualifications': associated_qualifications
         }
-        return render(request, 'departments/edit_department.html', context)
+        return render(request, 'departments/fragments/edit_department.html', context)
 
 
 def delete_department(request, **kwargs):
@@ -85,6 +85,20 @@ def delete_department(request, **kwargs):
         selected_department.delete()
         messages.success(request, "Department successfully deleted.")
     return redirect('departments')
+
+
+def get_qualifications(request, **kwargs):
+    department_id = kwargs['pk']
+    associated_qualifications = DepartmentQualifications.objects.filter(department=department_id)
+    non_associated_qualifications = Qualification.objects.all().exclude(
+        id__in=associated_qualifications.values('qualification'))
+    context = {
+        'department_id': department_id,
+        'associated_qualifications': associated_qualifications,
+        'non_associated_qualifications': non_associated_qualifications
+    }
+
+    return HttpResponse(render(request, 'departments/fragments/department_qualifications.html', context))
 
 
 def add_qualification(request, **kwargs):
@@ -114,27 +128,35 @@ def remove_qualification(request, **kwargs):
 
 
 def department_list(request):
-    all_entries = None
-    entries_found = None
-    search = False
-
     if request.method == "POST":
-        search = True
+        searchForm = SearchForm(request.POST)
+        data = searchForm.data
+        keyword = data['keyword']
+        q_name = Q(name__icontains=keyword)
+        q_description = Q(description__icontains=keyword)
+        q = Q(q_name | q_description)
+        entries = Department.objects.filter(q).order_by('name')
     else:
-        all_entries = Department.objects.order_by('name')
-        # add qualifications as list to each entry
-        employee_count = 0
-        work_hours = 0
-        for entry in all_entries:
-            qualifications = DepartmentQualifications.objects.filter(department_id=entry.id).order_by(
-                'qualification__name')
-            entry.qualifications = qualifications
-            employee_count += entry.get_employees().count()
-            work_hours += entry.get_work_hours()
+        entries = Department.objects.order_by('name')
 
+    # add qualifications as list to each entry
+    employee_count = 0
+    work_hours = 0
+    for entry in entries:
+        qualifications = DepartmentQualifications.objects.filter(department_id=entry.id).order_by('qualification__name')
+        entry.qualifications = qualifications
+        employee_count += entry.get_employees().count()
+        work_hours += entry.get_work_hours()
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'all_entries': all_entries,
+        'page_obj': page_obj,
+        'entries': entries,
         'employee_count': employee_count,
         'work_hours': work_hours
     }
-    return render(request, 'departments/department_list.html', context)
+    if request.method == "POST":
+        return HttpResponse(render(request, 'departments/fragments/department_table.html', context))
+    return HttpResponse(render(request, 'departments/department_list.html', context))

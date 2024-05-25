@@ -1,0 +1,42 @@
+<div id="details-modal">
+    <div class="modal-content card-color">
+        <h5 class="header-color-text"><b>Associated Employees ({{ associated_employees.count }})</b></h5>
+        <table class="striped highlight responsive-table">
+            <thead class="header-color white-text">
+            <tr>
+                <th style="width: 35%">First Name<br>Last Name</th>
+                <th style="width: 35%">Qualifications</th>
+                <th style="width: 10%">External</th>
+                <th style="width: 10%">Work hours</th>
+                {% if user.is_admin %}<th style="width: 10%">Edit Employee</th>{% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for entry in associated_employees %}
+                <tr>
+                    <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
+                    <td>
+                        {% for qualification in entry.qualifications %}
+                            <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>{{ qualification.qualification }}</b>
+                            </span>
+                        {% endfor %}
+                    </td>
+                    <td>{% if entry.is_external == True %}<i class="material-icons light-green-text text-darken-1">done</i>{% endif %}</td>
+                    <td>{% if entry.work_hours %}{{ entry.work_hours }} hours / week{% endif %}</td>
+                    {% if user.is_admin %}<td>
+                        <a class="waves-effect waves-light btn accent-color" href="{% url 'edit_user' entry.id %}" target="_blank"><i class="material-icons">edit</i></a>
+                    </td>{% endif %}
+                </tr>
+            {% endfor %}
+            <tr class="accent-color black-text">
+                <td><b>Total</b><br>{{ associated_employees.count }} Employees</td>
+                <td></td>
+                <td></td>
+                <td><b>{{ associated_employees_work_hours }} hours / week</b></td>
+                {% if user.is_admin %}<td></td>{% endif %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

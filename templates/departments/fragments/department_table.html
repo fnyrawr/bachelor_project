@@ -1,0 +1,70 @@
+<div id="department-table" class="card-content card-color">
+    <br>
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Qualifications</th>
+            <th>Employees</th>
+            <th>Work hours</th>
+            {% if user.is_admin %}<th>Edit</th>{% endif %}
+        </tr>
+        </thead>
+        <tbody>
+            {% for entry in page_obj %}
+            <tr>
+                <td><b>{{ entry.name }}</b></td>
+                <td>{{ entry.description }}</td>
+                <td>
+                    {% for qualification in entry.qualifications %}
+                        <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                            <b>{{ qualification.qualification.name }}</b>
+                        </span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if entry.get_employees.count > 0 %}<a class="modal-trigger waves-effect waves-light btn grey darken-1" data-target="details-modal" hx-get="{% url 'view_department' entry.id %}" hx-target="#details-modal" hx-swap="morph"><b>{{ entry.get_employees.count }}</b></a>{% endif %}
+                </td>
+                <td>
+                    {% if entry.get_employees.count > 0 %}{{ entry.get_work_hours }} hours / week</a>{% endif %}
+                </td>
+                {% if user.is_admin %}
+                    <td>
+                        <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_department' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            <tr class="accent-color black-text">
+                <td><b>Total</b><br>{{ entries.count }} Departments</td>
+                <td></td>
+                <td></td>
+                <td><b>{{ employee_count }}</b></td>
+                <td><b>{{ work_hours }} hours / week</b></td>
+                {% if user.is_admin %}<td></td>{% endif %}
+            </tr>
+        </tbody>
+    </table><br>
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries.count }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-post="{% url 'departments' %}?page={{ page_obj.previous_page_number }}" hx-target="#department-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-post="{% url 'departments' %}?page={{ page }}" hx-target="#department-table" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-post="{% url 'departments' %}?page={{ page_obj.next_page_number }}" hx-target="#department-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

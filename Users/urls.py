@@ -14,6 +14,8 @@ urlpatterns = [
     # EmployeesQualifications
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification, name='add_employee_qualification'),
     path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification, name='remove_employee_qualification'),
+    path('show/<int:pk1>/edit_qualification/<int:pk2>', views.edit_qualification, name='edit_employee_qualification'),
+    path('qualifications/<int:pk>', views.get_user_qualifications, name='get_user_qualifications'),
     # Attendance
     path('attendance/', views.attendance, name='attendance'),
     # HTMX

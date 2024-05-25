@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -63,11 +65,25 @@ class User(AbstractUser):
 class EmployeesQualifications(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
     qualification = models.ForeignKey(Qualification, on_delete=models.CASCADE)
+    date_from = models.DateField(default=timezone.now)
+    date_to = models.DateField(default=None, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='user_created_by', on_delete=models.DO_NOTHING, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    changed_by = models.ForeignKey(User, related_name='user_changed_by', on_delete=models.DO_NOTHING, blank=True)
+    changed_date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ['employee', 'qualification']
+        ordering = ['employee', 'qualification', 'date_from']
         verbose_name = 'EmployeeQualification'
         verbose_name_plural = 'EmployeeQualifications'
+
+    def is_active(self, date=datetime.datetime.today().date()):
+        if date < self.date_from:
+            return False
+        if self.date_to:
+            if self.date_to < date:
+                return False
+        return True
 
     def __str__(self):
         return self.employee.first_name + ' ' + self.employee.last_name + ' in ' + self.qualification.name

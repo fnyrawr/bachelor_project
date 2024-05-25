@@ -10,7 +10,7 @@
                     <ul class="tabs">
                         <li class="tab col s3"><a class="active" href="#base-data">Base data</a></li>
                         <li class="tab col s3"><a href="#contract-details">Contract details</a></li>
-                        <li class="tab col s3"><a href="#qualifications">Qualifications</a></li>
+                        <li class="tab col s3"><a href="#qualifications" hx-get="{% url 'get_user_qualifications' user.id %}" hx-target="#user-qualifications" hx-swap="morph">Qualifications</a></li>
                         <li class="tab col s3"><a href="#change-password" hx-get="{% url 'change_password' %}" hx-trigger="click" hx-target="#change-password" hx-swap="morph">Change password</a></li>
                     </ul>
                 </div>
@@ -25,12 +25,12 @@
                         <div class="row" style="gap: 1em">
                             <div class="s6 input-field">
                                 <i class="material-icons prefix">person</i>
-                                <input type="text" name="username" autofocus value="{{ user.username }}" autocapitalize="none" maxlength="15" disabled id="id_username" class="grey-text text-lighten-1" placeholder=" ">
+                                <input type="text" name="username" value="{{ user.username }}" autocapitalize="none" maxlength="15" disabled id="id_username" class="grey-text text-lighten-1" placeholder=" ">
                                 <label for="id_username"><i class="material-icons right accent-color-text">lock</i>*Username</label>
                             </div>
                             <div class="s6 input-field">
                                 <i class="material-icons prefix">mail</i>
-                                <input type="email" name="email" value="{{ user.email }}" autocapitalize="none" maxlength="150" required id="id_email" class="grey-text text-darken-4" placeholder=" ">
+                                <input type="email" name="email" autofocus value="{{ user.email }}" autocapitalize="none" maxlength="150" required id="id_email" class="grey-text text-darken-4" placeholder=" ">
                                 <label for="id_email">*E-Mail</label>
                             </div>
                         </div><br>
@@ -130,15 +130,7 @@
                     <div class="card-content header-color">
                         <div class="card-title white-text"><i class="material-icons right white-text">lock</i><b class="accent-color-text">Assigned qualifications</b> (view only)</div>
                     </div>
-                    <div class="card-content card-color">
-                        <div class="row" style="gap: 1em">
-                            {% for entry in associated_qualifications %}
-                                <a class="chip amber darken-1 white-text z-depth-1">
-                                    {{ entry.qualification.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    <div id="user-qualifications" class="card-content card-color"></div>
                 </div>
             </form>
 

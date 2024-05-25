@@ -1,0 +1,53 @@
+<div id="user-qualifications">
+    <br>
+    {% if qualifications.count > 0 %}
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Qualification</th>
+            <th>Active</th>
+            <th>Timeframe</th>
+            {% if edit_mode %}
+            <th>Assigned</th>
+            <th>Updated</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            {% else %}
+                <th>Changed</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+            {% for entry in qualifications %}
+            <tr>
+                <td><b>{{ entry.qualification.name }}</b><br>{{ entry.qualification.description }}</td>
+                <td>
+                    {% if entry.is_active %}
+                        <i class="material-icons light-green-text text-darken-1">done</i>
+                    {% else %}
+                        <i class="material-icons red-text text-darken-1">close</i>
+                    {% endif %}
+                </td>
+                <td>{% if entry.date_to %}from {% endif %}{{ entry.date_from|date:"d.m.Y" }}{% if entry.date_to %}<br>until {{ entry.date_to|date:"d.m.Y" }}{% endif %}</td>
+                {% if edit_mode %}
+                <td>{{ entry.created_by }}<br>{{ entry.created_date|date:"d.m.Y H:i:s" }}</td>
+                <td>{{ entry.changed_by }}<br>{{ entry.changed_date|date:"d.m.Y H:i:s" }}</td>
+                <td>
+                    <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal-content" hx-get="{% url 'edit_employee_qualification' selected_user.id entry.qualification.id %}" hx-target="#edit-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                </td>
+                    {% if user.is_admin %}
+                    <td>
+                        <a class="waves-effect waves-light btn-flat warning-color-text" hx-get="{% url 'remove_employee_qualification' selected_user.id entry.qualification.id %}" hx-target="#user-qualifications" hx-swap="morph"><i class="material-icons">delete_forever</i></a>
+                    </td>
+                    {% endif %}
+                {% else %}
+                    <td>{{ entry.changed_date|date:"d.m.Y" }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <h6><i class="material-icons accent-color-text left">info</i>No qualifications assigned</h6>
+    {% endif %}
+</div>

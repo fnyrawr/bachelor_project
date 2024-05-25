@@ -14,24 +14,28 @@
             </div>
         </div>
 
-        <div id="add-qualification-modal" class="modal content-section card-color">
+        <div id="add-modal" class="modal content-section card-color">
             <div class="modal-content">
-                <h5 class="header-color-text"><b>Add qualification to {{ selected_user }}</b></h5>
+                <h5 class="header-color-text"><b>Add qualification</b></h5>
                 <table class="striped highlight responsive-table">
                     <thead class="header-color white-text">
-                        <th>Qualification</th>
-                        <th>Description</th>
-                        <th>Add</th>
+                    <th>Qualification</th>
+                    <th>Description</th>
+                    <th>Add</th>
                     </thead>
-                    {% for qualification in non_associated_qualifications %}
-                    <tr>
-                        <td><b>{{ qualification }}</b></td>
-                        <td>{{ qualification.description }}</td>
-                        <td><a class="waves-effect waves-light btn accent-color" href="{% url 'add_employee_qualification' selected_user.id qualification.id %}"><i class="material-icons">add</i></a></td>
-                    </tr>
+                    {% for qualification in qualifications %}
+                        <tr>
+                            <td><b>{{ qualification }}</b></td>
+                            <td>{{ qualification.description }}</td>
+                            <td><a class="waves-effect waves-light btn accent-color" hx-get="{% url 'add_employee_qualification' selected_user.id qualification.id %}" hx-target="#user-qualifications" hx-swap="morph" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons">add</i></a></td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>
+        </div>
+
+        <div id="edit-modal">
+            <div id="edit-modal-content" class="modal content-section card-color"></div>
         </div>
 
         <br><br><br>
@@ -44,7 +48,7 @@
                             <ul class="tabs">
                                 <li class="tab col s4"><a class="active" href="#base-data">Base data</a></li>
                                 <li class="tab col s4"><a href="#contract-details">Contract details</a></li>
-                                <li class="tab col s4"><a href="#qualifications">Qualifications</a></li>
+                                <li class="tab col s4"><a href="#qualifications" hx-get="{% url 'get_user_qualifications' selected_user.id %}?edit=True" hx-target="#user-qualifications" hx-swap="morph">Qualifications</a></li>
                             </ul>
                         </div>
                     </div>
@@ -187,23 +191,9 @@
                     <div id="qualifications">
                         <div class="card-content header-color">
                             <div class="card-title white-text"><b class="accent-color-text">Qualifications</b><span class="right"><i class="material-icons left">person</i><b>{{ selected_user.first_name }} {{ selected_user.last_name }}</b></span></div>
-                            <a data-target="add-qualification-modal" class="modal-trigger btn-floating accent-color white-text right"><i class="material-icons left">add</i></a>
+                            <a data-target="add-modal" class="modal-trigger btn-floating accent-color white-text right"><i class="material-icons left">add</i></a>
                         </div>
-                        <div class="card-content card-color">
-                            <div class="row" style="gap: 1em">
-                                <div class="s10 input-field">
-                                    <i class="material-icons prefix">tag</i>
-                                    <div class="chips chips-initial">
-                                        {% for entry in associated_qualifications %}
-                                            <a class="chip light-blue darken-1 white-text z-depth-1" href="{% url 'remove_employee_qualification' selected_user.id entry.qualification.id %}">
-                                                {{ entry.qualification.name }} <i class="material-icons tiny">close</i>
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                    <span class="helper-text grey-text text-lighten-1">Qualifications</span>
-                                </div>
-                            </div><br>
-                        </div>
+                        <div id="user-qualifications" class="card-content card-color"></div>
                     </div>
                 </div>
             </form>

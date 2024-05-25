@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import (
@@ -14,10 +16,11 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework_api_key.permissions import HasAPIKey
 
+import Qualifications
 from Departments.models import Department
 from Qualifications.models import Qualification
 from .models import User, EmployeesQualifications, UserSerializer
-from .forms import CustomUserForm, SetPasswordFormImpl, SearchForm
+from .forms import CustomUserForm, SetPasswordFormImpl, SearchForm, UserQualificationForm
 
 
 class CustomLoginView(LoginView):
@@ -144,29 +147,102 @@ def edit_user(request, **kwargs):
     # GET request
     else:
         departments = Department.objects.all()
-        associated_qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
-        non_associated_qualifications = Qualification.objects.all().exclude(id__in=associated_qualifications.values('qualification'))
+        qualifications = Qualification.objects.all()
         form = CustomUserForm()
         context = {
             'form': form,
             'selected_user': selected_user,
             'departments': departments,
-            'non_associated_qualifications': non_associated_qualifications,
-            'associated_qualifications': associated_qualifications
+            'qualifications': qualifications
         }
         return render(request, 'users/fragments/edit_user.html', context)
+
+
+def get_user_qualifications(request, **kwargs):
+    user_id = kwargs['pk']
+    edit_mode = False
+    if request.GET.get('edit'):
+        edit_mode = True
+    selected_user = User.objects.get(id=user_id)
+    qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
+    context = {
+        'selected_user': selected_user,
+        'qualifications': qualifications,
+        'edit_mode': edit_mode
+    }
+    return HttpResponse(render(request, 'users/fragments/user_qualifications.html', context))
 
 
 def add_qualification(request, **kwargs):
     user_id = kwargs['pk1']
     qualification_id = kwargs['pk2']
-
     selected_user = User.objects.get(id=user_id)
+    request_user = User.objects.get(id=request.user.id)
     selected_qualification = Qualification.objects.get(id=qualification_id)
-    if not EmployeesQualifications.objects.filter(employee=selected_user, qualification=selected_qualification).exists():
-        EmployeesQualifications.objects.create(employee=selected_user, qualification=selected_qualification)
+    user_qualification = EmployeesQualifications.objects.filter(
+        employee=selected_user,
+        qualification=selected_qualification
+    )
 
-    return redirect('edit_user', pk=user_id)
+    if not user_qualification.exists():
+        EmployeesQualifications.objects.create(
+            employee=selected_user,
+            qualification=selected_qualification,
+            created_by=request_user,
+            created_date=datetime.datetime.now(),
+            changed_by=request_user,
+            changed_date=datetime.datetime.now()
+        )
+    qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
+    context = {
+        'selected_user': selected_user,
+        'qualifications': qualifications,
+        'edit_mode': True
+    }
+    return HttpResponse(render(request, 'users/fragments/user_qualifications.html', context))
+
+
+def edit_qualification(request, **kwargs):
+    user_id = kwargs['pk1']
+    qualification_id = kwargs['pk2']
+    selected_user = User.objects.get(id=user_id)
+    request_user = User.objects.get(id=request.user.id)
+    selected_qualification = Qualification.objects.get(id=qualification_id)
+    user_qualification = EmployeesQualifications.objects.filter(
+        employee=selected_user,
+        qualification=selected_qualification
+    )
+
+    if request.method == 'POST':
+        form = UserQualificationForm(request.POST)
+        data = form.data
+        if data['date_from'] != '':
+            date_from = data['date_from']
+        else:
+            date_from = user_qualification.date_from
+        if data['date_to'] != '':
+            date_to = data['date_to']
+        else:
+            date_to = None
+        user_qualification.update(
+            date_from=date_from,
+            date_to=date_to,
+            changed_by=request_user,
+            changed_date=datetime.datetime.now()
+        )
+    else:
+        form = UserQualificationForm()
+    qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
+    context = {
+        'form': form,
+        'selected_user': selected_user,
+        'qualification': user_qualification.get(),
+        'qualifications': qualifications,
+        'edit_mode': True
+    }
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'users/fragments/user_qualifications.html', context))
+    return HttpResponse(render(request, 'users/fragments/edit_user_qualification.html', context))
 
 
 def remove_qualification(request, **kwargs):
@@ -179,7 +255,13 @@ def remove_qualification(request, **kwargs):
     if entry is not None:
         entry.delete()
 
-    return redirect('edit_user', pk=user_id)
+    qualifications = EmployeesQualifications.objects.filter(employee=selected_user)
+    context = {
+        'selected_user': selected_user,
+        'qualifications': qualifications,
+        'edit_mode': True
+    }
+    return HttpResponse(render(request, 'users/fragments/user_qualifications.html', context))
 
 
 def change_password(request):

@@ -1,0 +1,44 @@
+<div id="edit-modal-content">
+    <script>
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+    </script>
+
+    <form hx-post="{% url 'edit_employee_qualification' selected_user.id qualification.qualification.id %}" hx-target="#user-qualifications" hx-swap="morph">
+        {% csrf_token %}
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Edit qualification details</b></h5>
+            <div class="row" style="gap: 1em">
+                <div class="s6 input-field">
+                    <i class="material-icons prefix">person</i>
+                    <input type="text" name="username" value="{{ selected_user.first_name }} {{ selected_user.last_name }}" disabled class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_username"><i class="material-icons right accent-color-text">lock</i>Employee</label>
+                </div>
+                <div class="s6 input-field">
+                    <i class="material-icons prefix">label</i>
+                    <input type="text" name="username" value="{{ qualification.qualification.name }}" disabled class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_username"><i class="material-icons right accent-color-text">lock</i>Qualification</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s6 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_start_date" name="date_from" type="text" class="datepicker grey-text text-darken-4" value="{{ qualification.date_from|date:"Y-m-d" }}" placeholder=" ">
+                    <label for="id_start_date">Valid from</label>
+                </div>
+                <div class="s6 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_end_date" name="date_to" type="text" class="datepicker grey-text text-darken-4" value="{{ qualification.date_to|date:"Y-m-d" }}" placeholder=" ">
+                    <label for="id_end_date">Valid until</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 10%">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal-content')).close();"><i class="material-icons left">edit</i>Update qualification</button>
+        </div>
+    </form>
+</div>

@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from django import forms
 
 from Departments.models import Department
-from .models import User
+from .models import User, EmployeesQualifications
 
 
 class CustomUserForm(UserCreationForm):
@@ -56,3 +56,12 @@ class SearchForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['keyword']
+
+
+class UserQualificationForm(forms.ModelForm):
+    date_from = forms.DateField(required=False, initial=date.today())
+    date_to = forms.DateField(required=False)
+
+    class Meta:
+        model = EmployeesQualifications
+        fields = ['date_from', 'date_to']

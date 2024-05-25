@@ -208,12 +208,15 @@ def import_users(request):
 
             # import associated qualifications
             qualifications = pd.read_excel(data, sheet_name='Qualifications')
+            admin = User.objects.get(username='admin')
             for index, row in qualifications.iterrows():
                 employee = User.objects.get(username__iexact=row['Username'])
                 qualification = Qualification.objects.get(name__iexact=row['Qualification'])
                 employees_qualification = EmployeesQualifications(
                     employee=employee,
-                    qualification=qualification
+                    qualification=qualification,
+                    created_by=admin,
+                    changed_by=admin
                 )
                 employees_qualification.save()
 

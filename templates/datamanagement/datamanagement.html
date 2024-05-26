@@ -3,101 +3,88 @@
 
 {% block content %}
     {% if user.is_admin %}
-        <h3 class="light-blue-text text-darken-1">Data management</h3>
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">Imports</div>
-                <ul class="collection">
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_qualifications' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">label</i>
-                            <span class="title">Qualifications</span>
-                            <p class="grey-text text-darken-3">Import Qualifications from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_departments' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">view_list</i>
-                            <span class="title">Departments</span>
-                            <p class="grey-text text-darken-3">Import Departments from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_users' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">person</i>
-                            <span class="title">Users</span>
-                            <p class="grey-text text-darken-3">Import Users from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_absences' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">event_busy</i>
-                            <span class="title">Absences</span>
-                            <p class="grey-text text-darken-3">Import Absences from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_holidays' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">flight_takeoff</i>
-                            <span class="title">Holiday</span>
-                            <p class="grey-text text-darken-3">Import Holidays from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_demand' %}">
-                            <i class="material-icons circle amber darken-1 white-text">date_range</i>
-                            <span class="title">Demand</span>
-                            <p class="grey-text text-darken-3">Import Demand from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_availabilities' %}">
-                            <i class="material-icons circle amber darken-1 white-text">event</i>
-                            <span class="title">Availabilities</span>
-                            <p class="grey-text text-darken-3">Import Availabilities from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_wishes' %}">
-                            <i class="material-icons circle amber darken-1 white-text">event</i>
-                            <span class="title">Wishes</span>
-                            <p class="grey-text text-darken-3">Import Wishes from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_shift_templates' %}">
-                            <i class="material-icons circle amber darken-1 white-text">event</i>
-                            <span class="title">Shift templates</span>
-                            <p class="grey-text text-darken-3">Import Shift templates from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_day_templates' %}">
-                            <i class="material-icons circle amber darken-1 white-text">event</i>
-                            <span class="title">Day templates</span>
-                            <p class="grey-text text-darken-3">Import Day templates from .xlsx file</p>
-                        </a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'import_shifts' %}">
-                            <i class="material-icons circle amber darken-1 white-text">view_list</i>
-                            <span class="title">Shifts</span>
-                            <p class="grey-text text-darken-3">Import Shifts from .xlsx file</p>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="card-title">Exports</div>
-                <ul class="collection">
-                    <li class="collection-item avatar">
-                        <a class="black-text" href="{% url 'download_exports' %}">
-                            <i class="material-icons circle light-blue darken-1 white-text">download</i>
-                            <span class="title">Create export</span>
-                            <p class="grey-text text-darken-3">Export everything to .xlsx file</p>
-                        </a>
-                    </li>
-                </ul>
+        <br><br><br>
+        <div class="card card-color">
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3"><a class="active" href="#export">Export</a></li>
+                        <li class="tab col s3"><a href="#import-qualifications" hx-get="{% url 'import_qualifications' %}" hx-target="#instructions" hx-swap="morph">Qualifications</a></li>
+                        <li class="tab col s3"><a href="#import-departments" hx-get="{% url 'import_departments' %}" hx-target="#instructions" hx-swap="morph">Departments</a></li>
+                        <li class="tab col s3"><a href="#import-users" hx-get="{% url 'import_users' %}" hx-target="#instructions" hx-swap="morph">Users</a></li>
+                        <li class="tab col s3"><a href="#import-absences" hx-get="{% url 'import_absences' %}" hx-target="#instructions" hx-swap="morph">Absences</a></li>
+                        <li class="tab col s3"><a href="#import-holidays" hx-get="{% url 'import_holidays' %}" hx-target="#instructions" hx-swap="morph">Holiday</a></li>
+                        <li class="tab col s3"><a href="#import-demand" hx-get="{% url 'import_demand' %}" hx-target="#instructions" hx-swap="morph">Demand</a></li>
+                        <li class="tab col s3"><a href="#import-availabilities" hx-get="{% url 'import_availabilities' %}" hx-target="#instructions" hx-swap="morph">Availabilities</a></li>
+                        <li class="tab col s3"><a href="#import-wishes" hx-get="{% url 'import_wishes' %}" hx-target="#instructions" hx-swap="morph">Wishes</a></li>
+                        <li class="tab col s3"><a href="#import-shift-templates" hx-get="{% url 'import_shift_templates' %}" hx-target="#instructions" hx-swap="morph">Shift templates</a></li>
+                        <li class="tab col s3"><a href="#import-day-templates" hx-get="{% url 'import_day_templates' %}" hx-target="#instructions" hx-swap="morph">Day templates</a></li>
+                        <li class="tab col s3"><a href="#import-shifts" hx-get="{% url 'import_shifts' %}" hx-target="#instructions" hx-swap="morph">Shifts</a></li>
+                    </ul>
+                </div>
             </div>
+            <div id="export">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">download</i><b class="accent-color-text">Create export</b><span class="right">Export everything to .xlsx file</span></div>
+                    <a class="btn-floating accent-color white-text right" href="{% url 'download_exports' %}"><i class="material-icons left">download</i></a>
+                </div>
+            </div>
+            <div id="import-qualifications">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">label</i><b class="accent-color-text">Import Qualifications</b><span class="right">Import Qualifications from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-departments">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">view_list</i><b class="accent-color-text">Import Departments</b><span class="right">Import Departments from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-users">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">person</i><b class="accent-color-text">Import Users</b><span class="right">Import Users from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-absences">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">event_busy</i><b class="accent-color-text">Import Absences</b><span class="right">Import Absences from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-holidays">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">flight_takeoff</i><b class="accent-color-text">Import Holidays</b><span class="right">Import Holidays from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-demand">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">date_range</i><b class="accent-color-text">Import Demand</b><span class="right">Import Demand from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-availabilities">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">event</i><b class="accent-color-text">Import Availabilities</b><span class="right">Import Availabilities from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-wishes">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">event</i><b class="accent-color-text">Import Wishes</b><span class="right">Import Wishes from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-shift-templates">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">event</i><b class="accent-color-text">Import Shift templates</b><span class="right">Import Shift templates from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-day-templates">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">event</i><b class="accent-color-text">Import Day templates</b><span class="right">Import Day templates from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="import-shifts">
+                <div class="card-content header-color">
+                    <div class="card-title white-text"><i class="material-icons accent-color-text left">view_lists</i><b class="accent-color-text">Import Shifts</b><span class="right">Import Shifts from .xlsx file</span></div>
+                </div>
+            </div>
+            <div id="instructions" class="card-content card-color"></div>
         </div>
     {% else %}
         {% include 'forbidden.html' %}

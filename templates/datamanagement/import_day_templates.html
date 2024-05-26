@@ -1,52 +1,42 @@
-{% extends "base.html" %}
-{% block title %}ShiftManager - Import day templates{% endblock %}
+<div id="instructions" class="card-content card-color">
+    <div class="card-title"><b class="header-color-text">Before you start</b> please structure your data in the following manner</div>
+    <br>
+    <div class="card-title"><b class="header-color-text">Worksheet Templates</b></div>
+    <table class="striped">
+        <thead class="header-color white-text">
+            <th>Name</th>
+            <th>Description</th>
+        </thead>
+    </table>
+    <ul class="collection">
+        <p>Name is required and has to be unique. Description is optional.</p>
+    </ul>
+    <br>
+    <div class="card-title"><b class="header-color-text">Worksheet Shifts</b></div>
+    <table class="striped">
+        <thead class="header-color white-text">
+        <th>Template</th>
+        <th>Shift</th>
+        </thead>
+    </table>
+    <ul class="collection">
+        <li class="collection-item">Template is Day template name. Shift is Shift template Name.</li>
+    </ul>
+    <br>
 
-{% block content %}
-    {% if user.is_admin %}
-        <h3 class="light-blue-text text-darken-1">Import day templates</h3>
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">Before you start</div>
-                <p>Please structure your data in the following manner:</p>
-                <p><b>Worksheet "Templates"</b></p>
-                <table class="striped">
-                    <thead class="grey darken-1 white-text">
-                        <th>Name</th>
-                        <th>Description</th>
-                    </thead>
-                </table>
-                <p>Name is required and has to be unique. Description is optional.</p>
-                <br><p><b>Worksheet "Shifts"</b></p>
-                <table class="striped">
-                    <thead class="grey darken-1 white-text">
-                        <th>Template</th>
-                        <th>Shift</th>
-                    </thead>
-                </table>
-                <p>Template is Day template name. Shift is Shift template Name.</p>
+    <form method="POST" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="row" style="gap: 1em">
+            <div class="s4 file-field input-field">
+                <div class="btn accent-color">
+                    <span>File</span>
+                    <input type="file" name="file_upload" required id="file_upload">
+                </div>
+                <div class="s4file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Excel-File">
+                </div>
             </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <form method="POST" enctype='multipart/form-data'>
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="file-field input-field col s12 m6">
-                            <div class="btn light-blue darken-1">
-                                <span>File</span>
-                                <input type="file" name="file_upload" required id="file_upload">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text" placeholder="Excel-File">
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">cloud_upload</i>Upload</button>
-                </form>
-            </div>
-        </div>
-    {% else %}
-        {% include 'forbidden.html' %}
-    {% endif %}
-{% endblock %}
+        </div><br>
+        <button type="submit" class="waves-effect waves-light btn accent-color"><i class="material-icons left">cloud_upload</i>Upload</button>
+    </form>
+</div>

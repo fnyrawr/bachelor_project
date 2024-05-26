@@ -56,7 +56,7 @@ def import_qualifications(request):
                     )
 
             return redirect('qualifications')
-        return render(request, 'datamanagement/import_qualifications.html', {'form': form})
+        return HttpResponse(render(request, 'datamanagement/import_qualifications.html', {'form': form}))
     # GET request
     else:
         form = FileForm()
@@ -103,7 +103,7 @@ def import_departments(request):
                 department_qualification.save()
 
             return redirect('departments')
-        return render(request, 'datamanagement/import_departments.html', {'form': form})
+        return HttpResponse(render(request, 'datamanagement/import_departments.html', {'form': form}))
     # GET request
     else:
         form = FileForm()
@@ -221,7 +221,7 @@ def import_users(request):
                 employees_qualification.save()
 
             return redirect('useraccounts')
-        return render(request, 'datamanagement/import_users.html', {'form': form})
+        return HttpResponse(render(request, 'datamanagement/import_users.html', {'form': form}))
     # GET request
     else:
         form = FileForm()

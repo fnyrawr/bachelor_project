@@ -53,6 +53,14 @@ body {
   color: var(--warning-color) !important;
 }
 
+.saturday-color-text {
+  color: var(--marker-saturday) !important;
+}
+
+.sunday-color-text {
+  color: var(--marker-sunday) !important;
+}
+
 .marker-saturday {
   border-right: 10px solid var(--marker-saturday);
 }

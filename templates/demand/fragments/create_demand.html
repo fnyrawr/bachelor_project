@@ -1,0 +1,60 @@
+<div id="add-modal">
+    <script>
+        var elem = document.getElementsByClassName('select-box');
+        var instance = M.FormSelect.init(elem);
+    </script>
+
+    <form hx-post="{% url 'create_demand' %}" hx-target="#demand-table" hx-swap="morph">
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Create Demand</b></h5>
+            {% csrf_token %}
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">local_offer</i>
+                    <select name="weekday" class="select-box">
+                        {% for weekday in form.weekday %}
+                            <option value="{{ weekday.data.value }}">{{ weekday.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Weekday</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <select name="department" class="select-box">
+                        {% for department in form.department %}
+                            <option value="{{ department.data.value }}">{{ department.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Department</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_start_time" name="start_time" type="time" value="12:00" required class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_start_time">*Start</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_end_time" name="end_time" type="time" value="18:00" required class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_end_time">*End</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">group</i>
+                    <input type="number" name="staff_count" autocapitalize="none" value="1" id="id_staff_count" class="grey-text text-darken-4" placeholder=" ">
+                    <label for="id_staff_count">*Staff count</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" "></textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 10%">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">add</i>Create Qualification</button>
+        </div>
+    </form>
+</div>

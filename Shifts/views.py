@@ -627,7 +627,6 @@ def shiftplan(request, **kwargs):
     return render(request, 'shifts/shiftplan.html', context)
 
 
-# HTMX
 def search_own_shifts(request):
     filter_date = request.POST.get('filter_date')
     keyword = request.POST.get('keyword')

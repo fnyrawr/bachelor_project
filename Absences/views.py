@@ -19,7 +19,7 @@ from .forms import AbsenceForm, SearchForm
 class AbsenceCreationView(CreateView):
     model = Absence
     form_class = AbsenceForm
-    template_name = 'absences/create_absence.html'
+    template_name = 'absences/fragments/create_absence.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -118,7 +118,7 @@ def edit_absence(request, **kwargs):
             'employees': employees,
             'conflicting_shifts': conflicting_shifts
         }
-        return render(request, 'absences/edit_absence.html', context)
+        return render(request, 'absences/fragments/edit_absence.html', context)
 
 
 def edit_own_absence(request, **kwargs):
@@ -164,7 +164,9 @@ def edit_own_absence(request, **kwargs):
 
 def delete_absence(request, **kwargs):
     absence_id = kwargs['pk']
-    own = request.GET['own']
+    own = None
+    if 'own' in request.GET:
+        own = request.GET['own']
     selected_absence = Absence.objects.get(id=absence_id)
     user = request.user
     if user.role == 'A' or (selected_absence.employee == user and selected_absence.start_date < datetime.now().date() and selected_absence.status < 3):
@@ -199,6 +201,8 @@ def absence_list(request):
         filter_month = data['filter_month']
         filter_date = data['filter_date']
         filter_status = data['filter_status']
+        if 'status' in request.GET:
+            filter_status = request.GET['status']
         filter_reason = data['filter_reason']
         keyword = data['keyword']
         q_keyword = Q()
@@ -273,4 +277,6 @@ def absence_list(request):
         'data': data,
         'timeline': timeline
     }
-    return render(request, 'absences/absence_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'absences/fragments/absence-table.html', context))
+    return HttpResponse(render(request, 'absences/absence_list.html', context))

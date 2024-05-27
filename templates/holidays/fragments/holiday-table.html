@@ -1,0 +1,74 @@
+<div id="holiday-table">
+    <br>
+    <div class="card-content card-color">
+        {% if entries > 0 %}
+            <table class="striped highlight responsive-table">
+                <thead class="header-color white-text">
+                <tr>
+                    <th>Employee</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Note</th>
+                    {% if user.is_admin %}<th>Edit</th>{% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in page_obj %}
+                    <tr>
+                        <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
+                        <td>{{ entry.start_date|date:"l" }}<br><b>{{ entry.start_date|date:"d.m.Y" }}</b></td>
+                        <td>{{ entry.end_date|date:"l" }}<br><b>{{ entry.end_date|date:"d.m.Y" }}</b></td>
+                        <td>{{ entry.get_duration }} days</td>
+                        <td>
+                            {% if entry.status == 0 %}
+                                <i class="material-icons left accent-color-text">mail</i>new
+                            {% elif entry.status == 1 %}
+                                <i class="material-icons left grey-text text-darken-1">drafts</i>pending
+                            {% elif entry.status == 2 %}
+                                <i class="material-icons left red-text text-darken-1">close</i>{{ entry.get_status_display }}
+                            {% else %}
+                                <i class="material-icons left light-green-text text-darken-1">done</i>{{ entry.get_status_display }}
+                            {% endif %}
+                        </td>
+                        <td>{{ entry.note }}</td>
+                        {% if user.is_admin %}<td>
+                            <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_holiday' entry.id %}" hx-target="#edit-modal-content" hx-swap="morph"><i class="material-icons">edit</i></a>
+                        </td>{% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table><br>
+
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            <ul class="pagination center">
+                {% if page_obj.has_previous %}
+                    <li class="waves-effect"><a hx-post="{% url 'holidays' %}?page={{ page_obj.previous_page_number }}" hx-target="#holiday-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+                {% endif %}
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page == page_obj.number %}
+                        <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+                    {% else %}
+                        <li class="waves-effect"><a hx-post="{% url 'holidays' %}?page={{ page }}" hx-target="#holiday-table" hx-swap="morph">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="waves-effect"><a hx-post="{% url 'holidays' %}?page={{ page_obj.next_page_number }}" hx-target="#holiday-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+                {% endif %}
+            </ul>
+        {% else %}
+            <h6><i class="material-icons accent-color-text left">info</i>No holidays in selected timeframe and/or with matching keyword</h6>
+        {% endif %}
+    </div>
+
+    {% if timeline != None %}
+        <div id="holiday-calendar" class="card-content card-color">
+            <img src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
+        </div>
+    {% endif %}
+</div>

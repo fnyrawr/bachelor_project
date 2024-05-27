@@ -359,7 +359,9 @@ def employee_list(request):
         'data': data,
         'page': page_number
     }
-    return render(request, 'users/employee_list.html', context)
+    if request.method == "POST":
+        return HttpResponse(render(request, 'users/fragments/employee_table.html', context))
+    return HttpResponse(render(request, 'users/employee_list.html', context))
 
 
 def attendance(request):

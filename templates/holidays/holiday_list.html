@@ -3,128 +3,99 @@
 
 {% block content %}
     {% if user.is_authorized %}
-        <h3 class="light-blue-text text-darken-1">Holidays</h3>
-        <ul class="collapsible">
-            <li {% if search %}class="active"{% endif %}>
-                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
-                <div class="collapsible-body grey lighten-5">
-                    <form method="POST" action="{% url 'holidays' %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="input-field col s6 m4">
+        <div id="add-modal" class="modal">
+            <div id="add-modal-content"></div>
+        </div>
+        <div id="edit-modal" class="modal">
+            <div id="edit-modal-content"></div>
+        </div>
+        <br><br><br>
+        <div id="holiday-content">
+            <form hx-post="{% url 'holidays' %}" hx-target="#holiday-table" hx-swap="morph">
+                {% csrf_token %}
+                <div class="card card-color">
+                    <div class="row">
+                        <div class="col s12">
+                            <ul class="tabs">
+                                <li class="tab col s3"><a href="#holidays-all" class="active" hx-post="{% url 'holidays' %}" hx-trigger="revealed once, click" hx-target="#holiday-table" hx-swap="morph">all Holidays</a></li>
+                                <li class="tab col s3"><a href="#holidays-new" class="active" hx-post="{% url 'holidays' %}?status=0" hx-trigger="click" hx-target="#holiday-table" hx-swap="morph">new Holidays</a></li>
+                                <li class="tab col s3"><a href="#holidays-pending" class="active" hx-post="{% url 'holidays' %}?status=1" hx-trigger="click" hx-target="#holiday-table" hx-swap="morph">pending Holidays</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="holidays-all" class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s3 card-title white-text"><b class="accent-color-text"><i class="material-icons left">flight_takeoff</i>Holidays</b> all</div>
+                            <div class="input-field col s3">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <input id="id_filter_year" name="filter_year" type="text" maxlength="4" {% if data.filter_year %}value="{{ data.filter_year }}"{% endif %} class="grey-text text-darken-4">
+                                <input id="id_filter_year" name="filter_year" type="text" maxlength="4" value="{% now "Y" %}" placeholder=" " hx-post="{% url 'holidays' %}" hx-trigger="keyup delay:250ms" hx-target="#holiday-table" hx-swap="morph">
                                 <label for="id_filter_year">Year</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s3 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <select name="filter_month">
+                                <select name="filter_month" hx-post="{% url 'holidays' %}" hx-trigger="click, change" hx-target="#holiday-table" hx-swap="morph">
                                     {% for month in form.filter_month %}
-                                        <option value="{{ month.data.value }}" {% if data.filter_month == month.data.value %}selected{% endif %}>{{ month.data.label }}</option>
+                                        <option value="{{ month.data.value }}">{{ month.data.label }}</option>
                                     {% endfor %}
                                 </select>
                                 <label>Month</label>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s6 m4">
+                            <div class="s3 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <input id="id_filter_date" name="filter_date" type="text" {% if data.filter_date %}value="{{ data.filter_date }}"{% endif %} class="datepicker grey-text text-darken-4">
+                                <input id="id_filter_date" name="filter_date" type="text" class="datepicker" placeholder=" " hx-post="{% url 'holidays' %}" hx-trigger="click, change" hx-target="#holiday-table" hx-swap="morph">
                                 <label for="id_filter_date">Filter date</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                        </div><br>
+                        <div class="row" style="gap: 1em">
+                            <div class="s6"></div>
+                            <div class="s3 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <select name="filter_status">
+                                <select name="filter_status" hx-post="{% url 'holidays' %}" hx-trigger="click, change" hx-target="#holiday-table" hx-swap="morph">
                                     <option value="-1">All</option>
-                                    <option {% if data.filter_status == '0' %}selected{% endif %} value="0">Sent</option>
-                                    <option {% if data.filter_status == '1' %}selected{% endif %} value="1">Not decided</option>
+                                    <option {% if data.filter_status == '0' %}selected{% endif %} value="0">New</option>
+                                    <option {% if data.filter_status == '1' %}selected{% endif %} value="1">Pending</option>
                                     <option {% if data.filter_status == '2' %}selected{% endif %} value="2">Declined</option>
                                     <option {% if data.filter_status == '3' %}selected{% endif %} value="3">Approved</option>
                                 </select>
                                 <label>Status</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s3 input-field">
                                 <i class="material-icons prefix">search</i>
-                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %}>
+                                <input id="id_keyword" type="search" name="keyword" placeholder=" " hx-post="{% url 'holidays' %}" hx-trigger="keyup delay:250ms" hx-target="#holiday-table" hx-swap="morph">
                                 <label for="id_keyword">Keyword</label>
                             </div>
                         </div>
-                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
-                        {% if search %}
-                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'holidays' %}"><i class="material-icons left">clear</i>Clear</a>
-                        {% endif %}
-                    </form>
+                        <div id="loader" hx-post="{% url 'holidays' %}" hx-trigger="load once" hx-target="#holiday-table" hx-swap="morph"></div>
+                        <br><a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'create_holiday' %}" hx-target="#add-modal" hx-swap="morph"><i class="material-icons left">add</i></a>
+                    </div>
+
+                    <div id="holidays-new" class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s8 card-title white-text"><b class="accent-color-text"><i class="material-icons left">flight_takeoff</i>Holidays</b> new</div>
+                            <div class="s4 input-field">
+                                <i class="material-icons prefix">search</i>
+                                <input id="id_keyword" type="search" name="keyword" placeholder=" " hx-post="{% url 'holidays' %}?status=0" hx-trigger="keyup delay:250ms" hx-target="#holiday-table" hx-swap="morph">
+                                <label for="id_keyword">Keyword</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="holidays-pending" class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s8 card-title white-text"><b class="accent-color-text"><i class="material-icons left">flight_takeoff</i>Holidays</b> pending</div>
+                            <div class="s4 input-field">
+                                <i class="material-icons prefix">search</i>
+                                <input id="id_keyword" type="search" name="keyword" placeholder=" " hx-post="{% url 'holidays' %}?status=1" hx-trigger="keyup delay:250ms" hx-target="#holiday-table" hx-swap="morph">
+                                <label for="id_keyword">Keyword</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="holiday-table" class="card-content card-color"></div>
                 </div>
-            </li>
-        </ul>
-
-        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_holiday' %}"><i class="material-icons left">add</i>Create holiday</a><br><br>{% endif %}
-        <div class="card">
-            <div class="card-content">
-                <table class="striped highlight responsive-table">
-                    <thead class="grey darken-1 white-text">
-                        <tr>
-                            <th>Start date</th>
-                            <th>End date</th>
-                            <th>Duration</th>
-                            <th>Employee</th>
-                            <th>Status</th>
-                            <th>Note</th>
-                            {% if user.is_admin %}<th>Edit</th>{% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in page_obj %}
-                        <tr>
-                            <td>{{ entry.start_date|date:"l" }}<br>{{ entry.start_date|date:"d.m.Y" }}</td>
-                            <td>{{ entry.end_date|date:"l" }}<br>{{ entry.end_date|date:"d.m.Y" }}</td>
-                            <td>{{ entry.get_duration }} days</td>
-                            <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
-                            <td>
-                                {% if entry.status == 0 %}
-                                    <i class="material-icons left grey-text text-darken-1">mail</i>{{ entry.get_status_display }}
-                                {% elif entry.status == 1 %}
-                                    <i class="material-icons left grey-text text-darken-1">drafts</i>{{ entry.get_status_display }}
-                                {% elif entry.status == 2 %}
-                                    <i class="material-icons left red-text text-darken-1">close</i>{{ entry.get_status_display }}
-                                {% else %}
-                                    <i class="material-icons left light-green-text text-darken-1">done</i>{{ entry.get_status_display }}
-                                {% endif %}
-                            </td>
-                            <td>{{ entry.note }}</td>
-                            {% if user.is_admin %}<td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_holiday' entry.id %}"><i class="material-icons">edit</i></a>
-                            </td>{% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% if search and timeline != None %}
-                    <br><img class="materialboxed" src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
-                {% endif %}
-            </div>
+            </form>
         </div>
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
-        <ul class="pagination center">
-            {% if page_obj.has_previous %}
-                <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
-            {% else %}
-                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
-            {% endif %}
-            {% for page in page_obj.paginator.page_range %}
-                {% if page == page_obj.number %}
-                    <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
-                {% else %}
-                    <li class="waves-effect"><a href="?page={{ page }}">{{ page }}</a></li>
-                {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-                <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
-            {% else %}
-                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
-            {% endif %}
-        </ul>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

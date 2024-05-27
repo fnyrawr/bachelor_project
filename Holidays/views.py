@@ -19,7 +19,7 @@ from .forms import HolidayForm, SearchForm
 class HolidayCreationView(CreateView):
     model = Holiday
     form_class = HolidayForm
-    template_name = 'holidays/create_holiday.html'
+    template_name = 'holidays/fragments/create_holiday.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -116,7 +116,7 @@ def edit_holiday(request, **kwargs):
             'employees': employees,
             'conflicting_shifts': conflicting_shifts
         }
-        return render(request, 'holidays/edit_holiday.html', context)
+        return render(request, 'holidays/fragments/edit_holiday.html', context)
 
 
 def edit_own_holiday(request, **kwargs):
@@ -161,7 +161,9 @@ def edit_own_holiday(request, **kwargs):
 
 def delete_holiday(request, **kwargs):
     holiday_id = kwargs['pk']
-    own = request.GET['own']
+    own = None
+    if 'own' in request.GET:
+        own = request.GET['own']
     selected_holiday = Holiday.objects.get(id=holiday_id)
     user = request.user
     if user.role == 'A' or (selected_holiday.employee == user and selected_holiday.start_date < datetime.now().date() and selected_holiday.status < 3):
@@ -197,6 +199,8 @@ def holiday_list(request):
         filter_month = data['filter_month']
         filter_date = data['filter_date']
         filter_status = data['filter_status']
+        if 'status' in request.GET:
+            filter_status = request.GET['status']
         keyword = data['keyword']
         q_keyword = Q()
         q_status = Q()
@@ -269,4 +273,6 @@ def holiday_list(request):
         'data': data,
         'timeline': timeline
     }
-    return render(request, 'holidays/holiday_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'holidays/fragments/holiday-table.html', context))
+    return HttpResponse(render(request, 'holidays/holiday_list.html', context))

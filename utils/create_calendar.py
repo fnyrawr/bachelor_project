@@ -143,9 +143,7 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
         # print out dates
         if i > 0:
             d_str = d.strftime("%A") + '\n' + d.strftime("%d. %B %Y")
-            tw, th = img.textsize(str(d_str), font=font)
-            h_center = i*h_row + h_row/2 - th/2
-            img.text((2*mgs, h_center), str(d_str), fill=fontcolor, font=font)
+            img.text((2*mgs, i*h_row + h_row/2), str(d_str), fill=fontcolor, font=font, align='left', anchor='lm')
     # horizontal
     for i in range(col_count):
         if i > 0:
@@ -153,9 +151,7 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
             img.line((i*w_col, h_row, i*w_col, row_count*h_row), fill=grey3, width=1)
     fontcolor = white
     text = 'Date'
-    tw, th = img.textsize(str(text), font=font)
-    h_center = h_row/2 - th/2
-    img.text((2*mgs, h_center), str(text), fill=fontcolor, font=font)
+    img.multiline_text((2*mgs, h_row/2), str(text), fill=fontcolor, font=font, align='center', anchor='lm')
 
     # draw objects in timeline
     for i in range(len(objects)):
@@ -164,19 +160,15 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
         font = ImageFont.truetype(font_family, int(fontsize))
 
         text = lst_colheader[i]
-        tw, th = img.textsize(text, font=font)
-        img.text(((i+1)*w_col + w_col/2 - tw/2, h_row/2 - th/2), text, fill=fontcolor, font=font)
+        img.text(((i+1)*w_col + w_col/2, h_row/2), text, fill=fontcolor, font=font, align='center', anchor='mm')
 
         # draw calendar marker
         fontsize = h_row / 4
         font = ImageFont.truetype(font_family, int(fontsize))
         start = lst_start[i]+1
         end = lst_end[i]+1
-        tw, th = img.textsize(lst_text[i], font=font)
-        h_center = (start + (end-start)/2)*h_row
         h_start = start*h_row
         h_end = end*h_row
-        w_center = (i+1)*w_col + w_col/2
         if lst_highlight[i] == 1:
             fillcolor = grey3
             textcolor = white
@@ -189,11 +181,10 @@ def draw_calendar(start_date=None, end_date=None, center_date=None, objects=None
         img.rounded_rectangle(((i+1)*w_col+mgs, start*h_row+mgs, (i+2)*w_col-mgs, end*h_row-mgs), radius=mgs,
                               fill=fillcolor, outline=fillcolor)
         # draw text
-        img.text((w_center-tw/2, h_center-th/2), lst_text[i], fill=textcolor, font=font, align='center')
+        img.text(((i+1)*w_col+w_col/2, (start+(end-start)/2)*h_row), lst_text[i], fill=textcolor, font=font, align='center', anchor='mm')
         # draw dates
-        img.text(((i+1)*w_col + 2*mgs, h_start+2*mgs), lst_start_date[i], fill=textcolor, font=font, align='left')
-        tw, th = img.textsize(lst_end_date[i], font=font)
-        img.text(((i+2)*w_col-tw-2*mgs, h_end-th-2*mgs), lst_end_date[i], fill=textcolor, font=font, align='right')
+        img.text(((i+1)*w_col + 2*mgs, h_start+2*mgs), lst_start_date[i], fill=textcolor, font=font, align='left', anchor='la')
+        img.text(((i+2)*w_col-2*mgs, h_end-2*mgs), lst_end_date[i], fill=textcolor, font=font, align='right', anchor='rd')
 
     # save image and return it
     with BytesIO() as output:

@@ -1,0 +1,67 @@
+<div id="employee-table" class="card-content card-color">
+    <br>
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>First Name<br>Last Name</th>
+            <th>Active<br>External</th>
+            <th>E-Mail<br>Telephone home<br>Telephone mobile</th>
+            <th>Department<br>Qualifications</th>
+            <th>Work Hours<br>Holiday</th>
+            <th>Start contract<br>End contract</th>
+            {% if user.is_admin %}<th>Manage</th>{% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for entry in page_obj %}
+            <tr>
+                <td>{{ entry.first_name }}<br><b>{{ entry.last_name }}</b></td>
+                <td>
+                    {% if entry.is_active %}
+                        <i class="material-icons light-green-text text-darken-1">done</i>
+                    {% else %}
+                        <i class="material-icons red-text text-darken-1">close</i>
+                    {% endif %}
+                    <br>{% if entry.is_external %}
+                    <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                        <b>External</b>
+                    </span>
+                {% endif %}
+                </td>
+                <td>{{ entry.email }}<br>{{ entry.telephone_home }}<br>{{ entry.telephone_mobile }}</td>
+                <td>{{ entry.department.name }}<br>
+                    {% for qualification in entry.qualifications %}
+                        <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                            <b>{{ qualification.qualification.name }}</b>
+                        </span>
+                    {% endfor %}
+                </td>
+                <td>{% if entry.work_hours != None %}{{ entry.work_hours }} hours / week{% endif %}<br>{% if entry.holiday_count != None %}{{ entry.holiday_count }} days / year{% endif %}</td>
+                <td>{{ entry.start_contract|date:"d.m.Y" }}<br>{{ entry.end_contract|date:"d.m.Y" }}</td>
+                {% if user.is_admin %}<th><a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_user' entry.id %}"><i class="material-icons">edit</i></a></th>{% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-post="{% url 'employees' %}?page={{ page_obj.previous_page_number }}" hx-target="#employee-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-post="{% url 'employees' %}?page={{ page }}" hx-target="#employee-table" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-post="{% url 'employees' %}?page={{ page_obj.next_page_number }}" hx-target="#employee-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

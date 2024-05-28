@@ -18,3 +18,11 @@ class PasteTemplateForm(forms.ModelForm):
     class Meta:
         model = DayTemplate
         fields = ['to_date']
+
+
+class SearchForm(forms.ModelForm):
+    keyword = forms.CharField(required=False)
+
+    class Meta:
+        model = DayTemplate
+        fields = ['keyword']

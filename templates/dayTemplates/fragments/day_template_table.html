@@ -1,0 +1,46 @@
+<div id="day-template-table" class="card-content card-color">
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Assigned shifts</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entry in page_obj %}
+            <tr>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.description }}</td>
+                <td><a class="modal-trigger waves-effect waves-light btn grey darken-1" data-target="view-modal" hx-get="{% url 'view_day_template' entry.id %}" hx-target="#view-modal" hx-swap="morph">{{ entry.get_shifts.count }}</a></td>
+                <td>
+                    <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_day_template' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </table><br>
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries.count }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-post="{% url 'day_templates' %}?page={{ page_obj.previous_page_number }}" hx-target="#day-template-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-post="{% url 'day_templates' %}?page={{ page }}" hx-target="#day-template-table" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-post="{% url 'day_templates' %}?page={{ page_obj.next_page_number }}" hx-target="#day-template-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

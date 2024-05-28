@@ -16,3 +16,12 @@ class ShiftTemplateForm(forms.ModelForm):
     class Meta:
         model = ShiftTemplate
         fields = ['name', 'department', 'start_time', 'end_time', 'break_duration', 'note']
+
+
+class SearchForm(forms.ModelForm):
+    department = forms.CharField(required=False)
+    keyword = forms.CharField(required=False)
+
+    class Meta:
+        model = ShiftTemplate
+        fields = ['department', 'keyword']

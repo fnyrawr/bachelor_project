@@ -1,0 +1,37 @@
+<div id="workhours" class="card-content card-color">
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+            <tr>
+                <th>Calendar week</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Shift count</th>
+                <th>Work hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in weeks %}
+                <tr>
+                    <td><b>{{ week.name }}</b></td>
+                    <td>{{ week.start|date:"d.m.Y" }}</td>
+                    <td>{{ week.end|date:"d.m.Y" }}</td>
+                    <td>{% if week.shift_count > 0 %}{{ week.shift_count }} shifts{% else %}none{% endif %}</td>
+                    {% if user.work_hours %}
+                        <td>{{ week.work_hours|floatformat:"g" }}/{{ user.work_hours|floatformat:"g" }} hours</td>
+                    {% else %}
+                        <td>{{ week.work_hours|floatformat:"g" }} hours</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            <tr class="accent-color">
+                <td colspan="3"><b>Total</b><br>{{ weeks|length }} weeks</td>
+                <td><b>{{ shift_count_total }} shifts</b></td>
+                {% if target_hours > 0 %}
+                    <td><b>{{ work_hours_total|floatformat:"g" }}/{{ target_hours }} hours</b></td>
+                {% else %}
+                    <td><b>{{ work_hours_total|floatformat:"g" }} hours</b></td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</div>

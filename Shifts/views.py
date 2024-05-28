@@ -236,7 +236,9 @@ def work_hours(request):
         searchForm = WorkHoursSearchForm(request.POST)
         data = searchForm.data
         filter_date = data['filter_date']
-        count_weeks = int(data['count_weeks'])
+        count_weeks = None
+        if data['count_weeks']:
+            count_weeks = int(data['count_weeks'])
         employee_id = data['employee']
         if employee_id != '' and int(employee_id) > 0:
             employee = User.objects.get(id=employee_id)
@@ -253,24 +255,25 @@ def work_hours(request):
             shift_count_total = 0
             work_hours_total = 0
             weeks = []
-            for i in range(count_weeks):
-                shifts = Shift.objects.filter(employee=employee, start__gte=filter_start, start__lte=filter_end)
-                hours = 0
-                shift_count = 0
-                for shift in shifts:
-                    shift_count += 1
-                    hours += time_to_dec(shift.get_work_hours())
-                week = Week(name='Week ' + str(filter_start.isocalendar().week), start=filter_start, end=filter_end,
-                            shift_count=shift_count, work_hours=hours)
-                weeks.append(week)
-                shift_count_total += shift_count
-                work_hours_total += hours
-                filter_start -= timedelta(days=7)
-                filter_end -= timedelta(days=7)
-            if employee.work_hours is not None:
-                target_hours = count_weeks*employee.work_hours
-            else:
-                target_hours = None
+            if count_weeks:
+                for i in range(count_weeks):
+                    shifts = Shift.objects.filter(employee=employee, start__gte=filter_start, start__lte=filter_end)
+                    hours = 0
+                    shift_count = 0
+                    for shift in shifts:
+                        shift_count += 1
+                        hours += time_to_dec(shift.get_work_hours())
+                    week = Week(name='Week ' + str(filter_start.isocalendar().week), start=filter_start, end=filter_end,
+                                shift_count=shift_count, work_hours=hours)
+                    weeks.append(week)
+                    shift_count_total += shift_count
+                    work_hours_total += hours
+                    filter_start -= timedelta(days=7)
+                    filter_end -= timedelta(days=7)
+                if employee.work_hours is not None:
+                    target_hours = count_weeks*employee.work_hours
+                else:
+                    target_hours = None
     employees = User.objects.all()
 
     context = {
@@ -284,7 +287,9 @@ def work_hours(request):
         'form': WorkHoursSearchForm,
         'data': data
     }
-    return render(request, 'shifts/work_hours.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'shifts/fragments/work_hours_table.html', context))
+    return HttpResponse(render(request, 'shifts/work_hours.html', context))
 
 
 def own_shifts(request):

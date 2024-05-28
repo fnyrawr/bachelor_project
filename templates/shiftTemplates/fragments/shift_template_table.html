@@ -1,0 +1,58 @@
+<div id="shift-template-table" class="card-content card-color">
+    <table class="striped highlight responsive-table">
+        <thead class="header-color white-text">
+        <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Work hours<br>Break</th>
+            <th>Department<br>Qualifications</th>
+            <th>Note</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entry in page_obj %}
+            <tr>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.start_time|date:"H:i" }}</td>
+                <td>{{ entry.end_time|date:"H:i" }}</td>
+                <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
+                <td>
+                    {{ entry.department }}<br>
+                    {% for qualification in entry.qualifications %}
+                        <span class="new badge header-color white-text z-depth-1" data-badge-caption="">
+                            <b>{{ qualification.qualification.name }}</b>
+                        </span>
+                    {% endfor %}
+                </td>
+                <td>{{ entry.note }}</td>
+                <td>
+                    <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_shift_template' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table><br>
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries.count }} entries)</span>
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+            <li class="waves-effect"><a hx-post="{% url 'shift_templates' %}?page={{ page_obj.previous_page_number }}" hx-target="#shift-template-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+            {% else %}
+                <li class="waves-effect"><a hx-post="{% url 'shift_templates' %}?page={{ page }}" hx-target="#shift-template-table" hx-swap="morph">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="waves-effect"><a hx-post="{% url 'shift_templates' %}?page={{ page_obj.next_page_number }}" hx-target="#shift-template-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+            <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+    </ul>
+</div>

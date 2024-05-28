@@ -3,47 +3,48 @@
 
 {% block content %}
     {% if user.is_authorized %}
-        <h3 class="light-blue-text text-darken-1">Shift templates</h3>
-        <a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_shift_template' %}"><i class="material-icons left">add</i>Create shift template</a><br><br>
-        <div class="card">
-            <div class="card-content">
-                <table class="striped highlight responsive-table">
-                    <thead class="grey darken-1 white-text">
-                        <tr>
-                            <th>Name</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Work hours<br>Break</th>
-                            <th>Department<br>Qualifications</th>
-                            <th>Note</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in all_entries %}
-                        <tr>
-                            <td>{{ entry.name }}</td>
-                            <td>{{ entry.start_time|date:"H:i" }}</td>
-                            <td>{{ entry.end_time|date:"H:i" }}</td>
-                            <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
-                            <td>
-                                {{ entry.department }}<br>
-                                {% for qualification in entry.qualifications %}
-                                    <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
-                                        <b>{{ qualification.qualification.name }}</b>
-                                    </span>
-                                {% endfor %}
-                            </td>
-                            <td>{{ entry.note }}</td>
-                            <td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_shift_template' entry.id %}"><i class="material-icons">edit</i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div id="add-modal" class="modal">
+            <div id="add-modal-content"></div>
         </div>
+        <div id="edit-modal" class="modal">
+            <div id="edit-modal-content"></div>
+        </div>
+        <div id="view-modal" class="modal">
+            <div id="view-modal-content"></div>
+        </div>
+        <br><br><br>
+        <div id="holiday-content">
+            <form hx-post="{% url 'shift_templates' %}" hx-target="#shift-template-table" hx-swap="morph">
+                {% csrf_token %}
+                <div class="card card-color">
+                    <div class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s4 card-title white-text"><b class="accent-color-text"><i class="material-icons left">event</i>Shift templates</b></div>
+                            <div class="s4 input-field">
+                                <i class="material-icons prefix">local_offer</i>
+                                <select name="department" hx-post="{% url 'shift_templates' %}" hx-trigger="change" hx-target="#shift-template-table" hx-swap="morph">
+                                    <option value="" selected>All departments</option>
+                                    {% for entry in departments %}
+                                        <option>{{ entry }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Department</label>
+                            </div>
+                            <div class="s4 input-field">
+                                <i class="material-icons prefix">search</i>
+                                <input id="id_keyword" type="search" name="keyword" placeholder=" " hx-post="{% url 'shift_templates' %}" hx-trigger="keyup delay:250ms" hx-target="#shift-template-table" hx-swap="morph">
+                                <label for="id_keyword">Keyword</label>
+                            </div>
+                        </div>
+                        <div id="loader" hx-post="{% url 'shift_templates' %}" hx-trigger="load once" hx-target="#shift-template-table" hx-swap="morph"></div>
+                        <br><a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'create_shift_template' %}" hx-target="#add-modal" hx-swap="morph"><i class="material-icons left">add</i></a>
+                    </div>
+
+                    <div id="shift-template-table" class="card-content card-color"></div>
+                </div>
+            </form>
+        </div>
+        <br><br><br>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

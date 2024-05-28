@@ -1,17 +1,20 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from Departments.models import Department, DepartmentQualifications
 from Qualifications.models import Qualification
-from .forms import ShiftTemplateForm
+from .forms import ShiftTemplateForm, SearchForm
 from .models import ShiftTemplate, ShiftTemplateQualifications
 
 
 class ShiftTemplateCreationView(CreateView):
     model = ShiftTemplate
     form_class = ShiftTemplateForm
-    template_name = 'shiftTemplates/create_shift_template.html'
+    template_name = 'shiftTemplates/fragments/create_shift_template.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -91,7 +94,7 @@ def edit_shift_template(request, **kwargs):
             'non_associated_qualifications': non_associated_qualifications,
             'associated_qualifications': associated_qualifications
         }
-        return render(request, 'shiftTemplates/edit_shift_template.html', context)
+        return render(request, 'shiftTemplates/fragments/edit_shift_template.html', context)
 
 
 def delete_shift_template(request, **kwargs):
@@ -105,20 +108,35 @@ def delete_shift_template(request, **kwargs):
 
 
 def shift_template_list(request):
-    all_entries = None
-    entries_found = None
-    search = False
-
     if request.method == "POST":
-        search = True
-    else:
-        all_entries = ShiftTemplate.objects.all()
-        for entry in all_entries:
-            qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by(
-                'qualification__name')
-            entry.qualifications = qualifications
+        data = SearchForm(request.POST).data
+        department = data['department']
+        keyword = data['keyword']
 
+        q_department = Q()
+        q_keyword = Q()
+        if department != '':
+            q_department = Q(department__name__icontains=department)
+        if keyword != '':
+            q_name = Q(name__icontains=keyword)
+            q_note = Q(note__icontains=keyword)
+            q_keyword = Q(q_name | q_note)
+        entries = ShiftTemplate.objects.filter(q_department & q_keyword).order_by('department__name')
+    else:
+        entries = ShiftTemplate.objects.all()
+        for entry in entries:
+            qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by('qualification__name')
+            entry.qualifications = qualifications
+    departments = Department.objects.all().order_by('name')
+
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'all_entries': all_entries,
+        'page_obj': page_obj,
+        'entries': entries.count(),
+        'departments': departments
     }
-    return render(request, 'shiftTemplates/shift_template_list.html', context)
+    if request.method == "POST":
+        return HttpResponse(render(request, 'shiftTemplates/fragments/shift_template_table.html', context))
+    return HttpResponse(render(request, 'shiftTemplates/shift_template_list.html', context))

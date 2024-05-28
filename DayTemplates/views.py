@@ -2,20 +2,23 @@ import base64
 from datetime import datetime, timedelta
 
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 
 from ShiftTemplates.models import ShiftTemplate, ShiftTemplateQualifications
 from Shifts.models import Shift, ShiftQualifications
 from utils.create_timeline import draw_timeline
-from .forms import DayTemplateForm, PasteTemplateForm
+from .forms import DayTemplateForm, PasteTemplateForm, SearchForm
 from .models import DayTemplate, DayShiftTemplates
 
 
 class DayTemplateCreationView(CreateView):
     model = DayTemplate
     form_class = DayTemplateForm
-    template_name = 'dayTemplates/create_day_template.html'
+    template_name = 'dayTemplates/fragments/create_day_template.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -102,7 +105,7 @@ def edit_day_template(request, **kwargs):
             'associated_shift_templates': associated_shift_templates,
             'timeline': timeline
         }
-        return render(request, 'dayTemplates/edit_day_template.html', context)
+        return render(request, 'dayTemplates/fragments/edit_day_template.html', context)
 
 
 def delete_day_template(request, **kwargs):
@@ -177,24 +180,33 @@ def view_day_template(request, **kwargs):
         'associated_shift_templates': associated_shift_templates,
         'timeline': timeline
     }
-    return render(request, 'dayTemplates/day_template_detail.html', context)
+    return render(request, 'dayTemplates/fragments/day_template_detail.html', context)
 
 
 def day_template_list(request):
-    all_entries = None
-    entries_found = None
-    search = False
-
     if request.method == "POST":
-        search = True
+        data = SearchForm(request.POST).data
+        keyword = data['keyword']
+
+        q = Q()
+        if keyword != '':
+            q_name = Q(name__icontains=keyword)
+            q_note = Q(description__icontains=keyword)
+            q = Q(q_name | q_note)
+        entries = DayTemplate.objects.filter(q).order_by('name')
     else:
-        all_entries = DayTemplate.objects.all()
-        for entry in all_entries:
-            shift_templates = DayShiftTemplates.objects.filter(day_template_id=entry.id).order_by(
-                'shift_template__name')
+        entries = DayTemplate.objects.all()
+        for entry in entries:
+            shift_templates = DayShiftTemplates.objects.filter(day_template_id=entry.id).order_by('shift_template__name')
             entry.shift_templates = shift_templates
 
+    paginator = Paginator(entries, per_page=10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'all_entries': all_entries,
+        'page_obj': page_obj,
+        'entries': entries.count()
     }
-    return render(request, 'dayTemplates/day_template_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'dayTemplates/fragments/day_template_table.html', context))
+    return HttpResponse(render(request, 'dayTemplates/day_template_list.html', context))

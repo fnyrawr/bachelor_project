@@ -25,8 +25,7 @@
                             <thead class="header-color white-text">
                             <tr>
                                 <th>Date</th>
-                                <th>Start</th>
-                                <th>End</th>
+                                <th>Start<br>End</th>
                                 <th>Work hours<br>Break</th>
                                 <th>Department<br>Qualifications</th>
                                 <th>Note</th>
@@ -39,8 +38,7 @@
                                         {{ entry.get_date|date:"l" }}<br>
                                         <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
                                     </td>
-                                    <td><b>{{ entry.get_start_time|date:"H:i" }}</b></td>
-                                    <td><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
+                                    <td><b>{{ entry.get_start_time|date:"H:i" }}</b><br><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
                                     <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
                                     <td>
                                         {% if entry.employee != None and entry.employee.department != entry.department %}
@@ -78,8 +76,7 @@
                             <thead class="header-color white-text">
                             <tr>
                                 <th>Date</th>
-                                <th>Start</th>
-                                <th>End</th>
+                                <th>Start<br>End</th>
                                 <th>Work hours<br>Break</th>
                                 <th>Department<br>Qualifications</th>
                                 <th>Note</th>
@@ -92,8 +89,7 @@
                                         {{ entry.get_date|date:"l" }}<br>
                                         <b>{{ entry.get_date|date:"d.m.Y" }}</b><br>
                                     </td>
-                                    <td><b>{{ entry.get_start_time|date:"H:i" }}</b></td>
-                                    <td><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
+                                    <td><b>{{ entry.get_start_time|date:"H:i" }}</b><br><b>{{ entry.get_end_time|date:"H:i" }}</b></td>
                                     <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
                                     <td>
                                         {% if entry.employee != None and entry.employee.department != entry.department %}

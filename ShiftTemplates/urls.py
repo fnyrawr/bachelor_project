@@ -9,6 +9,7 @@ urlpatterns = [
     path('edit/<int:pk>', views.edit_shift_template, name='edit_shift_template'),
     path('delete/<int:pk>', views.delete_shift_template, name='delete_shift_template'),
     # ShiftTemplatesQualifications
+    path('show/<int:pk>/qualifications', views.get_qualifications, name='shift_template_qualifications'),
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification,
          name='add_shift_template_qualification'),
     path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,

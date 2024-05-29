@@ -11,7 +11,7 @@
         <tbody>
         {% for entry in page_obj %}
             <tr>
-                <td>{{ entry.name }}</td>
+                <td><b>{{ entry.name }}</b></td>
                 <td>{{ entry.description }}</td>
                 <td><a class="modal-trigger waves-effect waves-light btn grey darken-1" data-target="view-modal" hx-get="{% url 'view_day_template' entry.id %}" hx-target="#view-modal" hx-swap="morph">{{ entry.get_shifts.count }}</a></td>
                 <td>
@@ -23,7 +23,7 @@
     </table>
     </table><br>
 
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries.count }} entries)</span>
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
     <ul class="pagination center">
         {% if page_obj.has_previous %}
             <li class="waves-effect"><a hx-post="{% url 'day_templates' %}?page={{ page_obj.previous_page_number }}" hx-target="#day-template-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>

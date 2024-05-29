@@ -42,7 +42,7 @@ def add_shift_template(request, **kwargs):
             .filter(day_template=selected_day_template, shift_template=selected_shift_template).exists():
         DayShiftTemplates.objects.create(day_template=selected_day_template, shift_template=selected_shift_template)
 
-    return redirect('edit_day_template', pk=day_template_id)
+    return redirect('view_day_template', pk=day_template_id)
 
 
 def remove_shift_template(request, **kwargs):
@@ -55,7 +55,7 @@ def remove_shift_template(request, **kwargs):
     if entry is not None:
         entry.delete()
 
-    return redirect('edit_day_template', pk=day_template_id)
+    return redirect('view_day_template', pk=day_template_id)
 
 
 def edit_day_template(request, **kwargs):
@@ -77,33 +77,10 @@ def edit_day_template(request, **kwargs):
         return redirect('day_templates')
     # GET request
     else:
-        associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)\
-            .order_by('shift_template__start_time', 'shift_template__end_time', 'shift_template__name')
-        for entry in associated_shift_templates:
-            qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id)\
-                .order_by('qualification__name')
-            entry.qualifications = qualifications
-        non_associated_shift_templates = ShiftTemplate.objects.all().exclude(
-            id__in=associated_shift_templates.values('shift_template'))
-        for entry in non_associated_shift_templates:
-            qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by(
-                'qualification__name')
-            entry.qualifications = qualifications
-        # get timeline rendered
-        shift_templates = []
-        for template in associated_shift_templates:
-            shift_templates.append(template.shift_template)
-        timeline = None
-        if len(shift_templates) > 0:
-            contents = draw_timeline(shift_templates, 'day_templates')
-            timeline = base64.b64encode(contents).decode()
         form = DayTemplateForm()
         context = {
             'form': form,
-            'selected_day_template': selected_day_template,
-            'non_associated_shift_templates': non_associated_shift_templates,
-            'associated_shift_templates': associated_shift_templates,
-            'timeline': timeline
+            'selected_day_template': selected_day_template
         }
         return render(request, 'dayTemplates/fragments/edit_day_template.html', context)
 
@@ -157,30 +134,39 @@ def paste_shifts_to_date(request, **kwargs):
                 new_qualification.save()
         messages.success(request, "Successfully pasted shifts.")
 
-    return redirect('view_day_template', pk=day_template_id)
+    return redirect('day_templates')
 
 
 def view_day_template(request, **kwargs):
     day_template_id = kwargs['pk']
     selected_day_template = DayTemplate.objects.get(id=day_template_id)
-    associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template)\
+    associated_shift_templates = DayShiftTemplates.objects.filter(day_template=selected_day_template) \
         .order_by('shift_template__start_time', 'shift_template__end_time', 'shift_template__name')
     for entry in associated_shift_templates:
         qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id) \
             .order_by('qualification__name')
         entry.qualifications = qualifications
+    non_associated_shift_templates = ShiftTemplate.objects.all().exclude(
+        id__in=associated_shift_templates.values('shift_template'))
+    for entry in non_associated_shift_templates:
+        qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by(
+            'qualification__name')
+        entry.qualifications = qualifications
     # get timeline rendered
     shift_templates = []
     for template in associated_shift_templates:
         shift_templates.append(template.shift_template)
-    contents = draw_timeline(shift_templates, 'day_templates')
-    timeline = base64.b64encode(contents).decode()
+    timeline = None
+    if len(shift_templates) > 0:
+        contents = draw_timeline(shift_templates, 'day_templates')
+        timeline = base64.b64encode(contents).decode()
     context = {
         'selected_day_template': selected_day_template,
+        'non_associated_shift_templates': non_associated_shift_templates,
         'associated_shift_templates': associated_shift_templates,
         'timeline': timeline
     }
-    return render(request, 'dayTemplates/fragments/day_template_detail.html', context)
+    return HttpResponse(render(request, 'dayTemplates/fragments/day_template_detail.html', context))
 
 
 def day_template_list(request):

@@ -83,8 +83,7 @@ def edit_shift_template(request, **kwargs):
     # GET request
     else:
         associated_qualifications = ShiftTemplateQualifications.objects.filter(shift_template=selected_shift_template)
-        non_associated_qualifications = Qualification.objects.all().exclude(
-            id__in=associated_qualifications.values('qualification'))
+        non_associated_qualifications = Qualification.objects.all().exclude(id__in=associated_qualifications.values('qualification'))
         departments = Department.objects.all()
         form = ShiftTemplateForm()
         context = {
@@ -107,6 +106,20 @@ def delete_shift_template(request, **kwargs):
     return redirect('shift_templates')
 
 
+def get_qualifications(request, **kwargs):
+    shift_template_id = kwargs['pk']
+    selected_shift_template = ShiftTemplate.objects.get(id=shift_template_id)
+    associated_qualifications = ShiftTemplateQualifications.objects.filter(shift_template=selected_shift_template)
+    non_associated_qualifications = Qualification.objects.all().exclude(id__in=associated_qualifications.values('qualification'))
+    context = {
+        'shift_template_id': shift_template_id,
+        'associated_qualifications': associated_qualifications,
+        'non_associated_qualifications': non_associated_qualifications
+    }
+
+    return HttpResponse(render(request, 'shiftTemplates/fragments/shift_template_qualifications.html', context))
+
+
 def shift_template_list(request):
     if request.method == "POST":
         data = SearchForm(request.POST).data
@@ -124,9 +137,9 @@ def shift_template_list(request):
         entries = ShiftTemplate.objects.filter(q_department & q_keyword).order_by('department__name')
     else:
         entries = ShiftTemplate.objects.all()
-        for entry in entries:
-            qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by('qualification__name')
-            entry.qualifications = qualifications
+    for entry in entries:
+        qualifications = ShiftTemplateQualifications.objects.filter(shift_template_id=entry.id).order_by('qualification__name')
+        entry.qualifications = qualifications
     departments = Department.objects.all().order_by('name')
 
     paginator = Paginator(entries, per_page=10)

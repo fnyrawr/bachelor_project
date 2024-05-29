@@ -3,8 +3,7 @@
         <thead class="header-color white-text">
         <tr>
             <th>Name</th>
-            <th>Start</th>
-            <th>End</th>
+            <th>Start<br>End</th>
             <th>Work hours<br>Break</th>
             <th>Department<br>Qualifications</th>
             <th>Note</th>
@@ -14,14 +13,13 @@
         <tbody>
         {% for entry in page_obj %}
             <tr>
-                <td>{{ entry.name }}</td>
-                <td>{{ entry.start_time|date:"H:i" }}</td>
-                <td>{{ entry.end_time|date:"H:i" }}</td>
+                <td><b>{{ entry.name }}</b></td>
+                <td><b>{{ entry.start_time|date:"H:i" }}</b><br><b>{{ entry.end_time|date:"H:i" }}</b></td>
                 <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
                 <td>
                     {{ entry.department }}<br>
                     {% for qualification in entry.qualifications %}
-                        <span class="new badge header-color white-text z-depth-1" data-badge-caption="">
+                        <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
                             <b>{{ qualification.qualification.name }}</b>
                         </span>
                     {% endfor %}
@@ -35,7 +33,7 @@
         </tbody>
     </table><br>
 
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries.count }} entries)</span>
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
     <ul class="pagination center">
         {% if page_obj.has_previous %}
             <li class="waves-effect"><a hx-post="{% url 'shift_templates' %}?page={{ page_obj.previous_page_number }}" hx-target="#shift-template-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>

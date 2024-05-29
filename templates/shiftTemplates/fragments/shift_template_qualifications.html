@@ -1,0 +1,51 @@
+<div id="shift-template-qualifications">
+    <script>
+        var modal_elems = document.querySelector('#add-qualification-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+
+    <div id="add-qualification-modal" class="modal content-section card-color">
+        <div class="modal-content">
+            <h5 class="header-color-text"><b>Add qualification</b></h5>
+            <table class="striped highlight responsive-table">
+                <thead class="header-color white-text">
+                <th>Qualification</th>
+                <th>Description</th>
+                <th>Add</th>
+                </thead>
+                {% for entry in non_associated_qualifications %}
+                    <tr>
+                        <td><b>{{ entry.name }}</b></td>
+                        <td>{{ entry.description }}</td>
+                        <td><a class="waves-effect waves-light btn accent-color" hx-get="{% url 'add_shift_template_qualification' shift_template_id entry.id %}" hx-target="#shift-template-qualifications" hx-swap="morph" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons">add</i></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    {% if associated_qualifications.count > 0 %}
+        <table class="striped highlight responsive-table">
+            <thead class="header-color white-text">
+            <tr>
+                <th>Qualification</th>
+                <th>Description</th>
+                {% if user.is_admin %}<th>Delete</th>{% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for entry in associated_qualifications %}
+                <tr>
+                    <td><b>{{ entry.qualification.name }}</b></td>
+                    <td>{{ entry.qualification.description }}</td>
+                    {% if user.is_admin %}<td>
+                        <a class="waves-effect waves-light btn-flat warning-color-text" hx-get="{% url 'remove_shift_template_qualification' shift_template_id entry.qualification.id %}" hx-target="#shift-template-qualifications" hx-swap="morph"><i class="material-icons">delete_forever</i></a>
+                    </td>{% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h6><i class="material-icons accent-color-text left">info</i>No qualifications assigned</h6>
+    {% endif %}
+</div>

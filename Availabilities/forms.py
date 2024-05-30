@@ -60,8 +60,9 @@ class AvailabilityForm(forms.ModelForm):
 class SearchForm(forms.ModelForm):
     filter_weekday = forms.ChoiceField(choices=WEEKDAYS_search)
     filter_tendency = forms.ChoiceField(choices=TENDENCIES_search)
+    filter_is_available = forms.BooleanField(initial=True, required=False)
     keyword = forms.CharField(required=False)
 
     class Meta:
         model = Availability
-        fields = ['filter_weekday', 'filter_tendency', 'keyword']
+        fields = ['filter_weekday', 'filter_is_available', 'filter_tendency', 'keyword']

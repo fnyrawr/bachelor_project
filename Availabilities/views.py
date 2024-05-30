@@ -15,7 +15,7 @@ from .forms import AvailabilityForm, SearchForm
 class AvailabilityCreationView(CreateView):
     model = Availability
     form_class = AvailabilityForm
-    template_name = 'availabilities/create_availability.html'
+    template_name = 'availabilities/fragments/create_availability.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -95,7 +95,7 @@ def edit_availability(request, **kwargs):
             'selected_availability': selected_availability,
             'employees': employees
         }
-        return render(request, 'availabilities/edit_availability.html', context)
+        return render(request, 'availabilities/fragments/edit_availability.html', context)
 
 
 def edit_own_availability(request, **kwargs):
@@ -179,14 +179,20 @@ def availability_list(request):
         searchForm = SearchForm(request.POST)
         data = searchForm.data
         filter_weekday = data['filter_weekday']
+        filter_is_available = data['filter_is_available']
         filter_tendency = data['filter_tendency']
         keyword = data['keyword']
         q_weekday = Q()
+        q_is_available = Q()
         q_tendency = Q()
         q_keyword = Q()
 
         if int(filter_weekday) > 0:
             q_weekday = Q(weekday__exact=filter_weekday)
+        if int(filter_is_available) == 0:
+            q_is_available = Q(is_available__exact=False)
+        if int(filter_is_available) == 1:
+            q_is_available = Q(is_available__exact=True)
         if int(filter_tendency) > -1:
             q_tendency = Q(tendency__exact=filter_tendency)
         if keyword != '':
@@ -194,7 +200,7 @@ def availability_list(request):
             first_name = Q(employee__first_name__icontains=keyword)
             note = Q(note__icontains=keyword)
             q_keyword = Q(last_name | first_name | note)
-        q = Q(q_weekday & q_tendency & q_keyword)
+        q = Q(q_weekday & q_is_available & q_tendency & q_keyword)
         entries = Availability.objects.filter(q)
     else:
         filter_weekday = datetime.today().weekday()+1
@@ -215,4 +221,6 @@ def availability_list(request):
         'form': SearchForm,
         'data': data
     }
-    return render(request, 'availabilities/availability_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'availabilities/fragments/availability_table.html', context))
+    return HttpResponse(render(request, 'availabilities/availability_list.html', context))

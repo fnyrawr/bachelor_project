@@ -3,109 +3,61 @@
 
 {% block content %}
     {% if user.is_authorized %}
-        <h3 class="light-blue-text text-darken-1">Availabilities</h3>
-        <ul class="collapsible">
-            <li {% if search %}class="active"{% endif %}>
-                <div class="collapsible-header grey lighten-3"><i class="material-icons left">search</i>Search</div>
-                <div class="collapsible-body grey lighten-5">
-                    <form method="POST" action="{% url 'availabilities' %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="input-field col s6 m4">
+        <div id="add-modal" class="modal">
+            <div id="add-modal-content"></div>
+        </div>
+        <div id="edit-modal" class="modal">
+            <div id="edit-modal-content"></div>
+        </div>
+        <br><br><br>
+        <div id="absence-content">
+            <form hx-post="{% url 'availabilities' %}" hx-target="#availability-table" hx-swap="morph">
+                {% csrf_token %}
+                <div class="card card-color">
+                    <div class="card-content header-color">
+                        <div class="row" style="gap: 1em">
+                            <div class="s3 card-title white-text"><b class="accent-color-text"><i class="material-icons left">event_available</i>Availabilities</b></div>
+                            <div class="s2 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <select name="filter_weekday">
+                                <select name="filter_weekday" hx-post="{% url 'availabilities' %}" hx-trigger="change" hx-target="#availability-table" hx-swap="morph">
                                     {% for weekday in form.filter_weekday %}
                                         <option {% if data.filter_weekday == weekday.data.value %}selected{% endif %} value="{{ weekday.data.value }}">{{ weekday.data.label }}</option>
                                     {% endfor %}
                                 </select>
                                 <label>Weekday</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s2 input-field">
                                 <i class="material-icons prefix">event_calendar</i>
-                                <select name="filter_tendency">
+                                <select name="filter_is_available" hx-post="{% url 'availabilities' %}" hx-trigger="change" hx-target="#availability-table" hx-swap="morph">
+                                    <option value="-1">All</option>
+                                    <option value="1">Available</option>
+                                    <option value="0">Not available</option>
+                                </select>
+                                <label>Availability</label>
+                            </div>
+                            <div class="s2 input-field">
+                                <i class="material-icons prefix">event_calendar</i>
+                                <select name="filter_tendency" hx-post="{% url 'availabilities' %}" hx-trigger="change" hx-target="#availability-table" hx-swap="morph">
                                     {% for tendency in form.filter_tendency %}
                                         <option {% if data.filter_tendency == tendency.data.value %}selected{% endif %} value="{{ tendency.data.value }}">{{ tendency.data.label }}</option>
                                     {% endfor %}
                                 </select>
                                 <label>Tendency</label>
                             </div>
-                            <div class="input-field col s6 m4">
+                            <div class="s3 input-field">
                                 <i class="material-icons prefix">search</i>
-                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %}>
+                                <input id="id_keyword" type="search" name="keyword" {% if data.keyword %}value="{{ data.keyword }}"{% endif %} placeholder=" " hx-post="{% url 'availabilities' %}" hx-trigger="keyup delay:250ms" hx-target="#availability-table" hx-swap="morph">>
                                 <label for="id_keyword">Keyword</label>
                             </div>
                         </div>
-                        <button type="submit" class="waves-effect waves-light btn light-blue darken-1"><i class="material-icons left">search</i>Search</button>
-                        {% if search %}
-                            <a class="waves-effect waves-light btn-flat red-text text-darken-1" href="{% url 'availabilities' %}"><i class="material-icons left">clear</i>Clear</a>
-                        {% endif %}
-                    </form>
+                        <div id="loader" hx-post="{% url 'availabilities' %}" hx-trigger="load once" hx-target="#availability-table" hx-swap="morph"></div>
+                        <br><a class="modal-trigger btn-floating accent-color white-text right" data-target="add-modal" hx-get="{% url 'create_availability' %}" hx-target="#add-modal" hx-swap="morph"><i class="material-icons left">add</i></a>
+                    </div>
+
+                    <div id="availability-table" class="card-content card-color"></div>
                 </div>
-            </li>
-        </ul>
-
-        {% if user.is_admin %}<a class="waves-effect waves-light btn light-blue darken-1 right" href="{% url 'create_availability' %}"><i class="material-icons left">add</i>Create availability</a><br><br>{% endif %}
-        <div class="card">
-            <div class="card-content">
-                <table class="striped highlight responsive-table">
-                    <thead class="grey darken-1 white-text">
-                        <tr>
-                            <th>Weekday</th>
-                            <th>Available</th>
-                            <th>Employee</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Tendency</th>
-                            <th>Note</th>
-                            {% if user.is_admin %}<th>Edit</th>{% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in page_obj %}
-                        <tr>
-                            <td>{{ entry.get_weekday_display }}</td>
-                            <td>
-                                {% if entry.is_available %}
-                                    <i class="material-icons light-green-text text-darken-1">done</i>
-                                {% else %}
-                                    <i class="material-icons red-text text-darken-1">close</i>
-                                {% endif %}
-                            </td>
-                            <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
-                            <td>{{ entry.start_time|date:"H:i" }}</td>
-                            <td>{{ entry.end_time|date:"H:i" }}</td>
-                            <td>{{ entry.get_tendency_display }}</td>
-                            <td>{{ entry.note }}</td>
-                            {% if user.is_admin %}<td>
-                                <a class="waves-effect waves-light btn amber darken-1" href="{% url 'edit_availability' entry.id %}"><i class="material-icons">edit</i></a>
-                            </td>{% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            </form>
         </div>
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
-        <ul class="pagination center">
-            {% if page_obj.has_previous %}
-                <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
-            {% else %}
-                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
-            {% endif %}
-            {% for page in page_obj.paginator.page_range %}
-                {% if page == page_obj.number %}
-                    <li class="active light-blue darken-1"><a>{{ page_obj.number }}</a></li>
-                {% else %}
-                    <li class="waves-effect"><a href="?page={{ page }}">{{ page }}</a></li>
-                {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-                <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
-            {% else %}
-                <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
-            {% endif %}
-        </ul>
     {% else %}
         {% include 'forbidden.html' %}
     {% endif %}

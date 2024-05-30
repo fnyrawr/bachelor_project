@@ -1,0 +1,65 @@
+<div id="wish-table">
+    <div class="card-content card-color">
+        {% if entries > 0 %}
+            <table class="striped highlight responsive-table">
+                <thead class="header-color white-text">
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Available</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Tendency</th>
+                    <th>Note</th>
+                    {% if user.is_admin %}<th>Edit</th>{% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in page_obj %}
+                    <tr>
+                        <td>{{ entry.employee.first_name }}<br><b>{{ entry.employee.last_name }}</b></td>
+                        <td>{{ entry.date|date:"l" }}<br><b>{{ entry.date }}</b></td>
+                        <td>
+                            {% if entry.is_available %}
+                                <i class="material-icons light-green-text text-darken-1">done</i>
+                            {% else %}
+                                <i class="material-icons red-text text-darken-1">close</i>
+                            {% endif %}
+                        </td>
+                        <td>{{ entry.start_time|date:"H:i" }}</td>
+                        <td>{{ entry.end_time|date:"H:i" }}</td>
+                        <td>{% if entry.get_tendency_display %}<span class="badge new grey darken-1 white-text" data-badge-caption=""><b>{{ entry.get_tendency_display }}</b></span>{% endif %}</td>
+                        <td>{{ entry.note }}</td>
+                        {% if user.is_admin %}<td>
+                            <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_wish' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                        </td>{% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            <ul class="pagination center">
+                {% if page_obj.has_previous %}
+                    <li class="waves-effect"><a hx-post="{% url 'wishes' %}?page={{ page_obj.previous_page_number }}" hx-target="#wish-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+                {% endif %}
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page == page_obj.number %}
+                        <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+                    {% else %}
+                        <li class="waves-effect"><a hx-post="{% url 'wishes' %}?page={{ page }}" hx-target="#wish-table" hx-swap="morph">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="waves-effect"><a hx-post="{% url 'wishes' %}?page={{ page_obj.next_page_number }}" hx-target="#wish-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+                {% endif %}
+            </ul>
+        {% else %}
+            <h6><i class="material-icons accent-color-text left">info</i>No shift wishes found matching given filters</h6>
+        {% endif %}
+    </div>
+</div>

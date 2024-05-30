@@ -15,7 +15,7 @@ from .forms import WishForm, SearchForm
 class WishCreationView(CreateView):
     model = Wish
     form_class = WishForm
-    template_name = 'wishes/create_wish.html'
+    template_name = 'wishes/fragments/create_wish.html'
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -95,7 +95,7 @@ def edit_wish(request, **kwargs):
             'selected_wish': selected_wish,
             'employees': employees
         }
-        return render(request, 'wishes/edit_wish.html', context)
+        return render(request, 'wishes/fragments/edit_wish.html', context)
 
 
 def edit_own_wish(request, **kwargs):
@@ -216,14 +216,20 @@ def wish_list(request):
         searchForm = SearchForm(request.POST)
         data = searchForm.data
         filter_date = data['filter_date']
+        filter_is_available = data['filter_is_available']
         filter_tendency = data['filter_tendency']
         keyword = data['keyword']
         q_date = Q()
+        q_is_available = Q()
         q_tendency = Q()
         q_keyword = Q()
 
         if filter_date != '':
             q_date = Q(date__exact=filter_date)
+        if int(filter_is_available) == 0:
+            q_is_available = Q(is_available__exact=False)
+        if int(filter_is_available) == 1:
+            q_is_available = Q(is_available__exact=True)
         if int(filter_tendency) > -1:
             q_tendency = Q(tendency__exact=filter_tendency)
         if keyword != '':
@@ -231,7 +237,7 @@ def wish_list(request):
             first_name = Q(employee__first_name__icontains=keyword)
             note = Q(note__icontains=keyword)
             q_keyword = Q(last_name | first_name | note)
-        q = Q(q_date & q_tendency & q_keyword)
+        q = Q(q_date & q_is_available & q_tendency & q_keyword)
         entries = Wish.objects.filter(q)
     else:
         filter_date = datetime.today().strftime('%Y-%m-%d')
@@ -252,4 +258,6 @@ def wish_list(request):
         'form': SearchForm,
         'data': data
     }
-    return render(request, 'wishes/wish_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'wishes/fragments/wish_table.html', context))
+    return HttpResponse(render(request, 'wishes/wish_list.html', context))

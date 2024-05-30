@@ -171,7 +171,6 @@ def own_availabilities(request):
 
 
 def availability_list(request):
-    data = None
     search = False
 
     if request.method == "POST":

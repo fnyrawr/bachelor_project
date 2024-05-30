@@ -1,0 +1,86 @@
+<div id="edit-modal-content">
+    <script>
+        var elem = document.getElementsByClassName('select-box');
+        var instance = M.FormSelect.init(elem);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+
+        var modal_elems = document.querySelector('#delete-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+
+    <div id="delete-modal" class="modal content-section card-color">
+        <div class="modal-content">
+            <h5><b class="warning-color-text">Delete Shift wish</b></h5>
+            <p>Are you sure you really want to delete this entry?</p>
+        </div>
+        <div class="modal-footer header-color">
+            <a class="modal-close waves-effect waves-light btn-flat white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">close</i>Abort and close</a>
+            <a class="waves-effect waves-light btn warning-color white-text" onclick="M.Modal.getInstance(document.querySelector('#delete-modal')).close(); M.Modal.getInstance(document.querySelector('#edit-modal')).close();" hx-get="{% url 'delete_wish' selected_wish.id %}" hx-target="#wish-table" hx-swap="morph"><i class="material-icons left">delete_forever</i>Yes, delete</a>
+        </div>
+    </div>
+
+    <form hx-post="{% url 'edit_wish' selected_wish.id %}" hx-target="#wish-table" hx-swap="morph">
+        <div class="modal-content card-color">
+            {% csrf_token %}
+            <h5 class="header-color-text"><b>Edit Shift wish</b></h5>
+            <input type="hidden" name="employee" value="{{ selected_wish.employee.id }}">
+            <input type="hidden" name="date" value="{{ selected_wish.date|date:"Y-m-d" }}">
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">person</i>
+                    <input type="text" autocapitalize="none" maxlength="25" disabled value="{{ selected_wish.employee }}" id="id_employee" placeholder=" ">
+                    <label>*Employee</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input type="text" autocapitalize="none" maxlength="25" disabled value="{{ selected_wish.date|date:"Y-m-d" }}" id="id_date" placeholder=" ">
+                    <label for="id_date">*Date</label>
+                </div>
+                <div class="s2 input-field">
+                    <label>
+                        <input type="checkbox" {% if selected_wish.is_available %}checked="checked"{% endif %} name="is_available" />
+                        <span>Available</span>
+                    </label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_start_time" name="start_time" type="time" value="{{ selected_wish.start_time|date:"H:i" }}" required placeholder=" ">
+                    <label for="id_start_time">*Start</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_end_time" name="end_time" type="time" value="{{ selected_wish.end_time|date:"H:i" }}" required placeholder=" ">
+                    <label for="id_end_time">*End</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <select name="tendency" class="select-box">
+                        {% for tendency in form.tendency %}
+                            <option value="{{ tendency.data.value }}" {% if selected_wish.tendency == tendency.data.value %}selected{% endif %}>{{ tendency.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Tendency</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em; margin-bottom: 10%">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" ">{{ selected_wish.note }}</textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update Shift wish</button>
+            <a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>
+        </div>
+    </form>
+</div>

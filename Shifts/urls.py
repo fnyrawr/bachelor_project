@@ -9,10 +9,12 @@ urlpatterns = [
     path('own/', views.own_shifts, name='own_shifts'),
     path('create/', views.ShiftCreationView.as_view(), name='create_shift'),
     path('edit/<int:pk>', views.edit_shift, name='edit_shift'),
+    path('employee/<int:pk>', views.get_employees, name='shift_employee'),
     path('assign/<int:pk1>/employee/<int:pk2>', views.assign_employee, name='assign_employee'),
     path('remove/<int:pk>', views.remove_employee, name='remove_employee'),
     path('delete/<int:pk>', views.delete_shift, name='delete_shift'),
     # ShiftQualifications
+    path('show/<int:pk>/qualifications', views.get_qualifications, name='shift_qualifications'),
     path('show/<int:pk1>/add_qualification/<int:pk2>', views.add_qualification,
          name='add_shift_qualification'),
     path('show/<int:pk1>/remove_qualification/<int:pk2>', views.remove_qualification,

@@ -28,7 +28,7 @@
                         </div>
                         <div id="loader" hx-post="{% url 'shiftplan' %}" hx-trigger="load once" hx-target="#shiftplan-display" hx-swap="morph"></div>
                         <button type="submit" name="create_pdf" class="btn-floating accent-color white-text tooltipped right" action="{% url 'shiftplan' %}" style="margin-left: 1%" data-position="bottom" data-tooltip="Download shiftplan"><i class="material-icons left">download</i></button>
-                    </div>
+                    </div><br>
                     <div class="card-content card-color">
                         <div id="shiftplan-display">
                             <div class="progress">

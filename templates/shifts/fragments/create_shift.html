@@ -1,0 +1,80 @@
+<div id="add-modal">
+    <script>
+        var elem = document.getElementsByClassName('select-box');
+        var instance = M.FormSelect.init(elem);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+    </script>
+
+    <form hx-post="{% url 'create_shift' %}" hx-target="#shift-table" hx-swap="morph">
+        <div class="modal-content card-color">
+            <h5 class="header-color-text"><b>Create Shift</b></h5>
+            {% csrf_token %}
+            <div class="row" style="gap: 1em">
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <input id="id_date" autofocus name="date" type="text" class="datepicker" placeholder=" " required>
+                    <label for="id_date">*Date</label>
+                    <!-- set today as default date -->
+                    <script>$("#id_date").attr("value", new Date().toISOString().slice(0, 10))</script>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">event_calendar</i>
+                    <select name="department" class="select-box">
+                        {% for department in form.department %}
+                            <option value="{{ department.data.value }}">{{ department.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>*Department</label>
+                </div>
+                <div class="s4 input-field">
+                    <i class="material-icons prefix">person</i>
+                    <select name="employee" class="select-box">
+                        {% for employee in form.employee %}
+                            <option value="{{ employee.data.value }}">{{ employee.data.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Employee</label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s3 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_start_time" name="start_time" type="time" value="12:00" placeholder=" " required>
+                    <label for="id_start_time">*Start</label>
+                </div>
+                <div class="s3 input-field">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="id_end_time" name="end_time" type="time" value="18:00" placeholder=" " required>
+                    <label for="id_end_time">*End</label>
+                </div>
+                <div class="s3 input-field">
+                    <i class="material-icons prefix">label</i>
+                    <input id="id_break_duration" type="time" name="break_duration" autocapitalize="none" value="00:30" placeholder=" " required >
+                    <label for="id_break_duration">*Break</label>
+                </div>
+                <div class="s3 input-field">
+                    <label>
+                        <input type="checkbox" name="highlight" />
+                        <span>Highlight</span>
+                    </label>
+                </div>
+            </div><br>
+            <div class="row" style="gap: 1em">
+                <div class="s12 input-field">
+                    <i class="material-icons prefix">chat_bubble</i>
+                    <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" "></textarea>
+                    <label for="id_note">Note</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer header-color" style="margin-top: 10%">
+            <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#add-modal')).close();"><i class="material-icons left">add</i>Create Shift</button>
+        </div>
+    </form>
+</div>

@@ -27,7 +27,7 @@ from .models import Shift, ShiftQualifications
 class ShiftCreationView(CreateView):
     model = Shift
     form_class = ShiftForm
-    template_name = 'shifts/create_shift.html'
+    template_name = 'shifts/fragments/create_shift.html'
 
     def post(self, request):
         # merge date and time before form validation
@@ -69,7 +69,7 @@ def add_qualification(request, **kwargs):
         ShiftQualifications.objects.create(shift=selected_shift,
                                            qualification=selected_qualification)
 
-    return redirect('edit_shift', pk=shift_id)
+    return redirect('shifts')
 
 
 def remove_qualification(request, **kwargs):
@@ -81,7 +81,21 @@ def remove_qualification(request, **kwargs):
     if entry is not None:
         entry.delete()
 
-    return redirect('edit_shift', pk=shift_id)
+    return redirect('shifts')
+
+
+def get_qualifications(request, **kwargs):
+    shift_id = kwargs['pk']
+    selected_shift = Shift.objects.get(id=shift_id)
+    associated_qualifications = ShiftQualifications.objects.filter(shift=selected_shift)
+    non_associated_qualifications = Qualification.objects.all().exclude(id__in=associated_qualifications.values('qualification'))
+    context = {
+        'shift_id': shift_id,
+        'associated_qualifications': associated_qualifications,
+        'non_associated_qualifications': non_associated_qualifications
+    }
+
+    return HttpResponse(render(request, 'shifts/fragments/shift_qualifications.html', context))
 
 
 def edit_shift(request, **kwargs):
@@ -102,7 +116,6 @@ def edit_shift(request, **kwargs):
 
         form = ShiftForm(post_data)
         data = form.data
-        print(data)
         if data['note'] != '':
             note = data['note']
         else:
@@ -185,7 +198,67 @@ def edit_shift(request, **kwargs):
             'non_associated_qualifications': non_associated_qualifications,
             'associated_qualifications': associated_qualifications
         }
-        return render(request, 'shifts/edit_shift.html', context)
+        return render(request, 'shifts/fragments/edit_shift.html', context)
+
+
+def get_employees(request, **kwargs):
+    shift_id = kwargs['pk']
+    selected_shift = Shift.objects.get(id=shift_id)
+
+    weekday = selected_shift.start.weekday() + 1
+    date = selected_shift.start
+    associated_qualifications = ShiftQualifications.objects.filter(shift=selected_shift)
+    non_associated_qualifications = Qualification.objects.all().exclude(
+        id__in=associated_qualifications.values('qualification'))
+    departments = Department.objects.all()
+    employees = User.objects.all()
+    # filter out employees missing qualifications
+    shift_qualifications = selected_shift.get_qualifications()
+    for employee in employees:
+        # filter out employees missing qualifications
+        employee_qualifications = employee.get_qualifications()
+        for sq in shift_qualifications:
+            if sq.qualification.is_important:
+                match = False
+                for eq in employee_qualifications:
+                    if sq.qualification.id == eq.qualification.id:
+                        match = True
+                if not match:
+                    employees = employees.exclude(id=employee.id)
+        # absences and holidays to filter out
+        if Absence.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
+            employees = employees.exclude(id=employee.id)
+        if Holiday.objects.filter(employee=employee, start_date__lte=date, end_date__gte=date).exists():
+            employees = employees.exclude(id=employee.id)
+        # filter out unavailable without explicit shift wish
+        if Availability.objects.filter(employee=employee, weekday=weekday, is_available=False).exists():
+            if not Wish.objects.filter(employee=employee, date=date, is_available=True).exists():
+                employees = employees.exclude(id=employee.id)
+        # already assigned employees of this day to filter out
+        if Shift.objects.filter(employee=employee,
+                                start__year=date.year,
+                                start__month=date.month,
+                                start__day=date.day).exists():
+            employees = employees.exclude(id=employee.id)
+    emp_in_department = employees.filter(Q(department__id=selected_shift.department.id))
+    emp_other_department = employees.filter(~Q(department__id=selected_shift.department.id))
+    employees = list(emp_in_department) + list(emp_other_department)
+
+    # get availabilities and wishes for remaining
+    for employee in employees:
+        employee.available = None
+        if Availability.objects.filter(employee=employee, weekday=weekday).exists():
+            employee.available = Availability.objects.get(employee=employee, weekday=weekday)
+        employee.wish = None
+        if Wish.objects.filter(employee=employee, date=date).exists():
+            employee.wish = Wish.objects.get(employee=employee, date=date)
+    form = ShiftForm()
+    context = {
+        'selected_shift': selected_shift,
+        'employees': employees,
+        'associated_qualifications': associated_qualifications
+    }
+    return HttpResponse(render(request, 'shifts/fragments/shift_employee.html', context))
 
 
 def assign_employee(request, **kwargs):
@@ -193,14 +266,14 @@ def assign_employee(request, **kwargs):
     employee_id = kwargs['pk2']
 
     Shift.objects.filter(id=shift_id).update(employee=employee_id)
-    return redirect('edit_shift', pk=shift_id)
+    return redirect('shifts')
 
 
 def remove_employee(request, **kwargs):
     shift_id = kwargs['pk']
 
     Shift.objects.filter(id=shift_id).update(employee=None)
-    return redirect('edit_shift', pk=shift_id)
+    return redirect('shifts')
 
 
 def delete_shift(request, **kwargs):
@@ -460,9 +533,9 @@ def shift_list(request):
             timeline = base64.b64encode(contents).decode()
 
     # get demand for day
-    if filter_date is not None:
+    if filter_date != '' and filter_date is not None:
         weekday = datetime.strptime(filter_date, '%Y-%m-%d').weekday()+1
-        if keyword is not None:
+        if keyword != '' and keyword is not None:
             q_keyword = Q(department__name__icontains=keyword)
         else:
             q_keyword = Q()
@@ -486,7 +559,9 @@ def shift_list(request):
         'timeline': timeline,
         'demand': demand
     }
-    return render(request, 'shifts/shift_list.html', context)
+    if request.method == 'POST':
+        return HttpResponse(render(request, 'shifts/fragments/shift-table.html', context))
+    return HttpResponse(render(request, 'shifts/shift_list.html', context))
 
 
 @dataclass

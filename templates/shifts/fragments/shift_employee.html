@@ -1,0 +1,108 @@
+<div id="employee-modal-content">
+    <div class="modal-content">
+        <h5><b class="header-color-text">Assign Employee to shift</b></h5>
+        <h6>
+            <b>{{ selected_shift.get_date|date:"l, d.m.Y" }}</b><br>
+            {{ selected_shift.get_start_time|date:"H:i" }} - {{ selected_shift.get_end_time|date:"H:i" }}<br>
+            {{ selected_shift.department }}
+        </h6>
+        <div class="left">
+            {% for entry in associated_qualifications %}
+                <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                    <b>{{ entry.qualification.name }}</b>
+                </span>
+            {% endfor %}
+        </div><br><br><br>
+        <table class="striped highlight responsive-table">
+            <thead class="header-color white-text">
+            <tr>
+                <th>Name</th>
+                <th>Availability<br>Shift wish</th>
+                <th>Department<br>Qualifications</th>
+                <th>Assign</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for employee in employees %}
+                <tr {% if selected_shift.employee.id == employee.id %}class="amber lighten-3"{% endif %}>
+                    <td>
+                        {{ employee.first_name }}<br><b>{{ employee.last_name }}</b>
+                    </td>
+                    <td>
+                        <span class="new badge grey lighten-3 black-text z-depth-1" data-badge-caption="">
+                            <b>Availability</b>
+                        </span>
+                        {% if employee.available.get_availability == 0 %}
+                            <span class="new badge red darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>no</b>
+                                {% if employee.available.note != '' %}: {{ employee.available.note }}{% endif %}
+                            </span>
+                        {% elif employee.available.get_availability == 1 %}
+                            <span class="new badge light-blue darken-1 z-depth-1" data-badge-caption="">
+                                <b>{{ employee.available.get_preference }}</b>
+                            </span>
+                            {% if employee.available.get_start_time %}
+                                <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                    <b>from {{ employee.available.get_start_time }}</b>
+                                </span>
+                            {% endif %}
+                            {% if employee.available.get_end_time %}
+                                <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                    <b>until {{ employee.available.get_end_time }}</b>
+                                </span>
+                            {% endif %}
+                        {% endif %}<br>
+                        <span class="new badge grey lighten-2 black-text z-depth-1" data-badge-caption="">
+                            <b>Shift wish</b>
+                        </span>
+                        {% if employee.wish.get_availability == 0 %}
+                            <span class="new badge red darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>no</b>
+                                {% if employee.wish.note != '' %}: {{ employee.wish.note }}{% endif %}
+                            </span>
+                        {% elif employee.wish.get_availability == 1 %}
+                            <span class="new badge light-blue darken-1 z-depth-1" data-badge-caption="">
+                                <b>{{ employee.wish.get_preference }}</b>
+                            </span>
+                            {% if employee.wish.get_start_time %}
+                                <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                    <b>from {{ employee.wish.get_start_time }}</b>
+                                </span>
+                            {% endif %}
+                            {% if employee.wish.get_end_time %}
+                                <span class="new badge amber darken-1 black-text z-depth-1" data-badge-caption="">
+                                    <b>until {{ employee.wish.get_end_time }}</b>
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if employee.department == selected_shift.department %}
+                            <span class="new badge light-green darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>{{ employee.department }}</b>
+                            </span>
+                        {% else %}
+                            <span class="new badge red darken-1 white-text z-depth-1" data-badge-caption="">
+                                <i class="material-icons right">bolt</i>
+                                <b>{{ employee.department }}</b>
+                            </span>
+                        {% endif %}<br>
+                        {% for qualification in employee.get_qualifications %}
+                            <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                <b>{{ qualification.qualification.name }}</b>
+                            </span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a class="waves-effect waves-light btn accent-color" href="{% url 'assign_employee' selected_shift.id employee.id %}"><i class="material-icons">add</i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer header-color" style="margin-top: 10%">
+        <a class="waves-effect waves-light btn warning-color white-text" href="{% url 'remove_employee' selected_shift.id %}"><i class="material-icons left">delete_forever</i>Remove Employee</a>
+    </div>
+</div>

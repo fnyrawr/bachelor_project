@@ -1,0 +1,97 @@
+<div id="shift-table">
+    <div class="card-content card-color">
+        {% if entries > 0 %}
+            <table class="striped highlight responsive-table">
+                <thead class="header-color white-text">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Work hours<br>Break</th>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Qualifications</th>
+                        <th>Note</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for entry in page_obj %}
+                    <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
+                        <td>
+                            {{ entry.get_date|date:"l" }}<br>
+                            <b>{{ entry.get_date|date:"d.m.Y" }}</b>
+                        </td>
+                        <td>
+                            <b>{{ entry.get_start_time|date:"H:i" }}</b><br>
+                            <b>{{ entry.get_end_time|date:"H:i" }}</b>
+                        </td>
+                        <td>{{ entry.get_work_hours|date:"H:i" }}<br><span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span></td>
+                        <td><table><tr style="background-color: rgba(0, 0, 0, 0);">
+                            <td>{% if entry.employee %}{{ entry.employee.first_name }}<br>
+                            <b>{{ entry.employee.last_name }}</b>{% else %}<span class="grey-text text-darken-1">None</span>{% endif %}
+                            <td class="right"><a class="modal-trigger waves-effect waves-light btn btn-flat header-color-text" data-target="employee-modal" hx-get="{% url 'shift_employee' entry.id %}" hx-target="#employee-modal" hx-swap="morph"><i class="material-icons">add</i></a></td>
+                        </tr></table></td>
+                        <td>
+                            {% if entry.employee != None and entry.employee.department != None and entry.employee.department != entry.department %}
+                                <s>{{ entry.employee.department }}</s><br>
+                                <span class="new badge warning-color z-depth-1" data-badge-caption="">
+                                    <b>{{ entry.department }}</b>
+                                </span>
+                            {% else %}
+                                {{ entry.department }}
+                            {% endif %}
+                        </td>
+                        <td><table><tr style="background-color: rgba(0, 0, 0, 0);">
+                            <td>{% for qualification in entry.get_qualifications %}
+                                <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                    <b>{{ qualification.qualification.name }}</b>
+                                </span><br>
+                            {% endfor %}</td>
+                            <td class="right"><a class="modal-trigger waves-effect waves-light btn btn-flat header-color-text" data-target="qualification-modal" hx-get="{% url 'shift_qualifications' entry.id %}" hx-target="#qualification-modal" hx-swap="morph"><i class="material-icons">add</i></a></td>
+                        </table></td></td>
+                        <td>{{ entry.note }}</td>
+                        <td>
+                            <a class="modal-trigger waves-effect waves-light btn accent-color" data-target="edit-modal" hx-get="{% url 'edit_shift' entry.id %}" hx-target="#edit-modal" hx-swap="morph"><i class="material-icons">edit</i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if timeline %}
+                <br><img src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
+            {% endif %}<br><br><br>
+
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            <ul class="pagination center">
+                {% if page_obj.has_previous %}
+                    <li class="waves-effect"><a hx-post="{% url 'shifts' %}?page={{ page_obj.previous_page_number }}" hx-target="#shift-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_left</i></a></li>
+                {% endif %}
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page == page_obj.number %}
+                        <li class="active accent-color"><a>{{ page_obj.number }}</a></li>
+                    {% else %}
+                        <li class="waves-effect"><a hx-post="{% url 'shifts' %}?page={{ page }}" hx-target="#shift-table" hx-swap="morph">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="waves-effect"><a hx-post="{% url 'shifts' %}?page={{ page_obj.next_page_number }}" hx-target="#shift-table" hx-swap="morph"><i class="material-icons">chevron_right</i></a></li>
+                {% else %}
+                    <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
+                {% endif %}
+            </ul>
+        {% else %}
+            <h6><i class="material-icons accent-color-text left">info</i>No shifts found matching given filters</h6>
+        {% endif %}
+    </div>
+
+    {% if demand %}
+        <div class="card-content card-color">
+            <div class="card-content">
+                <div class="card-title"><b>Demand</b> (Employees needed in timeframe per department)</div>
+                <img src='data:image/png;base64,{{ demand }}' style="max-width: 100%">
+            </div>
+        </div>
+    {% endif %}
+</div>

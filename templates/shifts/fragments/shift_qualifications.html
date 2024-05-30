@@ -1,0 +1,73 @@
+<div id="qualification-modal-content">
+    <script>
+        var modal_elems = document.querySelector('#add-qualification-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+
+        var elem = document.getElementsByClassName('select-box');
+        var instance = M.FormSelect.init(elem);
+
+        var picker_elems = document.querySelectorAll('.datepicker');
+        var picker_instances = M.Datepicker.init(picker_elems, {
+            format: 'yyyy-mm-dd',
+            firstDay: 1,
+            showClearBtn: true
+        });
+
+        var modal_elems = document.querySelector('#delete-modal');
+        var modal_instances = M.Modal.init(modal_elems);
+    </script>
+    <div id="shift-qualifications">
+        <div id="add-qualification-modal" class="modal content-section card-color">
+            <div class="modal-content">
+                <h5 class="header-color-text"><b>Add qualification</b></h5>
+                <table class="striped highlight responsive-table">
+                    <thead class="header-color white-text">
+                    <th>Qualification</th>
+                    <th>Description</th>
+                    <th>Add</th>
+                    </thead>
+                    {% for entry in non_associated_qualifications %}
+                        <tr>
+                            <td><b>{{ entry.name }}</b></td>
+                            <td>{{ entry.description }}</td>
+                            <td><a class="waves-effect waves-light btn accent-color" href="{% url 'add_shift_qualification' shift_id entry.id %}" onclick="M.Modal.getInstance(document.querySelector('#add-qualification-modal')).close();"><i class="material-icons">add</i></a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-content card-color">
+        <h5><b class="header-color-text">Required Qualifications</b></h5>
+        <br>
+        {% if associated_qualifications.count > 0 %}
+            <table class="striped highlight responsive-table">
+                <thead class="header-color white-text">
+                <tr>
+                    <th>Qualification</th>
+                    <th>Description</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in associated_qualifications %}
+                    <tr>
+                        <td><b>{{ entry.qualification.name }}</b></td>
+                        <td>{{ entry.qualification.description }}</td>
+                        <td>
+                            <a class="waves-effect waves-light btn-flat warning-color-text" href="{% url 'remove_shift_qualification' shift_id entry.qualification.id %}"><i class="material-icons">delete_forever</i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h6><i class="material-icons accent-color-text left">info</i>No qualifications assigned</h6>
+        {% endif %}
+    </div>
+
+    <div class="modal-footer header-color" style="margin-top: 10%">
+        <a class="modal-trigger btn accent-color white-text" data-target="add-qualification-modal"><i class="material-icons left">add</i>Add Qualification</a>
+    </div>
+</div>

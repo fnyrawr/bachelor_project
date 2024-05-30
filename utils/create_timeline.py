@@ -125,7 +125,7 @@ def draw_timeline(objects, target):
     width = 1500
     height = h_row*(row_count+1)
     # descriptor column with 20% width
-    if target in ['shifts_filtered', 'shifts_listed', 'demand_listed']:
+    if target in ['shifts_listed', 'demand_listed']:
         desc_col = width*0.2
     w_col = (width-desc_col) / (t_max - t_min)
     mgs = h_row/20
@@ -214,12 +214,6 @@ def draw_timeline(objects, target):
         font = ImageFont.truetype(font_family, int(fontsize))
         start = lst_start[i]-t_min
         end = lst_end[i]-t_min
-        #tw, th = img.textsize(lst_text[i], font=font)
-        # make font smaller if text is bigger than row
-        #while th > h_row-4*mgs:
-        #    fontsize -= 1
-        #    font = ImageFont.truetype(font_family, int(fontsize))
-        #    tw, th = img.textsize(lst_text[i], font=font)
         w_center = start + (end-start)/2
         if lst_highlight[i] == 1:
             fillcolor = lightblue

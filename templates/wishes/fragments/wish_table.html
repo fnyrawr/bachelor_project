@@ -36,9 +36,10 @@
                     </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </table><br>
 
             <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            {% if page_obj.paginator.num_pages > 1 %}
             <ul class="pagination center">
                 {% if page_obj.has_previous %}
                     <li class="waves-effect"><a hx-post="{% url 'wishes' %}?page={{ page_obj.previous_page_number }}" hx-target="#wish-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
@@ -58,6 +59,7 @@
                     <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
                 {% endif %}
             </ul>
+            {% endif %}
         {% else %}
             <h6><i class="material-icons accent-color-text left">info</i>No shift wishes found matching given filters</h6>
         {% endif %}

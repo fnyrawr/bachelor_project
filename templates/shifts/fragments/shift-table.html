@@ -59,9 +59,10 @@
             </table>
             {% if timeline %}
                 <br><img src='data:image/png;base64,{{ timeline }}' style="max-width: 100%">
-            {% endif %}<br><br><br>
+            {% endif %}<br>
 
             <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ entries }} entries)</span>
+            {% if page_obj.paginator.num_pages > 1 %}
             <ul class="pagination center">
                 {% if page_obj.has_previous %}
                     <li class="waves-effect"><a hx-post="{% url 'shifts' %}?page={{ page_obj.previous_page_number }}" hx-target="#shift-table" hx-swap="morph"><i class="material-icons">chevron_left</i></a></li>
@@ -81,6 +82,7 @@
                     <li class="disabled grey-text text-lighten-1"><a><i class="material-icons">chevron_right</i></a></li>
                 {% endif %}
             </ul>
+            {% endif %}
         {% else %}
             <h6><i class="material-icons accent-color-text left">info</i>No shifts found matching given filters</h6>
         {% endif %}

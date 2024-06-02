@@ -1,5 +1,5 @@
-# Bachelor Project Implementation
-Implementation of a staff management software tool as part of my bachelor thesis
+# ShiftManager
+This project was part of my Bachelor Thesis. It is currently `June 2024` under rework for better user experience and some major overhaul.
 
 ### How to make the application run
 1) create a virtual environment
@@ -36,9 +36,9 @@ Implementation of a staff management software tool as part of my bachelor thesis
 9) login, then import or create data
 
 ## Author
-| Name           | Github  | E-Mail               |
-|----------------|---------|----------------------|
-| **Florian K.** | fnyrawr | s51541@bht-berlin.de |
+| Name           | Github  |
+|----------------|---------|
+| **Florian K.** | fnyrawr |
 
 ### Status updates
     - `ToDo` not yet started
@@ -49,204 +49,84 @@ Implementation of a staff management software tool as part of my bachelor thesis
 
 ## General overview
 
-- Django WebApp for a Staff management system
-> Deadline for bachelor thesis: 2022-07-11
+- WebApp for a Staff management system
+- Using Django (based on Python)
+- Using HTMX for dynamic requests and MaterializeWeb for styling
 
-## Database
-### Employee
-- username
-- email
-- password
-- lastname
-- firstname
-- staff_id
-- role
-- external
-- telephone_home
-- telephone_mobile
-- address
-- zip_city
-- active
-- verified
-- last_login
-- start_contract
-- end_contract
-- department
-- work_hours
-- holiday_count
+## Current development
+### UI
+- [x] Reworking page design `Done` `2024-06-03`
 
-> `Important` `Done` `2023-04-25`
+### Functionality
+- [ ] Implement change history `ToDo`
+  - [ ] Name (first, last)
+  - [ ] Contact data (address, telephone)
+  - [ ] Contract data (start, end, external, active)
+  - [ ] Department
+  - [ ] Work hours
+  - [ ] Holiday (yearly holiday allowance)
+  - [x] User Qualifications
+  - [ ] Salary
+  - [ ] Surcharges
+- [ ] Salary and Surcharges (not yet implemented) `ToDo`
+- [ ] Demand integration `ToDo`
+  - [ ] Generate shifts with AI depending on demand
+- [ ] Shift assignment improvements `ToDo`
+  - [ ] Better candidate suggestions
+  - [ ] AI assisted assignments
 
-### Qualifications
-- name
-- description
-- is_important
+### REST-API
+- [ ] Users/Employees `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Qualifications `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Departments `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Demand `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Absences `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Holidays `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Availabilities `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Wishes `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Shift Templates `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Day Templates `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] Shifts `ToDo`
+  - [ ] Import
+  - [ ] Export
+  - [ ] Testing
+- [ ] automatic test data creation script `ToDo`
 
-> `Important` `Done` `2023-04-26`
-
-### Departments
-- name
-- description
-
-> `Important` `Done` `2023-04-26`
-
-### EmployeesQualifications
-- employee_id
-- qualification_id
-
-> `Important` `Done` `2023-04-27`
-
-### DepartmentsQualifications
-- department_id
-- qualification_id
-
-> `Important` `Done` `2023-04-27`
-
-### Demand
-- demand_id
-- weekday
-- start_time
-- end_time
-- staff_count
-- note
-
-> `Optional` `Done` `2023-04-28`
-
-### ShiftTemplates
-- shift_template_id
-- name
-- department
-- start_time
-- end_time
-- break_duration
-- note
-
-> `Important` `Done` `2023-04-29`
-
-### ShiftTemplatesQualifications
-- shift_template_id
-- qualification_id
-
-> `Important` `Done` `2023-04-29`
-
-### DayTemplates
-- day_template_id
-- name
-- description
-
-> `Important` `Done` `2023-04-29`
-
-### DayShiftTemplates
-- day_template_id
-- shift_template_id
-
-> `Important` `Done` `2023-04-29`
-
-### Availabilities
-- employee
-- weekday
-- start_time
-- end_time
-- tendency
-- is_available
-- note
-
-> `Important` `Done` `2023-05-02`
-
-### Wishes
-- employee
-- date
-- start_time
-- end_time
-- tendency
-- is_available
-- note
-
-> `Important` `Done` `2023-05-02`
-
-### Absences
-- employee
-- start_date
-- end_date
-- absence_type
-- status
-- note
-
-> `Important` `Done` `2023-05-03`
-
-### Holidays
-- employee
-- start_date
-- end_date
-- status
-- note
-
-> `Important` `Done` `2023-05-03`
-
-### Shifts
-- shift_id
-- department
-- employee
-- start
-- end
-- break_duration
-- note
-- highlight
-
-> `Important` `Done` `2023-05-07`
-
-## Functions
-### Needed
-- [x] Landing page
-  - [x] Infopage if not logged in
-  - [x] Restricted access note
-  - [x] Reset password
-  - [x] Employee dashboard [employee]
-- [x] Departments
-  - [x] Create department [admin]
-  - [x] Manage department qualifications [admin]
-  - [x] Additional information [admin]
-- [x] Employees
-  - [x] create employee user account [admin]
-  - [x] Manage employee base data [admin]
-  - [x] Manage employee qualifications [admin]
-  - [x] Manage employee general availabilities [admin]
-  - [x] Manage employee shift wishes [admin]
-  - [x] Manage employee absences [admin]
-    - [x] unmatch employee from shifts in timeframe on approve
-  - [x] Manage employee holidays [admin]
-    - [x] unmatch employee from shifts in timeframe on approve
-- [x] Shifts
-  - [x] Manage demand [planner]
-  - [x] Manage Shift templates [planner]
-  - [x] Manage Day templates [planner]
-  - [x] Timeline view
-  - [x] Create shifts for dates
-  - [x] Copy day templates to dates
-  - [x] Assign employees
-    - [x] Filter out already assigned that day
-    - [x] Filter out absent/holiday
-    - [x] Assign helper rule based
-  - [x] shift plan displayed on page
-  - [x] create shift plan as PDF
-- [x] My account
-  - [x] Overview base data [all users]
-  - [x] Overview own work hours [all users]
-  - [x] Overview absences and holiday [all users]
-  - [x] Manage base data [all users]
-  - [x] Change password [all users]
-  - [x] Manage general availabilities [all users]
-  - [x] Manage shift wishes [all users]
-- [x] Data management
-  - [x] Importer for Qualifications
-  - [x] Importer for Departments
-  - [x] Importer for Users
-  - [x] Importer for Absence
-  - [x] Importer for Holiday
-  - [x] Importer for Demand
-  - [x] Importer for ShiftTemplates
-  - [x] Importer for DayTemplates
-  - [x] Importer for General availabilities
-  - [x] Importer for Shift wishes
-  - [x] Importer for Shifts
-  - [x] Exporting data
+### Bugfixes
+- [ ] CSS fixes (Input showing wrong label color on focus) `ToDo`
+- [ ] User/Employee edit: redirect to respective page `ToDo`
+- [ ] Holiday/Absence filters to be more intuitive `ToDo`
+  - [ ] Absence: don't change filters after creating/changing absence `ToDo`
+  - [ ] Holiday: don't change filters after creating/changing holiday `ToDo`
+- [ ] Shifts filters to be more intuitive `ToDo`
+  - [ ] Don't change filters after creating/changing shifts `ToDo`

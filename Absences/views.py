@@ -278,5 +278,5 @@ def absence_list(request):
         'timeline': timeline
     }
     if request.method == 'POST':
-        return HttpResponse(render(request, 'absences/fragments/absence-table.html', context))
+        return HttpResponse(render(request, 'absences/fragments/absence_table.html', context))
     return HttpResponse(render(request, 'absences/absence_list.html', context))

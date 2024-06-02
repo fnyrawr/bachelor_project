@@ -27,7 +27,7 @@
 
     <form hx-post="{% url 'edit_absence' selected_absence.id %}" hx-target="#absence-table" hx-swap="morph">
         {% csrf_token %}
-        <div class="modal-content card-color">
+        <div class="modal-content card-color" style="margin-bottom: 10%">
             <h5 class="header-color-text"><b>Edit Absence</b></h5>
             <input type="hidden" name="employee" value="{{ selected_absence.employee.id }}">
             <div class="row" style="gap: 1em">
@@ -67,14 +67,67 @@
                     <label>Status</label>
                 </div>
             </div><br>
-            <div class="row" style="gap: 1em; margin-bottom: 10%">
+            <div class="row" style="gap: 1em">
                 <div class="s12 input-field">
                     <i class="material-icons prefix">chat_bubble</i>
                     <textarea name="note" autocapitalize="none" id="id_note" class="materialize-textarea grey-text text-darken-4" placeholder=" ">{{ selected_absence.note }}</textarea>
                     <label for="id_note">Note</label>
                 </div>
             </div>
+
+            {% if conflicting_shifts.count > 0 %}
+                <br><h5 class="header-color-text"><b>Conflicting shifts</b></h5>
+                <h6><b class="warning-color-text">On approving</b> this absence the following shifts will be <b class="warning-color-text">unassigned</b> (no undo):</h6><br>
+                <table class="striped highlight responsive-table">
+                    <thead class="warning-color white-text">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Work hours<br>Break</th>
+                        <th>Qualifications</th>
+                        <th>Department</th>
+                        <th>Note</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entry in conflicting_shifts %}
+                        <tr {% if entry.highlight %}class="amber lighten-3"{% endif %}>
+                            <td>
+                                {{ entry.get_date|date:"l" }}<br>
+                                <b>{{ entry.get_date|date:"d.m.Y" }}</b>
+                            </td>
+                            <td>
+                                <b>{{ entry.get_start_time|date:"H:i" }}<br>{{ entry.get_end_time|date:"H:i" }}</b>
+                            </td>
+                            <td>
+                                {{ entry.get_work_hours|date:"H:i" }}<br>
+                                <span class="grey-text text-darken-1">{{ entry.break_duration|date:"H:i" }}</span>
+                            </td>
+                            <td>
+                                {% for qualification in entry.get_qualifications %}
+                                    <span class="new badge grey darken-1 white-text z-depth-1" data-badge-caption="">
+                                        <b>{{ qualification.qualification.name }}</b>
+                                    </span><br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if entry.employee != None and entry.employee.department != None and entry.employee.department != entry.department %}
+                                    <s>{{ entry.employee.department }}</s><br>
+                                    <span class="new badge warning-color z-depth-1" data-badge-caption="">
+                                        <b>{{ entry.department }}</b>
+                                    </span>
+                                {% else %}
+                                    {{ entry.department }}
+                                {% endif %}
+                            </td>
+                            <td>{{ entry.note }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
+
         <div class="modal-footer header-color">
             <button type="submit" class="waves-effect waves-light btn accent-color" onclick="M.Modal.getInstance(document.querySelector('#edit-modal')).close();"><i class="material-icons left">edit</i>Update Absence</button>
             <a class="modal-trigger waves-effect waves-light btn-flat white-text" data-target="delete-modal"><i class="material-icons left">delete_forever</i>Delete</a>

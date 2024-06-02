@@ -35,7 +35,7 @@
                 <div class="s4 input-field">
                     <i class="material-icons prefix">event_calendar</i>
                     <input id="id_date" disabled value="{{ selected_shift.get_date|date:"Y-m-d" }}" type="text" class="grey-text darken-1">
-                    <label for="id_date">*Date</label>
+                    <label for="id_date">*Date<i class="material-icons right accent-color-text">lock</i></label>
                 </div>
                 <div class="s4 input-field">
                     <i class="material-icons prefix">local_offer</i>
@@ -49,24 +49,30 @@
                 <div class="s4 input-field">
                     <i class="material-icons prefix">person</i>
                     <input id="id_employee" disabled value="{{ selected_shift.employee }}" type="text" class="grey-text darken-1" placeholder=" ">
-                    <label>Employee</label>
+                    <label>Employee<i class="material-icons right accent-color-text">lock</i></label>
                 </div>
             </div><br>
             <div class="row" style="gap: 1em">
-                <div class="s4 input-field">
+                <div class="s3 input-field">
                     <i class="material-icons prefix">schedule</i>
                     <input id="id_start_time" name="start_time" type="time" value="{{ selected_shift.get_start_time|date:"H:i" }}" placeholder=" " required>
                     <label for="id_start_time">*Start</label>
                 </div>
-                <div class="s4 input-field">
+                <div class="s3 input-field">
                     <i class="material-icons prefix">schedule</i>
                     <input id="id_end_time" name="end_time" type="time" value="{{ selected_shift.get_end_time|date:"H:i" }}" placeholder=" " required>
                     <label for="id_end_time">*End</label>
                 </div>
-                <div class="s4 input-field">
+                <div class="s3 input-field">
                     <i class="material-icons prefix">label</i>
                     <input id="id_break_duration" type="time" name="break_duration" autofocus autocapitalize="none" value="{{ selected_shift.break_duration|date:"H:i" }}" placeholder=" " required>
                     <label for="id_break_duration">*Break</label>
+                </div>
+                <div class="s3 input-field">
+                    <label>
+                        <input type="checkbox" name="highlight" {% if selected_shift.highlight %}checked{% endif %} />
+                        <span>Highlight</span>
+                    </label>
                 </div>
             </div><br>
             <div class="row" style="gap: 1em">
